@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet title="XSL_formatting" type="text/xsl" href="/shared/bsp/xsl/rss/nolsol.xsl"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title><![CDATA[BBC News - Entertainment & Arts]]></title>
+        <description><![CDATA[BBC News - Entertainment & Arts]]></description>
+        <link>https://www.bbc.co.uk/news/</link>
+        <image>
+            <url>https://news.bbcimg.co.uk/nol/shared/img/bbc_news_120x60.gif</url>
+            <title>BBC News - Entertainment &amp; Arts</title>
+            <link>https://www.bbc.co.uk/news/</link>
+        </image>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Fri, 22 Apr 2022 20:57:59 GMT</lastBuildDate>
+        <copyright><![CDATA[Copyright: (C) British Broadcasting Corporation, see http://news.bbc.co.uk/2/hi/help/rss/4498287.stm for terms and conditions of reuse.]]></copyright>
+        <language><![CDATA[en-gb]]></language>
+        <ttl>15</ttl>
+        <item>
+            <title><![CDATA[Have we had enough of Netflix?]]></title>
+            <description><![CDATA[The streaming giant is losing subscribers despite huge hits like Squid Game and Bridgerton.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61178311?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61178311</guid>
+            <pubDate>Thu, 21 Apr 2022 23:33:58 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Tom Grennan recovering after NYC attack]]></title>
+            <description><![CDATA[The singer was left with a torn ear drum after being attacked outside a bar in New York this week.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-61186012?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-61186012</guid>
+            <pubDate>Fri, 22 Apr 2022 06:18:40 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Heartstopper: Teen LGBTQ+ Netflix drama pushing the envelope]]></title>
+            <description><![CDATA[Stars of Alice Oseman's TV adaptation discuss TikTok, bullying, inclusivity and mental health.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-61067343?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-61067343</guid>
+            <pubDate>Fri, 22 Apr 2022 00:42:27 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[RSC artistic director to step down after 10 years]]></title>
+            <description><![CDATA[Gregory Doran is praised for his "extraordinary contribution" during his 35 years with the company.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-coventry-warwickshire-61191589?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-coventry-warwickshire-61191589</guid>
+            <pubDate>Fri, 22 Apr 2022 13:08:07 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Kardashians deny faking Roblox sex tape scene]]></title>
+            <description><![CDATA[Questions are being asked about a scene in The Kardashians, when Kim's son finds a sex tape ad on Roblox.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61178189?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61178189</guid>
+            <pubDate>Fri, 22 Apr 2022 01:07:09 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Johnny Depp and Amber Heard face off in court]]></title>
+            <description><![CDATA[Depp says she stubbed a cigarette on his face. The court sees a Depp text saying: "Lets burn Amber!!!"]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-61156743?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-61156743</guid>
+            <pubDate>Fri, 22 Apr 2022 01:48:45 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[CNN streaming service to shut a month after launch]]></title>
+            <description><![CDATA[It comes as Netflix has reported a plunge in subscribers in the face of stiff competition from rivals.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61185298?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61185298</guid>
+            <pubDate>Fri, 22 Apr 2022 05:03:34 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[TikTok helps UK book sales hit record levels, Publishers Association says]]></title>
+            <description><![CDATA[Publishers say the popularity of book videos on TikTok helped lift sales to record numbers in 2021.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-61173810?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-61173810</guid>
+            <pubDate>Thu, 21 Apr 2022 10:02:54 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Tom Parker: Fans say emotional farewell at The Wanted singer's funeral]]></title>
+            <description><![CDATA[Hundreds gather outside the funeral of The Wanted singer, who died last month at the age of 33.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-61162252?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-61162252</guid>
+            <pubDate>Wed, 20 Apr 2022 14:15:15 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Happening director Audrey Diwan says abortion should not be 'a silent topic']]></title>
+            <description><![CDATA[Award-winning director Audrey Diwan talks about how her own abortion led her to make her new film.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-61150391?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-61150391</guid>
+            <pubDate>Wed, 20 Apr 2022 23:31:17 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA['People fear for their jobs if they report bullies']]></title>
+            <description><![CDATA[Bafta-winning director Brian Hill on tackling bullying in his industry with new film Toxic.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-60835576?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-60835576</guid>
+            <pubDate>Tue, 19 Apr 2022 23:33:42 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[KGF 2, RRR, Pushpa: The southern Indian films winning on Bollywood's turf]]></title>
+            <description><![CDATA[The recent theatrical success of movies like KGF 2 and RRR has revived a debate on the "pan-Indian" film.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-india-61118482?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-india-61118482</guid>
+            <pubDate>Wed, 20 Apr 2022 23:45:28 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Shark Tank: India TV show proves entrepreneurship isn't just for rich]]></title>
+            <description><![CDATA[Shark Tank India featured 67 ideas on which investors spent more than 400m rupees.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-india-61145196?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-india-61145196</guid>
+            <pubDate>Tue, 19 Apr 2022 23:39:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Homophobic slur prompts Wales Millennium Centre show]]></title>
+            <description><![CDATA[Luke Hereford says his grandmother Joan encouraged him to be himself by dressing up in her clothes.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61079499?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61079499</guid>
+            <pubDate>Mon, 18 Apr 2022 06:25:47 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Michael Sheen mural part of Port Talbot street art promo]]></title>
+            <description><![CDATA[A new initiative aims to make Port Talbot a "street art capital" in the UK with a series of murals.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61169219?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61169219</guid>
+            <pubDate>Wed, 20 Apr 2022 20:24:34 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Omid Djalili: Clever comedians can navigate cancel culture]]></title>
+            <description><![CDATA[The comedian says he has never done more set-up and explanation of jokes to prevent “cancellation”.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-61112057?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-61112057</guid>
+            <pubDate>Wed, 20 Apr 2022 08:04:13 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Britney Spears: Sam Asghari talks marriage and family plans with singer]]></title>
+            <description><![CDATA[In an Oscars week interview, the actor said marriage and kids should've happened 'three years ago'.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-61075868?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-61075868</guid>
+            <pubDate>Mon, 11 Apr 2022 23:30:23 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Saniya Mistri: The hijab-wearing teen rapper breaking stereotypes]]></title>
+            <description><![CDATA[Saniya Mistri's powerful rap songs call out the glaring inequalities in her city, Mumbai.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-india-61015974?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-india-61015974</guid>
+            <pubDate>Sat, 09 Apr 2022 23:00:18 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Inside London's only pointe shoes factory]]></title>
+            <description><![CDATA[The craft of making pointe shoes for ballet dancers has recently been put on the heritage craft red list.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-london-61011231?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-london-61011231</guid>
+            <pubDate>Fri, 08 Apr 2022 23:04:04 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ashanti: R&B singer's mum reveals 20-year-old souvenir star at Hollywood ceremony]]></title>
+            <description><![CDATA[Ashanti's mum says she bought a fake star for her daughter 20 years ago, as R&B star gets real deal.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-61033263?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-61033263</guid>
+            <pubDate>Fri, 08 Apr 2022 05:29:37 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

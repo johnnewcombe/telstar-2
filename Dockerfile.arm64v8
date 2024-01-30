@@ -1,0 +1,37 @@
+## Custom Dockerfile
+#
+# USE:
+#    docker build . --no-cache -t johnnewcombe/telstar
+#    docker login
+
+#    docker push johnnewcombe/telstar
+#    docker run --name telstar -d -p 6512:6512 -p johnnewcombe/telstar 6512
+#
+
+FROM arm64v8/ubuntu
+LABEL maintainer="John Newcombe, https://glasstty.com"
+ENV REFRESHED_AT 2022-04-11
+RUN DEBIAN_FRONTEND=noninteractive TZ=Europe/London apt-get -y install tzdata
+
+RUN apt-get -y update \
+        && apt-get -y install \
+        git \
+        nano \
+        && rm -rf /var/lib/apt/lists/*
+
+# Add the executables and config
+RUN mkdir -p /opt/telstar/
+
+# If Config not supplied, uses env vars
+COPY ./telstar-server/hosts /opt/telstar
+COPY ./telstar-server/telstar-server-2.0/telstar-server-linux-arm64 /opt/telstar/
+COPY ./telstar-server/version.txt /opt/telstar/version.txt
+
+# add utilities and apps to the volume
+COPY ./telstar-util/telstar-util-2.0/telstar-util-2.0.zip /opt/telstar/
+COPY ./telstar-rss/telstar-rss-2.0/telstar-rss-2.0.zip /opt/telstar/
+COPY ./telstar-upload/telstar-upload-2.0/telstar-upload-2.0.zip /opt/telstar/
+COPY ./telstar-openweather/telstar-openweather-2.0/telstar-openweather-linux-arm64 /opt/telstar/telstar-openweather
+
+WORKDIR /opt/telstar
+ENTRYPOINT ["./telstar-server-linux-arm64"]

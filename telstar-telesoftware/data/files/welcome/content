@@ -1,0 +1,42 @@
+                  Software Release Notice
+                  -----------------------
+
+
+Product Group :  BBC Microcomputer
+
+Product       :  DFS Utilities Disc - Issue 1
+
+Date          :  22 June 1982
+
+Authorised    :  ............... (J.R. Horton, Software Manager)
+
+
+
+
+
+                  Contents of Package
+                  -------------------
+
+
+
+
+Utility Disc (02)
+Drive 0             Option 3 (EXEC)
+Directory :0.$      Library :0.$
+
+    !B                  !BOOT      
+    DCONV    L          FORM40   L 
+    FORM80   L          VERIFY   L 
+    content    
+
+  W.ALPHA             W.BATBALL    
+  W.BIO               W.BIORTHM    
+  W.BPART2            W.CALC       
+  W.CLOCK             W.HELP       
+  W.INDEX             W.KEYBD      
+  W.KINGDOM           W.MESSAGE    
+  W.MUSIC             W.PATTERN    
+  W.PHONE             W.PHOTO      
+  W.POEM              W.SKETCH     
+  W.WELCOME    
+

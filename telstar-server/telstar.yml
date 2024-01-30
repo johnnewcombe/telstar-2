@@ -1,0 +1,71 @@
+--- # Server default config for the Telstar Videotex System, only used for dev, not supplied with release.
+api:
+  host: "0.0.0.0"
+pad:
+  host: "0.0.0.0"
+  dle: 0x10
+server:
+  host: "0.0.0.0"
+  display_name: "MONTY"
+  hide_page_id: false
+  hide_cost: false
+  disable_vertical_rollover: true
+  edittf_title_rows: 4
+  antiope: false
+  dle: 0x10
+  pages:
+    start_page: 99
+    login_page: 990
+    main_index_page: 0
+    response_error_page: 9902
+    gateway_error_page: 9903
+  authentication:
+    required: false
+  strings:
+    # These are defaults and will only be used if the frame definition doesn't include them
+    # default_message_continue: "[B][n][Y]Press # to continue :[W]"
+    default_nav_message: "[B][n][Y]Select item or[W]*page# : [_+]"
+    default_page_not_found_message: "[B][n][Y]Page not Found :[W]"
+    default_header_text: "[G]T[R]E[C]L[B]S[W]T[M]A[Y]R"
+database:
+  connection: "mongodb://mongoadmin:secret@localhost:27017"
+  collection: "secondary"
+general:
+  parity: false
+  volume_directory: "/Users/john/Development/Repositories/Telstar/telstar-server/volume/"
+
+
+  # Markup is defined as follows...
+
+  # [R] = ALPHA_RED
+  # [G] = ALPHA_GREEN
+  # [Y] = ALPHA_YELLOW
+  # [B] = ALPHA_BLUE
+  # [M] = ALPHA_MAGENTA
+  # [C] = ALPHA_CYAN
+  # [W] = ALPHA_WHITE
+  # [F] = FLASH
+  # [S] = STEADY
+  # [N] = NORMAL_HEIGHT
+  # [-] = BLACK_BACKGROUND
+  # [n] = NEW_BACKGROUND
+  # [r] = MOSAIC_RED
+  # [g] = MOSAIC_GREEN
+  # [y] = MOSAIC_YELLOW
+  # [b] = MOSAIC_BLUE
+  # [m] = MOSAIC_MAGENTA
+  # [c] = MOSAIC_CYAN
+  # [w] = MOSAIC_WHITE
+  # [h.] = SEPARATOR_GRAPHIC_DOTS_HIGH)
+  # [m.] = SEPARATOR_GRAPHIC_DOTS_MID)
+  # [l.] = SEPARATOR_GRAPHIC_DOTS_LOW)
+  # [h-] = SEPARATOR_GRAPHIC_SOLID_HIGH)
+  # [m-] = SEPARATOR_GRAPHIC_SOLID_MID)
+  # [l-] = SEPARATOR_GRAPHIC_SOLID_LOW)
+  # [_+] = CURON
+  # [_-] = CUROFF
+
+  # e.g. Yellow writing on a blue background... "[B][n][Y]Hello World"
+
+
+

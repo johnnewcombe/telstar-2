@@ -1,0 +1,34 @@
+{
+  "content": {
+    "data": "[Y][CODE][W][PRICE][Y][CHANGE]",
+    "type": "markup"
+  },
+  "frame-type": "information",
+  "pid": {
+    "frame-id": "a",
+    "page-no": 31
+  },
+  "title": {
+    "data": "[y[          FTSE 100]][c][h-]",
+    "type": "markup,9"
+  },
+  "footer": {
+    "data": "\r\n[C]Prices delayed by at least 15 minutes",
+    "type": "markup"
+  },
+  "visible": true,
+  "author-id": "telstar-rss",
+  "routing-table": [
+    310,
+    311,
+    312,
+    313,
+    314,
+    315,
+    316,
+    317,
+    318,
+    319,
+    31
+  ]
+}

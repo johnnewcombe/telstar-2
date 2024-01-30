@@ -1,0 +1,123 @@
+                          Torch BBCBASIC
+			  **************
+
+
+
+To run BBCTORCHBASIC from CP/N, type the following:
+
+                  A>BBCBASIC<RETURN>
+
+The system will reply:
+
+                 Torch BBCBASIC Version 2.3
+                 (C) Copyright R.T.Russell 1984
+                 >
+
+Alternatively   a  filename  may  be given  after  BBCBASIC,   in 
+which  case  the system  proceeds  as  if  a   CHAIN   "filename"  
+command  had been typed after initialisation. A default extension 
+of  .BBC  is  used if none is supplied.    This   feature  allows  
+BASIC programs to be executed in batch mode using the CP/N SUBMIT 
+(COMMAND)  facility.   Such programs should  terminate   with   a  
+*CPN  command to return to CP/N and allow the next program in the 
+batch stream to execute.
+
+
+
+Torch  BBCBASIC  has  been  designed  to  be,    where  possible, 
+compatible  with   the  6502  version   resident   in   the   BBC  
+Microcomputer.   The  language   syntax is not always  completely 
+identical  to that of the 6502 version,  but in most cases  Torch 
+BBCBASIC is more tolerant  (e.g.    both  comma  and  semi- colon 
+are accepted after the prompt string in an INPUT statement).
+
+
+
+
+
+                      SCREEN DUMP UTILITY
+                      *******************
+
+
+
+Two  versions  of  a  screen dump utility  are  included  on  the 
+distribution  disk.   They are substantially the  same,  but  one 
+(ZDFAST.BBC)  runs  about 12% faster than the other  (ZDUMP.BBC). 
+However,  it occupies 50 bytes more memory.   By including one of 
+these machine-code utilities in your program,  you can initiate a 
+dump of the complete screen (text and graphics) at any time.
+
+
+The  programs  are  written for a Mk III Epson  MX-80  or  MX-100 
+printer,  but  you should be able to adapt them for  any  printer 
+with   high  resolution  graphics. 
+
+
+
+
+
+          DUMPING CHARACTERS FROM THE SCREEN TO A FILE
+          ********************************************
+
+
+
+You  can  read the character at the current cursor  position  by 
+using  OSBYTE  call  135.   This call returns the value  of  the 
+character  at  the  current cursor position  in  the  Z80's  'L' 
+register and the current screen mode in the 'H' register.   With 
+version 2.30 of BBCBASIC(Z80) you use this call  directly.  (See 
+the section on using USR and CALL on the Torch in Annex F of the 
+manual.)   The  example  below dumps characters from  a  MODE  7 
+screen  to  a file called DUMPFILE.   The size of the screen  is 
+specified  at  lines 30 and 40.   You will need to  specify  the 
+appropriate size for the mode you wish to use.
+
+
+   10 OSBYTE=&FFF4
+   20 A%=135
+   30 right=39
+   40 bottom=24
+   50 fno=OPENOUT("DUMPFILE")
+   60 IF fno=0 PRINT "File error":END
+   70 FOR row=0 TO bottom
+   80   FOR column=0 TO right
+   90     PRINT TAB(column,row);
+  100     BPUT#fno,(USR(OSBYTE) AND &FFFF) DIV 256
+  110   NEXT column
+  120   BPUT#fno,13:BPUT#fno,10
+  130 NEXT row
+  140 CLOSE#fno
+  150 PRINT
+  160 END
+
+
+
+
+                  TORCHBASIC DISTRIBUTION DISK
+		  ****************************
+
+
+The   following   files  are  supplied  on  the  Torch   BBCBASIC 
+distribution disk.
+
+
+              READ.ME
+              BBCBASIC.COM
+              HELP.COM
+              HELP.HLP
+              BBCBASIC.HLP
+              CONVERT.COM
+              UNLIST.COM
+              6502-Z80.BBC
+              MERGE.BBC
+              ANIMAL.BBC
+              ANIMAL.DAT
+              SORT.BBC
+              POKE.BBC
+              POKEDEMO.BBC
+              ZDUMP.BBC
+              ZDFAST.BBC
+              DUMPDEMO.BBC
+              F_?????.BBC
+
+PLEASE READ THE DISTRIBUTION DISK NOTES FOR DETAILS

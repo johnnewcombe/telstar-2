@@ -1,0 +1,145 @@
+10REM > telstar
+   20:
+   30REM This is a basic Viewdata/Videotex client written in BBC BASIC. but
+   40REM using some Matrix Brandy extensions. For instance, the networking
+   50REM interface is a local extension, as is the screen memory access and
+   60REM the *WinTitle command. The VDU23 commands in PROCdhscan and PROCreveal
+   70REM are from RISC OS 5.
+   80:
+   90*FX229,1
+  100*WinTitle Matrix Brandy BASIC Telstar Client
+  110REMON ERROR GOTO 320
+  120MODE 7:OFF: VDU23,16,1,0|
+  130reveal%=0:scan%=0:width%=1:auth%=0
+  140dh%=0:dhline%=0:borked%=0
+  150REM Variables for downloading
+  160screen%=0
+  170download%=0
+  180X%=OPENUP(FNwelcome)
+  190BPUT#X%,13
+  200REPEAT
+  210M%=BGET#X%: IF M%=-2 THEN GOTO 360
+  220IF M% >= 0 THEN PROCvdu(M%): GOTO 360
+  230PROCdhscan
+  240I%=INKEY(10):IF I%=35 OR I%=13 THEN I%=95
+  250IF I%=127 THEN I%=8
+  260IF I%=-1 THEN GOTO 360
+  270IF I%=1 THEN auth% EOR=1:GOTO 210
+  280IF I%=6 THEN PROCtogglescreen: GOTO 210
+  290IF I%=16 THEN PROCdumpscreen: GOTO 210
+  300IF I%=18 THEN PROCreveal: GOTO 210
+  310IF I%=23 THEN PROCwidth: GOTO 210
+  320IF I%=24 THEN GOTO 370
+  330IF I%=8 AND borked%=1 THEN VDU8,32
+  340IF I%>139 AND I%<144 THEN I%-=132
+  350IF I% > 0 THEN BPUT#X%,I%
+  360UNTIL M%=-2
+  370CLOSE#X%:
+  380PRINTTAB(9,24)CHR$(128+RND(7));"Press any key to exit.";
+  390A=GET: PRINT: ON: OSCLI"FX229"
+  400END
+  410:
+  420DEFPROCvdu(M%)
+  430PROCauth:IF M% >= 32 THEN PROCactvdu: ENDPROC
+  440CASE M% OF
+  450WHEN 27: REPEAT N%=BGET#X%: UNTIL N%<>-1: N%=(N% MOD 32)+128: PROCauth:VDU N%: PROCcheckdh: ENDPROC
+  460WHEN 8: IF POS=0 AND VPOS=0 THEN VDU31,39,23 ELSE VDU 8
+  470WHEN 9: IF POS=39 AND VPOS=23 THEN VDU30 ELSE VDU9
+  480WHEN 10: dh%=0: IF VPOS<23 THEN VDU10 ELSE VDU 31,POS,0
+  490WHEN 11: IF VPOS > 0 THEN VDU11 ELSE VDU31,POS,23
+  500WHEN 12, 13, 30: VDU M%
+  510WHEN 17: ON
+  520WHEN 20: OFF
+  530ENDCASE
+  540IF VPOS=24 THEN VDU31,POS,0
+  550ENDPROC
+  560:
+  570DEFPROCcheckdh
+  580IFN%=141THEN dh%=1:dhline%=VPOS:scan%=1
+  590IFN%=140THEN dh%=0
+  600IFN%=141ORN%=140THENVDU8,10,N%,11
+  610ENDPROC
+  620:
+  630DEFPROCactvdu
+  640IFdhline%<>VPOS THEN dh%=0
+  650VDU (M% OR 128)
+  660IFdh%=1 THEN VDU8,10,(M% OR 128),11
+  670ENDPROC
+  680:
+  690DEFPROCdhscan
+  700IFscan%=0THEN ENDPROC
+  710FOR N%=0 TO 24: FOR P%=0 TO 39
+  720IF ?(&FFFF7C00+(40*N%)+P%) = 141 THEN PROCcopyline: N%+=1
+  730NEXT P%, N%
+  740scan%=0
+  750ENDPROC
+  760:
+  770DEFPROCcopyline
+  780FOR P%=0 TO 36 STEP 4
+  790!(&FFFF7C00+(40*(N%+1))+P%) = !(&FFFF7C00+(40*N%)+P%)
+  800NEXT P%
+  810ENDPROC
+  820:
+  830DEFPROCreveal
+  840reveal% EOR=1
+  850VDU23,18,2,reveal%|
+  860ENDPROC
+  870:
+  880DEFPROCwidth
+  890width% EOR=1
+  900VDU23,18,255,12+(width%*4)|
+  910ENDPROC
+  920:
+  930DEFPROCauth
+  940IFauth% WAIT1
+  950ENDPROC
+  960:
+  970DEFPROCdumpscreen: REM For debug purposes, triggered on CTRL-P
+  980F$="vt."+STR$screen%+".header"
+  990Q%=OPENOUT F$
+ 1000FOR P%=0 TO 39: B%=?(&FFFF7C00+P%)
+ 1010IF B% >= &A0 THEN BPUT#Q%,(B% AND &7F) ELSE BPUT#Q%, B%
+ 1020NEXT:CLOSE#Q%
+ 1030F$="vt."+STR$screen%+".body"
+ 1040Q%=OPENOUT F$
+ 1050FOR P%=40 TO 959: B%=?(&FFFF7C00+P%)
+ 1060IF B% >= &A0 THEN BPUT#Q%,(B% AND &7F) ELSE BPUT#Q%, B%
+ 1070NEXT:CLOSE#Q%:screen%+=1
+ 1080ENDPROC
+ 1090:
+ 1100DEFPROCtogglescreen
+ 1110OSCLI"Fullscreen"
+ 1120SYS"OS_Byte",42 TO ,fs%
+ 1130IF fs% AND 8 THEN MOUSE OFF ELSE MOUSE ON
+ 1140ENDPROC
+ 1150:
+ 1160DEFFNwelcome
+ 1170PRINT CHR$(132);CHR$(157);CHR$(135);CHR$(141);"Matrix Brandy BASIC Telstar Client ";CHR$(156)
+ 1180PRINT CHR$(132);CHR$(157);CHR$(135);CHR$(141);"Matrix Brandy BASIC Telstar Client ";CHR$(156)
+ 1190PRINT
+ 1200PRINT CHR$(131);"1 - Telstar";CHR$(133);"(CURRER)"
+ 1210PRINT CHR$(131);"2 - Telstar";CHR$(133);"(ELLIS)"
+ 1220PRINT CHR$(131);"3 - Telstar";CHR$(133);"(ACTON)"
+ 1230PRINT
+ 1240PRINT CHR$(131);"4 - Tetrachloromethane";CHR$(133);"(CCl4)"
+ 1250PRINT CHR$(131);"5 - NXtel"
+ 1260PRINT
+ 1270PRINT CHR$(129);"0 - Exit"
+ 1280PRINT TAB(0,15)CHR$(134);"While the session is running:":PRINT
+ 1290PRINT CHR$(134);" Press CTRL-A to toggle Authentic Mode":
+ 1300PRINT CHR$(134);" Press CTRL-F to toggle Full Screen":
+ 1310PRINT CHR$(134);" Press CTRL-R to toggle Reveal":
+ 1320PRINT CHR$(134);" Press CTRL-X to exit immediately": PRINT
+ 1330PRINT TAB(4,23)CHR$(129);"Please make your selection..."
+ 1340REPEAT A%=GET: UNTIL (A% >= 48 AND A% <= 53) OR A%=1 OR A%=6 OR A%=24
+ 1350IF A% = 23 THEN PROCwidth:GOTO 1340
+ 1360IF A% = 24 OR A% = 48 THEN ON:OSCLI"FX229":END
+ 1370IF A% = 1 THEN auth% EOR=1: GOTO 1340
+ 1380IF A% = 6 THEN PROCtogglescreen: GOTO 1340
+ 1390IF A% = 49 THEN borked%=1: S$ = "glasstty.com:6502"
+ 1400IF A% = 50 THEN borked%=1: S$ = "glasstty.com:6503"
+ 1410IF A% = 51 THEN borked%=1: S$ = "glasstty.com:6504"
+ 1420IF A% = 52 THEN borked%=0: S$ = "fish.ccl4.org:23"
+ 1430IF A% = 53 THEN borked%=0: S$ = "nx.nxtel.org:23280"
+ 1440CLS
+ 1450="ip0:"+S$

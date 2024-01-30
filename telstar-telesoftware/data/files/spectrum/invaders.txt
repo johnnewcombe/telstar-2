@@ -1,0 +1,51 @@
+ 100 REM invaders
+ 110 GO SUB 1000: LET bl=1: GO SUB 2000
+ 120 DATA 255,153,153,255,255,153,153,255,0,129,126,24,126,255,231,189
+ 130 BORDER 0: PAPER 0: CLS : LET j=0.1
+ 140 INK 3: LET v=21: LET w=30:LET h=15
+ 150 DIM r(w): DIM c(w): DIM h(w): LET s=0
+ 160 LET n=w: LET l$=CHR$ (94):FOR c=1 TO w
+ 170 LET c(c)=c: LET h(c)=v-5+FN r(4)
+ 180 FOR r=h(c) TO v-1: GO SUB 4000: PRINT u$
+ 190 NEXT r: NEXT c: LET p=h
+ 200 INK 6: LET a=FN r(n+2)
+ 210 IF a>n THEN GO TO 290
+ 220 LET r=r(a): LET c=c(a): GO SUB 4000
+ 230 PRINT " ": GO SUB 5000: PRINT l$
+ 240 LET r=r+1: LET c=c+FN r(3)-2
+ 250 LET r(a)=r: IF c<1 THEN LET c=1
+ 260 IF c>w THEN LET c=w
+ 270 LET c(a)=c: GO SUB 4000: PRINT z$
+ 280 IF r>h(c)-2 THEN GO TO 460
+ 290 FOR t=1 TO 4: BEEP j,-v: LET k$=INKEY$
+ 300 IF k$="z" AND h>1 THEN LET h=h-1: GO SUB 5000: PRINT l$;" ": LET p=h
+ 310 IF k$="x" AND h<w THEN GO SUB 5000: PRINT " ";l$: LET h=h+1: LET p=h
+ 320 NEXT t: IF k$<>"f" THEN GO TO 200
+ 330 LET l=h(h)-1: GO SUB 6000:PRINT "!"
+ 340 INK 7: LET m=POINT (8*h,178-8*l)
+ 350 GO SUB 6000: PRINT " ": LET l=l-1
+ 360 IF l=0 THEN GO TO 200
+ 370 IF m=1 THEN LET n=n-1: GO TO 390
+ 380 GO SUB 6000: PRINT "!": GO TO 340
+ 390 LET k=1: LET s=s+5*(30+w-n-l)
+ 400 IF r(k)=l AND c(k)=h THEN GO TO 420
+ 410 LET k=k+1: GO TO 400
+ 420 BEEP 0.2,0: PRINT AT l,h;""
+ 430 IF n=0 THEN LET m$="you have saved london": LET s=s+1000: GO TO 490
+ 440 FOR t=k TO n: LET r(t)=r(t+1)
+ 450 LET c(t)=c(t+1): NEXT t: GO TO 200
+ 460 FOR r=h(c)-1 TO v: GO SUB 4000: PRINT " "
+ 470 NEXT r: LET r=v-1: GO SUB 4000: PRINT z$
+ 480 LET m$="the invaders have landed"
+ 490 LET r=2: LET c=2: GO SUB 4000: PRINT m$
+ 500 PRINT : PRINT "     you scored ";s: STOP
+1000 FOR n=0 TO 15: READ d: POKE USR "a"+n,d
+1010 NEXT n: LET u$=CHR$ 144: LET z$=CHR$ 145
+1020 RETURN
+2000 DEF FN r(n)=INT (RND*n)+1
+2010 RANDOMIZE : RETURN
+3000 RETURN
+4000 PRINT AT r,c;: RETURN
+5000 PRINT AT v,h;: RETURN
+6000 PRINT AT l,p;: RETURN
+7000 LET k$=INKEY$: RETURN

@@ -1,0 +1,688 @@
+Introduction to the BBC BASIC Interpreter.
+Special Characters.
+Variables.
+Commands.
+Statements (except I/O).
+Print formatting.
+Input/Output Statements.
+Operating System Statements.
+Operators.
+Arithmetic Functions.
+String Functions.
+I/O and Special Functions.
+Pseudo-Variables.
+Error Codes.
+Indirection operators.
+Access to machine code.
+Assembler.
+Random access files.
+:
+
+                         INTRODUCTION TO BBC BASIC
+
+
+BBC BASIC is the language used on  the  "BBC Microcomputer",  a  6502-based
+machine  designed  to accompany the BBC's Computer Literacy Project.   This
+Z80  implementation  has been designed to be as compatible as possible with
+the 6502 version,  although it inevitably differs in  some  areas,  notably
+input-output, and does not support the graphics and sound statements.
+
+
+A  Z80 processor  and CP/M version 2.2  or later  are required;  a  minimum
+system size of 32K is recommended.
+
+
+For more information on BBC BASIC see the accompanying  instruction  manual
+and also the 520-page BBC Microcomputer "User Guide".
+
+
+                                                            Richard Russell
+                                                                 March 1984
+
+
+
+To run BBC BASIC, bring up CP/M and type the following:
+
+     A>BBCBASIC<carriage return>
+
+The system will reply:
+
+     BBC BASIC (Z80) V2.30  #00000
+     (C) Copyright R.T.Russell 1984
+     >
+
+Alternatively  a  filename  may  be given after BBCBASIC, in which case the
+system proceeds as if a CHAIN  "filename"  command  had  been  typed  after
+initialisation.    A default extension of .BBC is used if none is supplied.
+:
+Special characters:
+ ^E     Delete a character              ^A      Insert a space
+ ^H     Backspace (cursor left)         ^I      Cursor right
+ ^X     Delete to beginning of line     ^L      Delete to end of line
+ ^K     Move cursor to start of line    ^J      Move cursor to end of line
+ DEL    Backspace and delete
+                   (the above characters are user-selectable)
+ ^P     Toggle printer
+ ^S     Pause display
+ <CR>   Terminates user input.
+ <ESC>  Interrupt program execution, exit AUTO mode, abort EDIT command
+ !      32-bit indirection
+ &      Precedes hexadecimal constant
+ '      New line in PRINT or INPUT
+ *      Precedes an "operating system" statement
+ :      Separates statements typed on the same line
+ ;      Introduce comment in assembler, suppress action in PRINT
+ ?      8-bit indirection (PEEK & POKE)
+ [      Enter assembler
+ ]      Exit assembler
+ ~      Convert to hex (PRINT and STR$)
+:
+Variables:
+           Variable names may be of unlimited length and all characters are
+           significant.  Variable names must start with a letter.  They can
+           only  contain  the  characters  A..Z,  a..z, 0..9 and underline.
+           Embedded keywords are allowed.  Upper and  lower  case  variable
+           names are distinguished.
+
+           The following types of variable are allowed:
+             A       real numeric
+             A%      integer numeric
+             A$      string
+
+           The  variables  A%..Z%  are regarded as special in that they are
+           not cleared by the commands or statements RUN, CHAIN  and CLEAR.
+           In  addition A%, B%, C%, D%, E%, F%, H% and L% have special uses
+           in CALL and USR routines  and O% & P%  have special meanings  in
+           the  assembler  (code origin and program counter  respectively).
+           The special variable @% controls numeric print formatting.
+           The variables @%..Z% are called "static  variables",  all  other
+           variables are called "dynamic variables".
+
+           Real  variables  have a range of approximately +-1E-38 to +-1E38
+           and numeric functions evaluate to 9 significant figure accuracy.
+           Internally every real number is stored in 40 bits.
+
+           Integer variables are stored in 32 bits  and  have  a  range  of
+           -2,147,483,648 to 2,147,483,647.
+
+           String variables may contain from 0 to 255 characters.
+
+All arrays must be dimensioned before use.
+All statements can also be used as direct commands.
+:
+Command   Syntax                        Function
+
+AUTO      AUTO [start][,inc]            Generate line numbers.
+
+DELETE    DELETE start,end              Delete program lines.
+
+EDIT      EDIT line                     Edit a program line.
+
+LIST      LIST [line][,line]            List all or part of program.
+
+LISTO     LISTO number                  Control indentation in LIST.
+
+LOAD      LOAD "filename"               Load a program into memory.
+
+NEW       NEW                           Delete current program & variables.
+
+OLD       OLD                           Recover a program deleted by NEW.
+
+RENUMBER  RENUMBER [start][,inc]        Renumber the program lines.
+
+SAVE      SAVE "filename"               Save the current program to disk.
+:
+Statement Syntax                        Function
+
+CALL      CALL address[,arg list]       Call assembly language routine.
+
+CHAIN     CHAIN string                  Load and run a program.
+
+CLEAR     CLEAR                         Clear dynamic variables.
+
+CLS       CLS                           Clear the screen.
+
+DEF       DEF FNname[(arg list)]        Define a function.
+          DEF PROCname[(arg list)]      Define a procedure.
+
+DIM       DIM var(sub1[,sub2...])[,..]  Dimension one or more arrays.
+          DIM var exp [,var exp...]     Reserve space for assembler etc.
+
+END       END                           Terminate program and close files.
+
+ENDPROC   ENDPROC                       Return from a procedure.
+
+FOR       FOR var=exp TO exp [STEP exp] Begin a FOR...NEXT loop.
+
+Statement Syntax                        Function
+
+GOSUB     GOSUB exp                     Call a BASIC subroutine.
+
+GOTO      GOTO exp                      Branch to specified line.
+
+IF        IF exp THEN stmts [ELSE stmt] Do statement(s) if exp non-zero.
+          IF exp THEN line [ELSE line]  Branch if exp non-zero.
+
+LET       [LET] var = exp               Assignment.
+
+LOCAL     LOCAL var[,var...]            Declare variables local to function
+                                        or procedure.
+
+NEXT      NEXT [var[,var...]]           End FOR...NEXT loop.
+
+ON        ON exp GOTO line,line.. [ELSE line]     Computed GOTO.
+          ON exp GOSUB line,line.. [ELSE line]    Computed GOSUB.
+
+ON ERROR  ON ERROR stmts                Do statement(s) on error.
+          ON ERROR OFF                  Restore default error handling.
+
+Statement Syntax                        Function
+
+PROC      PROCname[(parameter list)]    Call a procedure.
+
+REM       REM any text                  Remark
+
+REPEAT    REPEAT                        Begin a REPEAT...UNTIL loop.
+
+REPORT    REPORT                        Print error message for last error.
+
+RESTORE   RESTORE [line]                Reset data pointer to beginning or
+                                        to specified line.
+
+RETURN    RETURN                        Return from subroutine.
+
+RUN       RUN                           Run the current program.
+
+STOP      STOP                          Stop program and print message.
+
+Statement Syntax                        Function
+
+TRACE     TRACE ON                      Start trace mode.
+          TRACE OFF                     End trace mode.
+          TRACE exp                     Trace lines less than exp.
+
+UNTIL     UNTIL exp                     Terminate loop if exp is non-zero.
+
+WIDTH     WIDTH exp                     Set terminal width.
+:
+Print Formatting
+
+By default, strings are printed  left-justified  and  numbers  are  printed
+right-justified  in a print zone.  Numeric quantities will be printed left-
+justified if preceded by a semicolon (;).   A comma (,) causes a tab to the
+beginning of the next print zone, unless the cursor is already at the start
+of a zone.  An apostrophe (') in a PRINT or INPUT statement forces  a  new-
+line.   A  trailing semicolon in a PRINT statement suppresses the new-line.
+TAB(x), TAB(x,y) and SPC(n) may be used in PRINT and  INPUT  statements  to
+position the cursor.  A tilde (~) causes numbers to be printed in hex.
+
+The variable @% controls numeric formatting as follows:
+
+LS byte:      Width of print zone, 0-255.  Normally 10.
+Byte 2 :      Number of significant figures or decimal places.  Maximum 10.
+Byte 3 :      Print format type:  0 - General format (default)
+                                  1 - Exponential format
+                                  2 - Fixed format.
+MS byte:      STR$ flag.   If zero then STR$ formats in G9 mode.    If non-
+              zero then STR$ formats according to bytes 2 & 3 of @%.
+
+Print formatting (continued)
+
+Examples                      Result
+@%=&2010A                     01234567890123456789
+
+PRINT "HELLO",8               HELLO            8.0
+PRINT "HELLO" 8               HELLO       8.0
+PRINT "HELLO";8               HELLO8.0
+PRINT "HELLO",;8              HELLO     8.0
+
+Value            G9            G2            E2             F2
+               @%=&90A       @%=&20A       @%=&1020A     @%=&2020A
+
+.001            1E-3          1E-3          1.0E-3         0.00
+.006            6E-3          6E-3          6.0E-3         0.01
+.01             1E-2          1E-2          1.0E-2         0.01
+.1               0.1           0.1          1.0E-1         0.10
+1                  1             1          1.0E0          1.00
+10                10            10          1.0E1         10.00
+100              100           1E2          1.0E2        100.00
+1000            1000           1E3          1.0E3       1000.00
+:
+Statement Syntax                        Function
+
+BPUT      BPUT #chan,exp                Write LS byte of exp to disk file.
+
+CLOSE     CLOSE #chan                   Close disk file.  IF chan=0 close
+                                        all files.
+
+DATA      DATA list                     Data for READ statement.
+
+INPUT     INPUT ["prompt"[,]]var[,var]  Request input from user.  Comma
+                                        after prompt causes question mark.
+
+          INPUT LINE ["prompt....       As INPUT but accept whole line
+                                        including commas, quotes etc.
+
+INPUT#    INPUT #chan,var[,var...]      Read data from disk file.
+
+Statement Syntax                        Function
+
+OSCLI     OSCLI string                  Pass string to "operating system".
+
+PRINT     PRINT [TAB(x[,y])][SPC(n)]['][;][~][exp[,exp...][;]
+                                        Print data to console.
+
+PRINT#    PRINT #chan,exp[,exp...]      Write data to disk file.
+
+PUT       PUT port,exp                  Output LS byte of exp to port.
+
+READ      READ var[,var...]             Read data from DATA statement(s).
+
+VDU       VDU exp[,exp...]              Send LS byte of exp to console.
+          VDU exp;[exp;...]             Send LS 16 bits of exp to console
+                                        as two characters (LS byte first).
+:
+Statement Syntax                        Function
+
+*BYE      *BYE                          Return to CP/M.
+
+*CPM      *CPM                          Same as *BYE.
+
+*DIR      *DIR [afn]                    List disk directory.
+
+*DRIVE    *DRIVE d:                     Select d as current drive.
+
+*ERA      *ERA afn                      Erase file(s).
+
+*LOAD     *LOAD ufn aaaa                Load file to hex address aaaa.
+
+*OPT      *OPT 0                        Console output via functions 2/6.
+          *OPT 1                        Console output to punch device.
+          *OPT 2                        Console output to printer.
+          *OPT 3                        Console output via function 6.
+
+*REN      *REN ufn1=ufn2                Rename a file.
+
+Statement Syntax                        Function
+
+*RESET    *RESET                        Reset the CP/M disk system.
+
+*SAVE     *SAVE ufn ssss eeee           Save RAM from hex address ssss to
+                                        address eeee-1.
+          *SAVE ufn ssss +llll          Save RAM from address ssss with
+                                        length llll.
+
+*TYPE     *TYPE ufn                     Type file to console.
+
+afn=ambiguous filename, ufn=unambiguous filename, default extension is .BBC
+
+Operating system commands may be abbreviated and/or entered in lower case.
+
+A "star" command cannot contain variable names and must be the last item on
+a program line.  To include a variable name use the OSCLI statement,   e.g.
+to delete a file whose name is known only at run time:
+
+          OSCLI "ERA "+filename$
+:
+Operators
+
+Symbol    Function
+
+  +       Addition or string concatenation.
+  -       Negation or subtraction.
+  *       Multiplication.
+  /       Division.
+  ^       Involution (raise to power).
+ NOT      One's complement (integer).
+ EOR      Bitwise exclusive-OR (integer).
+  OR      Bitwise OR (integer).
+ AND      Bitwise AND (integer).
+ MOD      Modulus (integer result).
+ DIV      Integer division (integer result).
+  =       Equality.
+  <>      Inequality.
+  <       Less than.
+  >       Greater than.
+  <=      Less than or equal.
+  >=      Greater than or equal.
+
+
+The precedence of operators is:
+
+1.  Expressions in parentheses, functions, negation, NOT.
+
+2.  ^
+
+3.  *,/,MOD,DIV
+
+4.  +,-
+
+5.  =,<,>,<>,<=,>=
+
+6.  AND
+
+7.  OR,EOR
+:
+Function        Action
+
+ABS(exp)        Absolute value of expression.
+
+ACS(exp)        Arc-cosine of expression, in radians.
+
+ASN(exp)        Arc-sine of expression, in radians.
+
+ATN(exp)        Arc-tangent of expression, in radians.
+
+COS(exp)        Cosine of radian expression.
+
+DEG(exp)        Value in degrees of radian expression.
+
+EXP(exp)        e raised to the power of expression.
+
+INT(exp)        Largest integer less than expression.
+
+LN(exp)         Natural logarithm of expression.
+
+LOG(exp)        Base-ten logarithm of expression.
+
+Function        Action
+
+RAD(exp)        Radian value of expression in degrees.
+
+RND[(exp)]      RND     returns random 32-bit integer.
+                RND(-n) seeds sequence.
+                RND(0)  repeats last value in RND(1) form.
+                RND(1)  returns number between 0 and 0.999999999
+                RND(n)  returns random integer between 1 and n.
+
+SGN(exp)        1 if exp>0, 0 if exp=0, -1 if exp<0.
+
+SIN(exp)        Sine of radian expression.
+
+SQR(exp)        Square root of expression.
+
+TAN(exp)        Tangent of radian expression.
+:
+Function        Action
+
+ASC(str)        Returns ASCII value of first character of string.
+                Returns -1 if null string.
+
+CHR$(exp)       Returns one-character string with ASCII value of exp.
+
+EVAL(str)       Evaluates str as an expression and returns resulting
+                number or string.
+
+GET             Waits for keypress and returns ASCII value.
+GET$            Waits for keypress and returns one-character string.
+
+INKEY(exp)      Waits exp centiseconds for keypress and returns ASCII
+                value.  If no keypress then returns -1.
+INKEY$(exp)     Waits exp centiseconds for keypress and returns
+                one-character string.  If no keypress returns null string.
+
+INSTR(r,s[,n])  Returns position of string s in string r, optionally
+                starting at position n.
+
+Function        Action
+
+LEFT$(str,exp)  Returns leftmost exp characters of string.
+
+LEN(str)        Returns length of string (0-255).
+
+MID$(str,m[,n]) Returns sub-string from position m, of length n or to end.
+
+RIGHT$(str,exp) Returns rightmost exp characters of string.
+
+STR$[~](exp)    Returns string representation of exp in decimal (or hex).
+
+STRING$(n,str)  Returns a string consisting of n copies of str.
+
+VAL(str)        Returns numeric value of str. IF str does not begin with a
+                signed or unsigned numeric constant, VAL returns zero.
+:
+Function                 Action
+
+BGET#chan                Returns a single byte from a disk file.
+
+COUNT                    Number of characters printed since last new line.
+
+EOF#chan                 Returns TRUE if disk file is at its end.
+
+ERL                      Line number of last error.
+
+ERR                      Code of last error.
+
+EXT#chan                 Returns virtual length of disk file.
+
+FALSE                    Returns zero.
+
+FNname[(parameter list)] User-defined numeric or string function.
+
+GET(port)                Returns contents of Z80 port.
+
+Function                 Action
+
+OPENIN(str)              Opens file for input/update and returns channel no
+
+OPENOUT(str)             Opens file for output and returns channel number.
+
+OPENUP(str)              Same as OPENIN
+
+PI                       Returns 3.14159265.
+
+POS                      Returns current cursor column (LHS=0).
+
+TOP                      Returns first address after end of user's program.
+
+TRUE                     Returns -1.
+
+USR(address)             Calls machine-code routine and returns integer.
+
+VPOS                     Returns current cursor line (top line=0).
+:
+Pseudo-variables
+
+Pseudo-variables allow the user both to read and modify  system  variables.
+They may be used either side of an assignment statement,  e.g. TIME=TIME+50
+(but note that LET is not permitted).
+
+Name                     Function
+
+PAGE                     Memory address of current user's program.
+                         PAGE is always a multiple of 256.
+
+PTR#chan                 File character pointer.  Allows random access.
+
+HIMEM                    Top of memory used by BASIC.
+
+LOMEM                    Start address of dynamic variable storage.
+
+TIME                     Elapsed time clock, counts in centiseconds.
+:
+Error codes
+
+Direct Mode Only (error code 0):
+   Silly                 RENUMBER space        LINE space
+
+Disastrous and untrappable:
+   Bad program           No room               Sorry
+
+Trappable:
+   1 Out of range        4 Mistake
+   5 Missing ,           6 Type mismatch
+   7 No FN               9 Missing "
+  10 Bad DIM            11 DIM space
+  12 Not LOCAL          13 No PROC
+  14 Array              15 Subscript
+  16 Syntax error       17 Escape
+  18 Division by zero   19 String too long
+  20 Too big            21 -ve root
+  22 Log range          23 Accuracy lost
+  24 Exp range          26 No such variable
+  27 Missing )          28 Bad HEX
+
+Trappable errors (continued)
+
+  29 No such FN/PROC    30 Bad call
+  31 Arguments          32 No FOR
+  33 Can't match FOR    34 FOR variable
+  36 No TO              38 No GOSUB
+  39 ON syntax          40 ON range
+  41 No such line       42 Out of DATA
+  43 No REPEAT          45 Missing #
+
+ 190 Directory full    192 Too many open files
+ 196 File exists       198 Disk full
+ 200 Close error       204 Bad name
+ 214 File not found    222 Channel
+ 253 Bad string        254 Bad command
+ 255 CP/M Error (CP/M 3 only)
+:
+Indirection operators
+
+Indirection is the process which is provided by  PEEK  and  POKE  in  other
+dialects of BASIC.  There are three indirection operators:
+
+    Name   Purpose                      No. of bytes affected
+ ? query   byte indirection operator    1
+ ! pling   word indirection operator    4
+ $ dollar  string indirection operator  1 to 256
+
+   Y=PEEK(X) is equivalent to Y=?X
+   POKE X,Y  is equivalent to ?X=Y
+
+! acts on four successive bytes.   For example, !M=&12345678 would load &78
+into address M, &56 into address M+1, &34 into address  M+2  and  &12  into
+address M+3.    $ writes a string, followed by carriage return, into memory
+at a specified address,  e.g. $M="ABCDEF" will place the ASCII characters A
+to F in locations M to M+5 and will load &0D into address M+6.
+
+Indirection operators (continued)
+
+Query (?) and pling (!) can also be used  as  binary  operators,  e.g.  M?3
+means "the contents of memory location M+3".  The left-hand operand must be
+a variable, not a constant.
+
+The power of indirection operators is in the way they can be used to create
+your own data structures.   For example you may need a structure consisting
+of a 10 character string, an 8-bit number and  a  reference  to  a  similar
+structure.  If M is the address of the start of the structure then:
+
+  $M   is the string
+  M?11 is the 8-bit number
+  M!12 is the address of the related structure.
+
+In this way you can create and manipulate  linked lists and tree structures
+in memory, very easily.
+:
+Access to machine code
+
+The USR function and  the  CALL  statement  provide  a  flexible  interface
+between BASIC and machine-code routines.   Both USR and CALL initialise the
+Z80's registers prior to the machine-code call as follows:
+
+  A register = LS byte of A%
+  F register = LS byte of F%
+  B register = LS byte of B%
+  C register = LS byte of C%
+  D register = LS byte of D%
+  E register = LS byte of E%
+  H register = LS byte of H%
+  L register = LS byte of L%
+ IY register = address of machine-code routine (=PC)
+ IX register = address of parameter block (CALL statement only)
+
+USR(address)  Calls the machine-code routine  and  returns a 32-bit integer
+              made up of the contents of the H,L,H' and L' registers (most-
+              significant to least-significant) on return from the routine.
+
+Access to machine code (continued)
+
+CALL address[,parameter list]
+
+           Sets up a parameter block containing the following information:
+                  Number of parameters - 1 byte
+                  Parameter type - 1 byte     ) repeated as often
+                  Parameter address - 2 bytes ) as necessary.
+
+           Parameter types are as follows:
+                   0: 8-bit quantity (e.g. ?X)
+                   4: 32-bit integer variable (e.g. !X or X%)
+                   5: 40-bit floating-point variable (e.g. V)
+                 128: a fixed string (e.g. $X, terminated by &0D)
+                 129: a string variable (e.g. A$)
+           In the case of a string variable,  the  parameter address is the
+           address of a String Descriptor containing start address, current
+           length of string and number of bytes allocated.
+
+           Parameters are passed by reference and may  be  changed  by  the
+           machine-code routine.
+:
+Assembler
+
+BBC BASIC includes a full assembler for the appropriate host processor,  in
+this case the Z80.   It is an in-line assembler which loads its object code
+directly into the target memory area; the static variable P% is the program
+counter.   Error  reporting and listing are controlled by the pseudo-op OPT
+as follows:
+
+OPT 0      Inhibits error reporting and gives no listing.
+OPT 1      Inhibits error reporting but gives a listing.
+OPT 2      Reports errors but gives no listing.
+OPT 3      Reports errors and gives a listing.
+OPT 4      As OPT 0 but puts code at O% rather than P%.
+OPT 5      As OPT 1 but puts code at O% rather than P%.
+OPT 6      As OPT 2 but puts code at O% rather than P%.
+OPT 7      As OPT 3 but puts code at O% rather than P%.
+
+Normally the first pass of the assembler will be with OPT 0  and the second
+pass  with  OPT  2  (if  no  listing is required) or OPT 3 (if a listing is
+required).  Do not confuse the pseudo-op  OPT  with  the  Operating  System
+Statement *OPT.
+
+Pseudo-ops accepted by the assembler are DEFB, DEFW and DEFM;   these write
+an 8-bit byte, a 16-bit word and a multi-character string respectively.
+
+Example of use of assembler:
+
+      100 DIM code 15        :REM Reserve space for 16 bytes of code
+      110 bdos=5
+      120 FOR pass=0 TO 1    :REM Implement 2-pass assembly
+      130 P%=code            :REM Set program counter at start of each pass
+      140 [OPT pass*3        ;Enter assembler and select listing on pass 2
+      150 LD D,95:LD E,ASC"!"
+      160 .loop              ;A label
+      170 LD C,2             ;Source statements
+      180 PUSH DE:CALL bdos:POP DE
+      190 INC E:DEC D:JR NZ,loop
+      200 RET:]              :REM Exit assembler
+      210 NEXT pass
+      220 CALL code          :REM Execute assembly language routine
+
+In this particular example a single pass would have sufficed as  there  are
+no "forward references".
+:
+Random access files
+
+BBC BASIC supports both random access and the ability  to  modify  (update)
+a  previously  written  disk  file.  Random access is performed by a single
+pointer (PTR#chn) which can be positioned anywhere in the file. The pointer
+is automatically incremented after every read  or  write  operation  (using
+BGET#, BPUT#, INPUT# or PRINT#).
+
+   Examples:
+
+      100 REM Read a file backwards
+      110 fin=OPENIN(filename$):size=EXT#fin
+      120 FOR point=size-1 TO 0 STEP -1
+      130 PTR#fin=point : PRINT CHR$(BGET#fin);
+      140 NEXT : CLOSE #fin
+
+      100 REM Update a "record" in a random-access file
+      110 fin=OPENUP(filename$)
+      120 PTR#fin=record_number*record_length
+      130 PRINT #fin,new_data,new_data$
+      140 CLOSE #fin
+
+                                                                                                               

@@ -1,0 +1,68 @@
+package display
+
+// Package layout defines the various layouts available to Fyne apps
+
+import "C"
+import (
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
+)
+
+// Declare conformity with Layout interface
+var _ fyne.Layout = (*maxLayout)(nil)
+
+type maxLayout struct {
+}
+
+// NewMaxLayout creates a new MaxLayout instance
+func NewMaxLayout() fyne.Layout {
+	return &maxLayout{}
+}
+
+// Layout is called to pack all child objects into a specified size.
+// For MaxLayout this sets all children to the full size passed.
+func (m *maxLayout) Layout(objects []fyne.CanvasObject, size fyne.Size) {
+
+	topLeft := fyne.NewPos(0, 0)
+
+	for _, child := range objects {
+
+		// something special needed if the child is a text canvas
+		if _, ok := child.(*canvas.Text); ok {
+
+			// get the text canvas
+			txt := child.(*canvas.Text)
+
+			// set the text size based on the new size
+			textSize := size.Height * 0.92
+
+			// calculate the new height and width given the actual text
+			textMin := fyne.MeasureText(txt.Text, textSize, fyne.TextStyle{Monospace: true})
+
+			// resize the child (txt canvas)
+			txt.Resize(fyne.NewSize(size.Width, textMin.Height))
+			txt.TextSize = textSize
+
+		} else {
+			child.Resize(size)
+		}
+		child.Move(topLeft)
+
+	}
+}
+
+// MinSize finds the smallest size that satisfies all the child objects.
+// For MaxLayout this is determined simply as the MinSize of the largest child.
+func (m *maxLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
+	minSize := fyne.NewSize(0, 0)
+	for _, child := range objects {
+		if !child.Visible() {
+			continue
+		}
+
+		minSize = minSize.Max(child.MinSize())
+	}
+
+	return minSize
+}
+

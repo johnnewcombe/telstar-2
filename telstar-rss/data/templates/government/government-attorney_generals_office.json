@@ -1,0 +1,17 @@
+{
+  "content": {
+    "data": "[R][TITLE],[W][CONTENT],[R][PUBLISHDATE],[w][l.]",
+    "type": "markup"
+  },
+  "frame-type": "information",
+  "pid": {
+    "frame-id": "a",
+    "page-no": 40011
+  },
+  "title": {
+    "data": "[D]Attorney Generals Office\r\n\r\n[m.]",
+    "type": "markup"
+  },
+  "visible": true,
+  "author-id": "telstar-rss"
+}

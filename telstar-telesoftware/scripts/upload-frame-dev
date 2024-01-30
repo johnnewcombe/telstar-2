@@ -1,0 +1,8 @@
+#!/bin/bash
+# Change port to live e.g. 8002 (via port-forwarding tp glasstty.com:8001) when ver-2.0 released.
+port=25233
+
+./login-dev
+telstar-util addframe localhost:$port $1 primary
+telstar-util addframe localhost:$port $1
+

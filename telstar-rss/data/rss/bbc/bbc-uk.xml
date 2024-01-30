@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet title="XSL_formatting" type="text/xsl" href="/shared/bsp/xsl/rss/nolsol.xsl"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title><![CDATA[BBC News - UK]]></title>
+        <description><![CDATA[BBC News - UK]]></description>
+        <link>https://www.bbc.co.uk/news/</link>
+        <image>
+            <url>https://news.bbcimg.co.uk/nol/shared/img/bbc_news_120x60.gif</url>
+            <title>BBC News - UK</title>
+            <link>https://www.bbc.co.uk/news/</link>
+        </image>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Fri, 22 Apr 2022 20:54:32 GMT</lastBuildDate>
+        <copyright><![CDATA[Copyright: (C) British Broadcasting Corporation, see http://news.bbc.co.uk/2/hi/help/rss/4498287.stm for terms and conditions of reuse.]]></copyright>
+        <language><![CDATA[en-gb]]></language>
+        <ttl>15</ttl>
+        <item>
+            <title><![CDATA[Madeleine McCann: Parents welcome declaration of formal suspect]]></title>
+            <description><![CDATA[Madeleine McCann has been missing for nearly 15 years after she disappeared, aged three, in Portugal.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-61196071?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-61196071</guid>
+            <pubDate>Fri, 22 Apr 2022 18:43:48 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ukraine: UK embassy in Kyiv to reopen next week, says PM]]></title>
+            <description><![CDATA[Boris Johnson announces the embassy in Ukraine is set to open its doors again after Russia's invasion.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-61190310?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-61190310</guid>
+            <pubDate>Fri, 22 Apr 2022 13:31:02 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Pension fraudsters jailed after £13m scam]]></title>
+            <description><![CDATA[Victims have lost a lifetime's pension savings, telling the BBC they have little hope of retiring.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61181938?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61181938</guid>
+            <pubDate>Fri, 22 Apr 2022 16:45:31 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Boris Johnson faces leadership criticism amid partygate row]]></title>
+            <description><![CDATA[Boris Johnson deflects questions over his future, but a senior Tory MP says a no confidence vote is likely.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-politics-61187790?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-politics-61187790</guid>
+            <pubDate>Fri, 22 Apr 2022 13:50:29 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Supermarkets set limits on sale of cooking oil]]></title>
+            <description><![CDATA[Tesco joins Waitrose and Morrisons in limiting purchases as supplies are hit by the conflict in Ukraine.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61193141?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61193141</guid>
+            <pubDate>Fri, 22 Apr 2022 16:36:25 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Coronavirus levels continue to fall across the UK]]></title>
+            <description><![CDATA[ONS officials say they are seeing welcome falls in infection across the UK, but levels remain high.]]></description>
+            <link>https://www.bbc.co.uk/news/health-61182159?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/health-61182159</guid>
+            <pubDate>Fri, 22 Apr 2022 14:58:40 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Colin Pitchfork: Parole hearing for double child killer and rapist]]></title>
+            <description><![CDATA[Colin Pitchfork will be considered for release again this autumn, it has been confirmed.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-leicestershire-61192451?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-leicestershire-61192451</guid>
+            <pubDate>Fri, 22 Apr 2022 16:18:13 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Hampshire football coach Alfie Morel jailed for child sex attacks]]></title>
+            <description><![CDATA[Alfie Morel, 24, had been well regarded by parents who trusted their children with him.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-hampshire-61181826?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-hampshire-61181826</guid>
+            <pubDate>Fri, 22 Apr 2022 20:17:19 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Bourne End: Three found dead in village were stabbed, say police]]></title>
+            <description><![CDATA[The victims had been knifed in the chest and stomach, post-mortem examinations find.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-beds-bucks-herts-61187799?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-beds-bucks-herts-61187799</guid>
+            <pubDate>Fri, 22 Apr 2022 13:43:22 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Hakeem Hussain: Mum guilty of manslaughter over fatal asthma attack]]></title>
+            <description><![CDATA[Seven-year-old Hakeem Hussain was found dead in a garden in freezing conditions.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-birmingham-61165786?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-birmingham-61165786</guid>
+            <pubDate>Fri, 22 Apr 2022 14:48:47 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Trio sentenced over Sandy Row riot]]></title>
+            <description><![CDATA[Two men have been jailed and a woman has received a suspended sentence linked to a riot in 2021.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-northern-ireland-61188406?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-northern-ireland-61188406</guid>
+            <pubDate>Fri, 22 Apr 2022 15:09:54 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Brexit: Boris Johnson not ruling out law to override protocol]]></title>
+            <description><![CDATA[Boris Johnson says he will continue talking to the EU to seek reforms, but won't rule out further steps.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-northern-ireland-61192083?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-northern-ireland-61192083</guid>
+            <pubDate>Fri, 22 Apr 2022 16:48:11 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[UK elections 2022: A really simple guide]]></title>
+            <description><![CDATA[Local elections in England, Wales and Scotland, and a general election in Northern Ireland, will happen on 5 May.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-politics-60304595?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-politics-60304595</guid>
+            <pubDate>Thu, 21 Apr 2022 09:30:56 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[May 2022 UK elections: How to vote]]></title>
+            <description><![CDATA[Voters are choosing councillors in England, Scotland and Wales, and a government in Northern Ireland.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-politics-60902072?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-politics-60902072</guid>
+            <pubDate>Tue, 19 Apr 2022 07:14:42 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Election 2022: Is there an election in my area?]]></title>
+            <description><![CDATA[National elections in Northern Ireland and local elections in the rest of the UK happen on 5 May 2022.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-politics-60695244?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-politics-60695244</guid>
+            <pubDate>Fri, 08 Apr 2022 16:23:20 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Local elections 2022: A simple guide to English council elections]]></title>
+            <description><![CDATA[Your introduction to the local council elections taking place on 5 May.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-politics-60996950?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-politics-60996950</guid>
+            <pubDate>Thu, 07 Apr 2022 12:42:01 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[NI election 2022: Why Northern Ireland's election is different]]></title>
+            <description><![CDATA[Parties make pledges but the nature of Northern Ireland's government means they're harder to honour.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-northern-ireland-60854472?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-northern-ireland-60854472</guid>
+            <pubDate>Mon, 28 Mar 2022 00:04:45 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[England local elections 2022: What's at stake for the parties?]]></title>
+            <description><![CDATA[Elections in England this year will reflect voters' views on the cost-of-living crisis, says the BBC's Alex Forsyth.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-politics-60840043?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-politics-60840043</guid>
+            <pubDate>Mon, 28 Mar 2022 00:04:18 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Hakeem Hussain: The needless death of a neglected boy]]></title>
+            <description><![CDATA[Hakeem Hussain's mother is found guilty of his manslaughter after prioritising her drug addiction.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-birmingham-61164205?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-birmingham-61164205</guid>
+            <pubDate>Fri, 22 Apr 2022 12:00:02 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Periods: TikTok gives better education than schools, say teens]]></title>
+            <description><![CDATA[Young women say they learn more about periods outside school as a report reveals shortcomings.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61155377?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61155377</guid>
+            <pubDate>Fri, 22 Apr 2022 05:07:36 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Have we had enough of Netflix?]]></title>
+            <description><![CDATA[The streaming giant is losing subscribers despite huge hits like Squid Game and Bridgerton.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61178311?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61178311</guid>
+            <pubDate>Thu, 21 Apr 2022 23:33:58 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Logan Mwangi: Who are Angharad Williamson and John Cole?]]></title>
+            <description><![CDATA[The trail of violence, lies and racism that led to five-year-old Logan Mwangi's murder is revealed.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61186776?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61186776</guid>
+            <pubDate>Fri, 22 Apr 2022 11:03:27 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Restaurants and pubs blacklist no-show customers]]></title>
+            <description><![CDATA[Customers failing to cancel bookings cost one pub £20,000, with no-shows now barred from booking.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61163893?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61163893</guid>
+            <pubDate>Thu, 21 Apr 2022 09:38:25 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Boris Johnson's India visit takes place against partygate backdrop]]></title>
+            <description><![CDATA[The prime minister enjoys an enthusiastic welcome abroad as his troubles at home persist.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-politics-61175970?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-politics-61175970</guid>
+            <pubDate>Thu, 21 Apr 2022 12:59:44 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Whisky and visas could be part of a UK-India trade deal]]></title>
+            <description><![CDATA[Boris Johnson is hoping to strike a free trade deal with India within months.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61180390?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61180390</guid>
+            <pubDate>Fri, 22 Apr 2022 11:30:14 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Rikki Neave: How killer James Watson was finally caught]]></title>
+            <description><![CDATA[How a mother once accused of murdering her son helped bring his killer to justice.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-cambridgeshire-60860588?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-cambridgeshire-60860588</guid>
+            <pubDate>Thu, 21 Apr 2022 13:30:16 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA['A great sense of humour': But what makes the Queen laugh?]]></title>
+            <description><![CDATA[As she turns 96, the Queen's sense of humour is hailed as an important, if often hidden, quality.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-61067187?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-61067187</guid>
+            <pubDate>Wed, 20 Apr 2022 23:07:36 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA['Sip and shop': The retailers tempting you in with alcohol]]></title>
+            <description><![CDATA[A small but growing number of High Street stores are offering customers a glass of wine.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61077756?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61077756</guid>
+            <pubDate>Wed, 20 Apr 2022 23:04:58 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Did lockdown prompt a break-up with make-up?]]></title>
+            <description><![CDATA[A survey of 10,000 British women by retail analyst Kantar has revealed big changes to beauty routines.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61166381?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61166381</guid>
+            <pubDate>Thu, 21 Apr 2022 06:50:04 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[What did Boris Johnson tell Parliament about parties?]]></title>
+            <description><![CDATA[MPs are set to investigate whether the prime minister misled Parliament.]]></description>
+            <link>https://www.bbc.co.uk/news/60203864?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/60203864</guid>
+            <pubDate>Thu, 21 Apr 2022 17:40:08 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Covid: What is the guidance on mask-wearing now?]]></title>
+            <description><![CDATA[Almost all of the UK's Covid rules have ended, two years after they were introduced.]]></description>
+            <link>https://www.bbc.co.uk/news/explainers-52530518?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/explainers-52530518</guid>
+            <pubDate>Wed, 20 Apr 2022 09:28:40 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA['People fear for their jobs if they report bullies']]></title>
+            <description><![CDATA[Bafta-winning director Brian Hill on tackling bullying in his industry with new film Toxic.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-60835576?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-60835576</guid>
+            <pubDate>Tue, 19 Apr 2022 23:33:42 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Premier League: Can Fulham succeed in the top flight under Marco Silva?]]></title>
+            <description><![CDATA[Up, down, up, down, up... is this the time Fulham finally avoid the drop and achieve Premier League survival?]]></description>
+            <link>https://www.bbc.co.uk/sport/football/61044707?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/sport/football/61044707</guid>
+            <pubDate>Wed, 20 Apr 2022 10:50:29 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[NI election 2022: Campaigners say change needed to get more women into Stormont]]></title>
+            <description><![CDATA[A record number of women are standing in the NI election - but more needs to change, say campaigners.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-northern-ireland-61106908?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-northern-ireland-61106908</guid>
+            <pubDate>Wed, 20 Apr 2022 05:29:09 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Are there affordable ways to cut your heating bill?]]></title>
+            <description><![CDATA[Alternatives to gas and oil heating are becoming more popular but are still expensive.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61068688?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61068688</guid>
+            <pubDate>Mon, 18 Apr 2022 23:17:43 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Partygate: Which Downing Street parties have resulted in fines so far?]]></title>
+            <description><![CDATA[The police inquiry is separate to the investigation carried out by civil servant Sue Gray.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-politics-60124162?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-politics-60124162</guid>
+            <pubDate>Tue, 19 Apr 2022 10:05:27 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Harry Billinge: The veteran who raised £50,000 for a D-Day memorial]]></title>
+            <description><![CDATA[The funeral of Harry Billinge, who raised £50,000 for a D-Day memorial in Arromanches, takes place next week.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-61187340?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-61187340</guid>
+            <pubDate>Fri, 22 Apr 2022 07:59:52 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Westminster Abbey will open roof for first time to celebrate Platinum Jubilee]]></title>
+            <description><![CDATA[The tours, which are to celebrate the Platinum Jubilee, will run from June to August this summer.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-61179701?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-61179701</guid>
+            <pubDate>Thu, 21 Apr 2022 13:29:55 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[The Queen's Guard play Happy Birthday to celebrate Queen's 96th birthday]]></title>
+            <description><![CDATA[The Queen's Guard play an arrangement of Happy Birthday during the Changing of the Guard ceremony.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-61177399?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-61177399</guid>
+            <pubDate>Thu, 21 Apr 2022 11:41:03 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Is this the oldest uneaten Easter egg?]]></title>
+            <description><![CDATA[Sally's brother Ron bought her the Easter Egg with his first pay packet in 1971.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61156240?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61156240</guid>
+            <pubDate>Wed, 20 Apr 2022 08:30:54 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[PMQs: Does PM want to apologise to archbishop? - Starmer]]></title>
+            <description><![CDATA[Keir Starmer accuses the PM of "slandering" the Archbishop of Canterbury over immigration comments.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-politics-61162969?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-politics-61162969</guid>
+            <pubDate>Wed, 20 Apr 2022 11:56:08 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[War in Ukraine: A separated family reunited]]></title>
+            <description><![CDATA[The Chumak family thought they would never be all together again after Peter got stuck in Ukraine.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-london-61122200?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-london-61122200</guid>
+            <pubDate>Tue, 19 Apr 2022 12:00:21 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Luton flats fire: Man who died had fallen from window, say police]]></title>
+            <description><![CDATA[Officers discovered the blaze in Luton after going to investigate a suspected arsonist, police say.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-beds-bucks-herts-61194790?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-beds-bucks-herts-61194790</guid>
+            <pubDate>Fri, 22 Apr 2022 19:08:16 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Anglesey: Woman's death treated as suspicious by police]]></title>
+            <description><![CDATA[A person is in custody after the woman's body was discovered in a property on Anglesey.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61196528?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61196528</guid>
+            <pubDate>Fri, 22 Apr 2022 18:14:59 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Covid cases in Scotland fall by 30,000 in a week]]></title>
+            <description><![CDATA[It is the fourth week in a row the number of positives tests has dropped, according to official figures.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-scotland-61189537?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-scotland-61189537</guid>
+            <pubDate>Fri, 22 Apr 2022 12:22:39 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Covid-19: Free PCR tests to end for most people in NI]]></title>
+            <description><![CDATA[Lateral flow tests remain free for those displaying Covid symptoms or visiting high-risk settings.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-northern-ireland-61181736?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-northern-ireland-61181736</guid>
+            <pubDate>Fri, 22 Apr 2022 17:06:35 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Neglect contributed to baby's death, coroner finds]]></title>
+            <description><![CDATA[Cassian Curry's parents say their son, who died in April 2021, was a "beacon of light".]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-south-yorkshire-61190082?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-south-yorkshire-61190082</guid>
+            <pubDate>Fri, 22 Apr 2022 16:44:33 GMT</pubDate>
+        </item>
+    </channel>
+</rss>
