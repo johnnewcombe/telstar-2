@@ -1,16 +1,16 @@
 Version 2 of the Telstar Videotex Service components. Ignore everything you have learn't !!!
 
-== Main Differences between v1.0 and 2.0. ==
+# Main Differences between v1.0 and 2.0.
 
-== Settings ==
+## Settings
 
 * Settings should be set using environment variables (see https://wiki.glasstty.com/index.php/Configuration_Options#Environment_Variables). Environment Variables can be specified in the docker-compose.yml file if appropriate (https://wiki.glasstty.com/index.php/Orchestrating_Telstar_with_Docker_Compose). 
 
-== Plugins ==
+## Plugins
 
 Plugins have been completely re-written and are much simpler to use (see https://wiki.glasstty.com/index.php/Implementing_Response_Frames).
 
-== Content Field ==
+## Content Field
 
 The content field no longer supports a collection of strings. The collection will need to be concatenated and delimited with CR/LF.
 
@@ -30,7 +30,7 @@ The following placement tags are available, if any of these tags appear in the c
 
 Both Title and Content Fields can be used to populate content, this allows two different data formats to be used, for example, 'raw' could be used for the title and 'edit.tf' could be used for the content. The only difference is that when using the 'edit.tf' format in a title, only the top four rows are taken from the Edit.tf page.
 
-== Markup ==
+## Markup
 
 Content ''Markup'' has been extended as follows.
 
@@ -74,7 +74,7 @@ e.g.
 
 
 
-### Frame-Merge
+## Frame-Merge
 
 Add a new "merge" frame type that can be passed to telstar-util adframe command. e.g.  Frame data format can be rawT, rawV or editTf, this is converted to rawT internally and stored as RawT. Any frame data format can be merged with any other.
 
