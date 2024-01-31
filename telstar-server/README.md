@@ -4,11 +4,14 @@ Version 2 of the Telstar Videotex Service components. Ignore everything you have
 
 ## Settings
 
-* Settings should be set using environment variables (see https://wiki.glasstty.com/index.php/Configuration_Options#Environment_Variables). Environment Variables can be specified in the docker-compose.yml file if appropriate (https://wiki.glasstty.com/index.php/Orchestrating_Telstar_with_Docker_Compose). 
+* Settings should be set using environment variables 
+(see https://github.com/johnnewcombe/telstar-2/wiki/Configuration-Options). 
+Environment Variables can be specified in the docker-compose.yml file if appropriate 
+(https://github.com/johnnewcombe/telstar-2/wiki/Orchestrating-Telstar-with-Docker-Compose). 
 
 ## Plugins
 
-Plugins have been completely re-written and are much simpler to use (see https://wiki.glasstty.com/index.php/Implementing_Response_Frames).
+Plugins have been completely re-written and are much simpler to use (see https://github.com/johnnewcombe/telstar-2/wiki#response-frames-and-plugins).
 
 ## Content Field
 
