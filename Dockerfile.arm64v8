@@ -1,23 +1,25 @@
 ## Custom Dockerfile
 #
 # USE:
-#    docker build . --no-cache -t johnnewcombe/telstar
-#    docker login
-
-#    docker push johnnewcombe/telstar
-#    docker run --name telstar -d -p 6512:6512 -p johnnewcombe/telstar 6512
+# Set the ENV REFRESHED_AT variable in the docker file. See the Makefile for further details.
 #
+
 
 FROM arm64v8/ubuntu
 LABEL maintainer="John Newcombe, https://glasstty.com"
-ENV REFRESHED_AT 2022-04-11
-RUN DEBIAN_FRONTEND=noninteractive TZ=Europe/London apt-get -y install tzdata
+ENV REFRESHED_AT 2024-02-02
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/London
 
 RUN apt-get -y update \
         && apt-get -y install \
         git \
         nano \
+        tzdata \
         && rm -rf /var/lib/apt/lists/*
+
+RUN date
 
 # Add the executables and config
 RUN mkdir -p /opt/telstar/

@@ -1,0 +1,20 @@
+--- # Endpoint definition for the NxTel Viewdata System
+
+# name: Used as a display name for connection dialogues.
+name: "NXtel Viewdata System"
+
+# address: Address details for the service to connect to.
+address:
+  host: "nx.nxtel.org"
+  port: 23280
+
+init:
+  # telnet: If true, sends the IAC DO-SUPPRESS_GOAHEAD some systems
+  # may need this. In the case of Telstar, this will disable the
+  # 1200 baud simulation from the server and run the system at full
+  # internet speed.
+  telnet: false
+
+  # initchar: Some systems need an initial character e.g. 0x5f (Hash)
+  # to detect a connection, early versions of Telstar needed this.
+  initchars: []

@@ -55,6 +55,8 @@ build:
 	fyne-cross windows -pull -app-id=com.glasstty.telstar-client -arch=amd64
 	fyne-cross windows -pull -app-id=com.glasstty.telstar-client -arch=386
 
+
+
 	# Linux AMD64
 
 	#######################################################################
