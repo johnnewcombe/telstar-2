@@ -1,0 +1,20 @@
+--- # Endpoint definition for the EOL BBS System
+
+# name: Used as a display name for connection dialogues.
+name: "End of the Line BBS"
+
+# address: Address details for the service to connect to.
+address:
+  host: "endofthelinebbs.com"
+  port: 6502
+
+init:
+  # telnet: If true, sends the IAC DO-SUPPRESS_GOAHEAD some systems
+  # may need this. In the case of Telstar, this will disable the
+  # 1200 baud simulation from the server and run the system at full
+  # internet speed.
+  telnet: false
+
+  # initchar: Some systems need an initial character e.g. 0x5f (Hash)
+  # to detect a connection, early versions of Telstar needed this.
+  initchar: 0

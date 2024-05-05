@@ -1,7 +1,7 @@
 # based on the fyne-cross image from lucor e.g.
 #  go get -d github.com/fyne-io/fyne-cross/cmd/fyne-cross
 # bbs.fozztexx.com (TELNET) UN:TELSTAR PW:J16
-version = 1.6.2
+version = 1.6.3
 
 build:
 	# Update fyne-cross to use the latest docker images e.g.
