@@ -109,7 +109,6 @@ build:
 	cd ./fyne-cross && zip -vr ./telstar-client.zip ./telstar-client-$(version)
 	#cd ./fyne-cross && zip -vr ./example-connection-files.zip ./telstar-client-$(version)/example-connection-files
 
-zip:
 	# remove previous .zip file
 	cd ./fyne-cross && touch telstar-client.zip
 	cd ./fyne-cross && rm telstar-client.zip
