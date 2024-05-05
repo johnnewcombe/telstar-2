@@ -176,6 +176,23 @@ func main() {
 		return nil
 	}
 
+	closeFunc := func () {
+		// close the previous client and stop the read goroutine.
+		// The commsClient.Read() goroutine blocks on serial/net. Closing the
+		// connection/port will cause a read error and allow the go routine to continue
+		// monitoring for ctx cancel
+		commsClient.Close()
+
+		// (it raises and error instead) and it is now looping until cancelled,
+		// so lets cancel it
+		if cancelRead != nil {
+			cancelRead()
+		}
+
+		// wait for all goroutines to stop
+		wgComms.Wait()
+	}
+
 	exitFunc := func() {
 		// save endpoint to .recent, this will get loaded the next time we start the client.
 		if err = SaveEndpoint(path.Join(configDir, comms.DEFAULT_CONNECTION), endpoint); err != nil {
@@ -208,9 +225,6 @@ func main() {
 
 				input := dialog.NewForm("TCP Connection", "OK", "Cancel", []*widget.FormItem{
 
-					// fixme add additional widgets
-					// FIXME what about serial connections
-
 					widget.NewFormItem("IP Address", ipaddressWidget),
 					widget.NewFormItem("TCP Port", portWidget),
 					widget.NewFormItem("Requires Telnet Negotiation", telnetWidget),
@@ -235,19 +249,22 @@ func main() {
 						endpoint.Init.InitChars = hexString
 
 						// close the previous client and stop the read goroutine.
+						closeFunc()
+
+						// close the previous client and stop the read goroutine.
 						// The commsClient.Read() goroutine blocks on serial/net. Closing the
 						// connection/port will cause a read error and allow the go routine to continue
 						// monitoring for ctx cancel
-						commsClient.Close()
+						//commsClient.Close()
 
 						// (it raises and error instead) and it is now looping until cancelled,
 						// so lets cancel it
-						if cancelRead != nil {
-							cancelRead()
-						}
+						//if cancelRead != nil {
+						//	cancelRead()
+						//}
 
 						// wait for all goroutines to stop
-						wgComms.Wait()
+						//wgComms.Wait()
 
 						// open the connection and run the goroutine that receives data
 						if err = openFunc(); err != nil {
@@ -350,19 +367,22 @@ func main() {
 						endpoint.Serial.ModemInit = modemInitWidget.Text
 
 						// close the previous client and stop the read goroutine.
+						closeFunc()
+
+						// close the previous client and stop the read goroutine.
 						// The commsClient.Read() goroutine blocks on serial/net. Closing the
 						// connection/port will cause a read error and allow the go routine to continue
 						// monitoring for ctx cancel
-						commsClient.Close()
+						//commsClient.Close()
 
 						// (it raises and error instead) and it is now looping until cancelled,
 						// so lets cancel it
-						if cancelRead != nil {
-							cancelRead()
-						}
+						//if cancelRead != nil {
+						//	cancelRead()
+						//}
 
 						// wait for all goroutines to stop
-						wgComms.Wait()
+						//wgComms.Wait()
 
 						// open the connection and run the goroutine that receives data
 						if err = openFunc(); err != nil {
@@ -489,6 +509,10 @@ func main() {
 				fd.Resize(fyne.Size{w.Canvas().Size().Width * 0.8, w.Canvas().Size().Height * 0.8})
 				fd.Show()
 			}),
+		widget.NewToolbarAction(theme.Icon("close"),
+			func() {
+				closeFunc()
+			}),
 		widget.NewToolbarSpacer(),
 		//widget.NewToolbarSeparator(),
 		widget.NewToolbarAction(theme.Icon("visibility"),
@@ -499,7 +523,6 @@ func main() {
 			func() {
 				screen.Conceal()
 			}),
-		//widget.NewToolbarSeparator(),
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarSpacer(),
@@ -515,7 +538,7 @@ func main() {
 				cd.Show()
 			}),
 
-		widget.NewToolbarAction(theme.Icon("contentClear"),
+		widget.NewToolbarAction(theme.Icon("cancel"),
 			func() {
 				// use exitFunc rather than defer
 				exitFunc()
@@ -624,6 +647,7 @@ func main() {
 
 	w.ShowAndRun()
 }
+
 
 func execAction(cmd string, args ...string) (string, error) {
 	var (

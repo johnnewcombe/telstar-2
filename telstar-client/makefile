@@ -8,7 +8,7 @@ build:
 
     # Deprecated: go get -u github.com/fyne-io/fyne-cross
     # go get fyne.io/fyne/v2/app@v2.2.1
-	#./gen.sh bundle.go
+	./gen.sh bundle.go
 
 	#go build
 
@@ -65,6 +65,7 @@ build:
     # has also been added.
 	# Issue Raised: https://github.com/fyne-io/fyne-cross/issues/85
 	#######################################################################
+	#fyne-cross linux -pull -app-id=com.glasstty.telstar-client -arch=amd64
 	fyne-cross linux -pull -app-id=com.glasstty.telstar-client -arch=amd64; true
 	cp ./fyne-cross/tmp/linux-amd64/telstar-client.tar.xz ./fyne-cross/dist/linux-amd64/
 

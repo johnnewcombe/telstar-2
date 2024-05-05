@@ -47,8 +47,9 @@ func (m StandardTheme) Icon(name fyne.ThemeIconName) fyne.Resource {
 		return constants.SerialIcon
 	} else if name == "cloud" {
 		return constants.CloudIcon
-	} else{
-		return theme.DefaultTheme().Icon(name)
+	} else if name == "close" {
+		return constants.CloseIcon
+	} else{		return theme.DefaultTheme().Icon(name)
 	}
 }
 
