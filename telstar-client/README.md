@@ -1,137 +1,130 @@
 # Telstar 2.0
 
+The Telstar Viewdata client is available for Mac, Linux and Windows and has no dependencies, It allows access to viewdata systems through either a direct TCP/IP connection or via a Modem connected to a local serial port.
 
-This repository includes the Telstar Viewdata server software and associated tools.
-Full details of this project are available from the
-[Telstar Wiki](https://github.com/johnnewcombe/telstar-2/wiki)).
+* Linux (amd64)
+* Linux (arm64)
+* MacOS (arm64)
+* Windows (386)
+* Windows (amd64)
 
+All versions of the telstar-client are available here https://github.com/johnnewcombe/telstar-2/releases/tag/Client-1.6.3
 
-For ease of deployment, support and management, it is recommended that Telstar be run from within a Docker container, see the above wiki for details.
+The software was originally written to test Telstar and will attempt to connect to Telstar when it starts. However this behaviour can be changed, see below. The client uses a small 'connection file' to determine the system it should connect to and these are simply loaded as required. These are supplied with the above package or can be downloaded separately.
 
-Telstar 2.0 binaries can be downloaded from the Releases section of this repo.
+Examples of connection files for NxTel, TeeFax, CCF4, EOTL and Serial connections. can be found here https://github.com/johnnewcombe/telstar-2/tree/main/telstar-client/connection-files
 
-## Repository Details
+## Installation
 
-Some are shared modules e.g. _telstar-library_ others are standalone utilities that perform peripheral functions.
+Installation differs slightly between platforms, however, in each case extract the file(s) from the downloaded archive and follow the platform specific installation instructions below.
 
-### telstar-server
+### MacOS
 
-The main Telstar Viewdata server.
+The extracted telstar-client.app bundle can be run from anywhere. However, this would typically be placed in the applications folder. Simply double-click the bundle to launch the program. To connect to other services see Connection Files below.
 
-### telstar-client
+### Linux
 
-A cross platform (Linux, MacOS, Windows) client
+Once the files have been extracted execute the following command from the folder the files were extracted to. Note that a .tar.gz contained in the downloaded .zip file will need to be extracted also.
 
-### telstar-library
+    $ sudo make install
 
-Shared module with common functions and global constants.
+This should install the software as follows
 
-### telstar-emf
+    install -Dm00644 usr/local/share/applications/telstar-client.desktop /usr/local/share/applications/telstar-client.desktop
+    install -Dm00755 usr/local/bin/telstar-client /usr/local/bin/telstar-client
+    install -Dm00644 usr/local/share/pixmaps/telstar-client.png /usr/local/share/pixmaps/telstar-client.png
 
-T.B.A
+To connect to Telstar, simply select the telstar-client from the distributions menu (other) or run the telstar-client from the command line e.g.
 
-### telstar-ftse
+    $ telstar-client
 
-Utility to manage the "FTSE 100 Market Overview" from Hargreaves Lansdown.
+A shortcut should also be available in the 'Other' menu group. To connect to other services see Connection Files below.
 
-### telstar-MacViewData
+### Windows
 
-A utility that can be used to create a some rawV data from binary files created with the package MacViewdata. There are versions for Linux (arm/amd64), Mac(arm/amd64),Windows (amd64) just specify the filename e.g.
+Extract the files and double click the telstar-client.exe file.
 
-    telstar-macviewdata eng2.bin
+## Connecting to Services
 
-This should return something like the following. This would be the content section of the Telstar json file. This does the whole page which includes the header. Setting the frame type to "test" will prevent the Telstar header from being displayed.
+The software will connect by default to the Telstar Viewdata System, however this can be changed through the use of connection files.
 
-    "content": {
-      "data": "\u001b\u0042\u0054\u001b\u0041\u0045\u001b\u0046\u004c\u001b\u0044\u0053\u001b\u0047\u0054\u001b\u0045\u0041\u001b\u0043\u0052\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0039\u0031\u0061\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0030\u0070\u0020\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u0030\u0031\u001b\u0057\u001b\u005e\u001b\u004f\u0073\u001b\u0053\u001b\u005a\u001b\u0056\u001b\u005e\u001b\u005f\u001b\u0058\u001b\u0044\u001b\u004d\u001b\u005d\u001b\u0043\u0045\u004e\u0047\u0049\u004e\u0045\u0045\u0052\u0049\u004e\u0047\u0020\u001b\u0052\u001b\u005c\u001b\u004c\u001b\u005e\u0073\u001b\u0055\u001b\u004e\u001b\u0051\u001b\u004f\u001b\u0054\u001b\u004f\u001b\u0047\u0030\u0032\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u0030\u0033\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u0030\u0034\u001b\u0054\u001b\u005a\u001b\u005e\u0073\u001b\u0051\u001b\u0059\u001b\u0055\u001b\u0040\u001b\u0055\u001b\u0041\u001b\u004d\u0020\u001b\u0045\u001b\u005d\u001b\u0042\u0054\u0065\u0073\u0074\u0020\u0050\u0061\u0067\u0065\u0020\u0020\u001b\u005c\u001b\u004c\u001b\u005e\u001b\u0052\u0073\u001b\u0056\u001b\u0058\u001b\u0053\u001b\u0040\u001b\u0057\u001b\u0058\u001b\u0041\u0030\u0035\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u0030\u0036\u001b\u0041\u001b\u0040\u001b\u0041\u0020\u001b\u0040\u0020\u001b\u0041\u001b\u005e\u0020\u001b\u005e\u0020\u001b\u0057\u002c\u001b\u0053\u001b\u0053\u001b\u0056\u001b\u0056\u001b\u0052\u001b\u0052\u001b\u0052\u001b\u0055\u001b\u0055\u001b\u0051\u001b\u0051\u001b\u0054\u001b\u0054\u001b\u0054\u0020\u0020\u001b\u0054\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u0030\u0037\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u0030\u0038\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u0030\u0039\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u0031\u0030\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u0031\u0031\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u0031\u0032\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u0031\u0033\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u0031\u0034\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u001b\u0041\u001b\u0040\u0031\u0035\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u007e\u007f\u0031\u0036\u0057\u0068\u0069\u0074\u0065\u001b\u0043\u0059\u0065\u006c\u006c\u006f\u0077\u001b\u0046\u0043\u0079\u0061\u006e\u001b\u0042\u0047\u0072\u0065\u0065\u006e\u001b\u0045\u004d\u0061\u0067\u0065\u006e\u0074\u0061\u001b\u0041\u0052\u0065\u0064\u001b\u0044\u0042\u006c\u0075\u0065\u001b\u0057\u001b\u005a\u0021\u0022\u0023\u001b\u0053\u0024\u0025\u0026\u0027\u001b\u0056\u0028\u0029\u002a\u002b\u001b\u0052\u002c\u002d\u002e\u002f\u001b\u0059\u0030\u0031\u0032\u0033\u001b\u0055\u0034\u0035\u0036\u0037\u001b\u0051\u0038\u0039\u003a\u003b\u001b\u0054\u003c\u003d\u003e\u003f\u0020\u0020\u0021\u0022\u0023\u0020\u0024\u0025\u0026\u0027\u0020\u0028\u0029\u002a\u002b\u0020\u002c\u002d\u002e\u002f\u0020\u0030\u0031\u0032\u0033\u0020\u0034\u0035\u0036\u0037\u0020\u0038\u0039\u003a\u003b\u0020\u003c\u003d\u003e\u003f\u0020\u0040\u0041\u0042\u0043\u0020\u0044\u0045\u0046\u0047\u0020\u0048\u0049\u004a\u004b\u0020\u004c\u004d\u004e\u004f\u0020\u0050\u0051\u0052\u0053\u0020\u0054\u0055\u0056\u0057\u0020\u0058\u0059\u005a\u005b\u0020\u005c\u005d\u005e\u005f\u0020\u0060\u0061\u0062\u0063\u0020\u0064\u0065\u0066\u0067\u0020\u0068\u0069\u006a\u006b\u0020\u006c\u006d\u006e\u006f\u0020\u0070\u0071\u0072\u0073\u0020\u0074\u0075\u0076\u0077\u0020\u0078\u0079\u007a\u007b\u0020\u007c\u007d\u007e\u007f\u001b\u0054\u0060\u0061\u0062\u0063\u001b\u0051\u0064\u0065\u0066\u0067\u001b\u0055\u0068\u0069\u006a\u006b\u001b\u0052\u006c\u006d\u006e\u006f\u001b\u005a\u0070\u0071\u0072\u0073\u001b\u0056\u0074\u0075\u0076\u0077\u001b\u0053\u0078\u0079\u007a\u007b\u001b\u0057\u007c\u007d\u007e\u007f\u001b\u0043\u001b\u0058\u0043\u006f\u006e\u0063\u0065\u0061\u006c\u001b\u0048\u0046\u006c\u0061\u0073\u0068\u001b\u0043\u002a\u001b\u004b\u001b\u004b\u0042\u006f\u0078\u001b\u0049\u0053\u0074\u0065\u0061\u0064\u0079\u001b\u0058\u0047\u006f\u006e\u0065\u001b\u004a\u001b\u004a\u003f\u001b\u0056\u005e\u007f",
-      "type": "rawV"
-    },
+Each supported service is defined in a .yml file e.g. nxtel.yml and each file is commented which should make it simple to create new files as required. The filename can be selected using the Open toolbar button or specified on the command line as detailed below.
 
-### telstar-openweather
+## Command Line Parameters
 
-This is called from a response frame with two arguments. The first arg is the api key, the second is the town or city of interest. The utility returns a series of pages that will be placed in temporary store within telstar and can be navigated to.
+The binary file can be launched from the command line (to use the command line when using MacOs, it is necessary to navigate into the contents of the app bundle (see Appendix A). Note that when in full screen mode both the Status bar and Toolbar are automatically hidden. To exit the application simply enter ctrl-Q.
 
-To install the open weather extension all that is required is to place the binary in a location that is accessible by the Telstar Server instance e.g. /opt/Telstar/. The templates are embedded in the binary file.
+    $ ./telstar-client -h
 
-If Telstar is implemented in a Docker container, the binary file can be copied from the host machine to the container using the following command.
+    Usage of telstar-client:
 
-    docker cp telstar-openweather-linux-amd64 telstar-server:/opt/telstar/volume
+    -address string     Endpoint definition file e.g. Telstar.yml.
+    -debug              Outputs debug information to standard output.
+    -full-screen        Full screen mode (experimental).
+    -no-toolbar         Hides the toolbar and status line.
+    -startup-delay int  Delays startup of the application.
+    -text-size float
 
-Where 'telstar-openweather-linux-amd64' is the platform specific binary file and 'telstar-server' is the docker Container name. Using a Volume as in the above example, is particularly useful where multiple Telstar containers exist and there is a requirement to share the binary.
+Text size, can be used to resolve display issues [default 23].
 
-A suitable response page for use within Telstar is shown in the 'response-frame' directory. There are two frames in this folder, 290a.json is simply a map that is for presentation purposes only. Frame 290b is a response frame that is used to capture the users input. This response frame is used to invoke the telstar-openweather executable and respond to the output frames it produces.
+For example to connect to NxTel on startup simply specify the connection file. e.g.
 
-The templates are used to format the data retrieved from openweather.org into viewdata pages. The template 'weather.json' provides a template for the main Weather result page. The template 'forecast.json' provides a template for the follow on forecast pages.
+    telstar-client -address=nxtel.yml
 
-### telstar-rss
+Below is an example TCP connection file for Telstar.
 
-This program is designed to take the rss data file (see associated 'getdatasource.sh' script) and turn it into frames based on a frame template.
+    --- # Endpoint definition for the Telstar Viewdata System
+    
+    # name: Used as a display name for connection dialogues.
+    name: "Telstar Viewdata System"
+    
+    # address: Address details for the service to connect to.
+    address:
+        host: "glasstty.com"
+        port: 6502
+    
+    init:
+        # telnet: If true, sends the IAC DO-SUPPRESS_GOAHEAD some systems
+        # may need this. In the case of Telstar, this will disable the
+        # 1200 baud simulation from the server and run the system at full
+        # internet speed.
+        telnet: false
+        
+        # initchar: Some systems need an initial character or characters
+        # to be sent e.g. 0x5f (Hash) to detect a connection.
+        initchars: []
 
-Usage:
+Below is an example serial connection file for Telstar.
 
-    $ telstar-rss -i ./data/rss -t ./data/template -o ./data/frames
+--- # Endpoint definition for the Telstar Viewdata System
 
-When processing the input file 'bbc-education.xml', the software will look for a similarly named template file e.g. 'bbc-education.json' in the template directory.
-
-To copy the templates to the remote server, use SFTP e.g.
-
-    $ sftp root@glasstty.com
-
-    # navigate to local telstar-rss directory using lcd
-    # navigate to remote /opt/telstar directory using cd
-    $ put getdatasources.sh .
-    $ put createframes.sh .
-    $ put cron-test.sh .
-    $ put cron-live.sh .
-    $ put ./telstar-rss-2.0/telstar-rss-linux-amd64 telstar-rss
-    $ put ../telstar-util/telstar-util-2.0/telstar-util-linux-amd64 telstar-util
-
-Create data/frames, data/rss and data/templates and copy files to folders.
-
-    $ put -R ./data .
-
-Change permissions to 755 for getdatasources.sh, createframes.sh, chron.sh and telstar-rss.
-
-The following is a typical template for RSS data is as follows.
-
-    "content": {
-      "data": "[R][TITLE],[W][CONTENT],[R][PUBLISHDATE],[w][l.]",
-      "type": "markup"
-    },
-
-The data tag above represents the template for each article, with row definitions separated with commas.
-
-The template must consist of at least three rows with the last row being optional.
-
-In the above example the first row represents the rss article title e.g.
-
-    [R][TITLE]
-
-In this example the title is displayed in red. Tthe second row represents the rss article description e.g.
-
-    [W][CONTENT]
-
-the description will be displayed in white. The third row represents the rss article published date e.g.
-
-    [R][PUBLISHDATE]
-
-In this example the published date will be displayed in white. The fourth row represents a separator e.g.
-
-    [w][l.]
-
-The separator, uses standard Telstar markup, which in this case is a horizontal row of dots.
-The separator must be a maximum of one row and should be the last row.
-
-### telstar-telesoftware
-
-A utility to create Telesoftware frames from a souce file.
-
-### telstar-upload
-
-A utility to upload frames to Telstar using the Telstar API.
-
-### telstar-util
-
-A Telstar API client.
-
-
+    # name: Used as a display name for connection dialogues.
+    name: "/dev/ttyUSB0"
+    
+    # serial: Serial
+    serial:
+        # port: serial port to use e.g. "COM1" or "/dev/ttyS0"
+        port: "/dev/ttyUSB0"
+        # baud: Baud rate of he serial interface. Note that this cannot
+        # use a split baud rate, therefore when connecting to 1200/75
+        # baud systems the modem would typically be configured for V23
+        # with the modems serial interface set to a 1200/1200 baud rate.
+        # Most modern modems support this.
+        baud: 1200
+        
+        # parity: When set to true, 7 bit even parity is used otherwise
+        # no parity is used. Telstar uses 7 bit even parity for dialup
+        # connections and no parity for tcp/ip connections.
+        parity: true
+        
+        # modeminit: The 'modeminit' string will be passed to the modem
+        # after successfully opening the serial port. This field is
+        # typically used to send initialisation and dial commands to a
+        # connected modem.
+        modeminit: "ATDT01756664433"
+    
+    init:
+    
+        # initchar: Some systems need an initial character or characters
+        # to be sent e.g. 0x5f (Hash) to detect a connection.
+        initchars: []
