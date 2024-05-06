@@ -1,4 +1,4 @@
-# Telstar 2.0
+# Viewdata Client
 
 The Telstar Viewdata client is available for Mac, Linux and Windows and has no dependencies, It allows access to viewdata systems through either a direct TCP/IP connection or via a Modem connected to a local serial port.
 
