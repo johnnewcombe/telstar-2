@@ -205,6 +205,11 @@ func handleConn(conn net.Conn, settings config.Config) {
 		// ignore zero (NULL) as this is what the telnet parser returns if the character is part of a Telnet negotiation
 		if inputByte != 0 {
 
+			if settings.General.Parity{
+				// remove parity
+				inputByte = inputByte & 0x7f
+			}
+
 			// cancel any rendering by calling the cancel method of the context
 			if inputByte >= 0x30 && inputByte <= 0x39 || inputByte == globals.HASH || inputByte == globals.ASTERISK {
 				cancel()
