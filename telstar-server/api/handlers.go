@@ -490,7 +490,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// gget authorised user from from context
+	// get authorised user from from context
 	if authUserId, err = getAuthUserIDFromContext(r); err != nil {
 		render.Render(w, r, ErrUnauthorizedRequest(err))
 		return
@@ -504,7 +504,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	// if we have got this far them we have been authenticated
 	user.Authenticated = true
 
-	// get the frame and password from the request
+	// get the user-id, password etc. from the request
 	if err = json.NewDecoder(r.Body).Decode(&user); err != nil {
 		render.Render(w, r, ErrTeapotRequest(err))
 		return
@@ -512,8 +512,9 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 
 	connection := settings.Database.Connection
 
-	// FIXME WHAT PERMISSIONS SHOULD A USER HAVE
+	// check logged on user for admin status
 	if !dal.IsUserAdmin(connection, authUserId) {
+		// FIXME A user should be able to update own name and password only, nothing else
 		render.Render(w, r, ErrUnauthorizedRequest(errors.New(ERR_USER_SCOPE)))
 	}
 
@@ -536,7 +537,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 		//		userId  int
 		deletedCount int64
 		err          error
-		authUser types.User
+		authUser     types.User
 		settings     config.Config
 		authUserId   string
 	)
@@ -580,7 +581,6 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 		//if !dal.IsUserAdmin(connection, authUserId) {
 		//	render.Render(w, r, ErrUnauthorizedRequest(errors.New(ERR_USER_SCOPE)))
 		//}
-
 
 		if deletedCount, err = dal.DeleteUserByUser(connection, userId, authUser); err != nil {
 			render.Render(w, r, ErrServerRequest(err))

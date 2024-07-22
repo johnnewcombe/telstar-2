@@ -101,25 +101,9 @@ func getPidFromFileName(filename string) (pid types.Pid, ok bool) {
 
 func stdOut(cmd *cobra.Command, respData network.ResponseData, result map[string]string) {
 
-	/* Example output
-	{
-	  "HTTP Status": "200 OK",
-	  "Result": {
-	    "Last": "888b.json",
-	    "Updated": "2"
-	  }
-	}
-
-	*/
 	const (
-		//ResponseJson = "{\"HTTP Status\" : \"%s\"}\n\n"
 		ResponseJson = `{"HTTP Status" : "%s", "Result" : %s}`
 		ResponseText = "HTTP Status: %s" // result (if it exists, and NL added later
-	)
-	var (
-		//json bool
-		//err error
-		textS string
 	)
 
 	if cmd.Flags().Lookup("json").Changed {
@@ -140,7 +124,7 @@ func stdOut(cmd *cobra.Command, respData network.ResponseData, result map[string
 			}
 			text.WriteString(key + ": " + value + ", ")
 		}
-		textS = text.String()
+		textS := text.String()
 
 		// format the result if there is one
 		if result != nil {
@@ -148,7 +132,5 @@ func stdOut(cmd *cobra.Command, respData network.ResponseData, result map[string
 		}
 
 		fmt.Printf("%s\n\n", textS)
-
 	}
-
 }

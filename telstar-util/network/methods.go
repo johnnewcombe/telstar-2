@@ -15,7 +15,7 @@ type HTTPErrorResponse struct {
 	Error string `json:"error" bson:"error"`
 }
 
-// create a simple struct for an error
+// ApiError create a simple struct for an error
 type ApiError struct {
 	msg string
 }
@@ -155,7 +155,7 @@ func Delete(apiUrl string, token string) (ResponseData, error) {
 	return respData, nil
 }
 
-func purge(apiUrl string, token string) (ResponseData, error) {
+func Purge(apiUrl string, token string) (ResponseData, error) {
 
 	client := &http.Client{}
 	cookie := CreateCookie("token", token)
@@ -197,22 +197,6 @@ func purge(apiUrl string, token string) (ResponseData, error) {
 	return respData, nil
 }
 
-/*
-func post(apiUrl string) (*http.Response, error) {
-
-	var buf io.Reader
-	var resp *http.Response
-
-	defer resp.Body.Close()
-
-	resp, err := http.Post(apiUrl, "image/jpeg", &buf)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-*/
-
 func CreateCookie(name string, token string) http.Cookie {
 
 	expire := time.Now().AddDate(0, 0, 1)
@@ -231,56 +215,3 @@ func CreateCookie(name string, token string) http.Cookie {
 		Unparsed:   []string{},
 	}
 }
-
-/*
-func parseHttpError(httpResponse string) error {
-//FIXME does this need to respond to HTTP STATUS CODES?? or should api 2.0 follow the lines here
-	var (
-		httpErrorResponse HTTPErrorResponse
-	)
-
-	if err := json.Unmarshal([]byte(httpResponse), &httpErrorResponse); err != nil {
-			return nil // unmarshal errors mean that it cant be an http error
-	}
-	errValue := strings.ToLower(httpErrorResponse.Error)
-
-	if len(errValue) > 0 {
-		return fmt.Errorf("{http error: %s}", errValue)
-	}
-
-	// TODO only for version 2.0 at the moment
-	//if statusValue != "OK"{
-	//	return fmt.Errorf("http error: %s", errValue)
-	//}
-	return nil
-}
-*/
-/*
-//TODO remove the need for this by using parseHttpError see getframe
-func parseError(jsonResponse string) error {
-
-	var apiError ApiJsonError
-	responseBytes := []byte(jsonResponse)
-	if err := json.Unmarshal(responseBytes, &apiError); err != nil {
-		// if we cannot marshal the response then it is not an error
-		return nil
-	}
-	// we get here if we could marshal the response against the ApiError type
-	// but it could be an "ok" nessage so check it
-	switch strings.ToLower(apiError.Data) {
-	case "forbidden":
-		return &ApiError{
-			msg: "{\"error\":\"log on required\"}",
-		}
-	case "not acceptable":
-		return &ApiError{
-			msg: "{\"error\":\"Frame not acceptable\"}",
-		}
-	case "login":
-
-	}
-	// this is good i.e. no json error message
-	return nil
-
-}
-*/

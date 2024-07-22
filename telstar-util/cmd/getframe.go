@@ -17,7 +17,6 @@ Returns a single frame from the currently logged in system. See the login comman
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (
-			//respData ResponseData
 			apiUrl   string
 			pageId   string
 			primary  bool
