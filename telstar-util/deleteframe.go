@@ -1,5 +1,7 @@
 package main
 
+/*
+
 import (
 	"fmt"
 )
@@ -29,3 +31,6 @@ func cmdDeleteFrame(apiUrl, pageId string, primary bool, purge bool, token strin
 
 	return respData, nil
 }
+
+
+*/

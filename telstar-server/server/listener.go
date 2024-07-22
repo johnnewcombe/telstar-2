@@ -205,7 +205,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 		// ignore zero (NULL) as this is what the telnet parser returns if the character is part of a Telnet negotiation
 		if inputByte != 0 {
 
-			if settings.General.Parity{
+			if settings.General.Parity {
 				// remove parity
 				inputByte = inputByte & 0x7f
 			}
@@ -354,7 +354,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 					// clear the buffer
 					routingResponse.RoutingBuffer = ""
 
-					if currentFrame.FrameType != globals.FRAME_TYPE_TEST{
+					if currentFrame.FrameType != globals.FRAME_TYPE_TEST {
 						// Render PNF nav message
 						var renderOptions = renderer.RenderOptions{
 							BaudRate: baudRate,
@@ -394,7 +394,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 					var renderOptions = renderer.RenderOptions{
 						HasFollowOnFrame: hasFollowOnFrame,
 						//ClearScreen:      true,
-						BaudRate:         baudRate,
+						BaudRate: baudRate,
 					}
 
 					// make sure we have some nav messages.

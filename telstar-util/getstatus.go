@@ -1,5 +1,7 @@
 package main
 
+/*
+
 import "fmt"
 
 func cmdGetStatus(apiUrl string) (ResponseData, error) {
@@ -23,3 +25,5 @@ func cmdGetStatus(apiUrl string) (ResponseData, error) {
 	return respData, nil
 
 }
+
+*/

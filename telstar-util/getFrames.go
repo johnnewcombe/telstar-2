@@ -1,5 +1,9 @@
 package main
 
+/*
+
+import "fmt"
+
 import (
 	"encoding/json"
 	"fmt"
@@ -60,3 +64,6 @@ func cmdGetFrames(apiUrl string, saveDirectory string, primary bool, token strin
 	respData.Body = fmt.Sprintf("{\"records saved\": %d}\r\n", count)
 	return respData, nil
 }
+
+
+*/

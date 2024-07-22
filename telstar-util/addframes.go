@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"fmt"
@@ -47,9 +48,12 @@ func cmdAddFrames(apiUrl string, srcDirectory string, primary bool, token string
 			pageNo, frameId, err = utils.ConvertPageIdToPID(f.Name()[:len(path.Ext(f.Name()))-2])
 		}
 	}
-	/*  e.g.
-		{"records added": 10, "last-frame-added": {"page-no": 31, "frame-id": "j"}}
-	*/
+	//  e.g.
+	//	{"records added": 10, "last-frame-added": {"page-no": 31, "frame-id": "j"}}
+
 	respData.Body = fmt.Sprintf("{\"records added\": %d, \"last-frame-added\": {\"page-no\": %d, \"frame-id\": \"%s\"}}\r\n", count, pageNo, frameId)
 	return respData, nil
 }
+
+
+*/

@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"fmt"
 )
@@ -29,3 +30,4 @@ func cmdAddUser(apiUrl, userId, password, token string) (ResponseData, error) {
 	return respData, nil
 
 }
+*/

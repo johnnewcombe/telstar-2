@@ -1,5 +1,7 @@
 package main
 
+/*
+
 import "fmt"
 
 func cmdPurgeFrame(apiUrl, pageId string, primary bool, token string) (ResponseData, error) {
@@ -27,3 +29,6 @@ func cmdPurgeFrame(apiUrl, pageId string, primary bool, token string) (ResponseD
 
 	return respData, nil
 }
+
+
+*/

@@ -1,5 +1,7 @@
 package main
 
+/*
+
 import (
 	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"errors"
@@ -34,3 +36,5 @@ func cmdGetFrame(apiUrl string, pageId string, primary bool, token string) (Resp
 	return respData, nil
 
 }
+
+*/

@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"fmt"
 )
@@ -23,3 +24,6 @@ func cmdDeleteUser(apiUrl, userId string, token string) (ResponseData, error) {
 	return respData, nil
 
 }
+
+
+*/

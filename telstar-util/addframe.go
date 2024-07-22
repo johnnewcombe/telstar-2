@@ -1,7 +1,9 @@
 package main
 
+/*
 import (
 	"bitbucket.org/johnnewcombe/telstar-library/types"
+	"bitbucket.org/johnnewcombe/telstar-util/http"
 	"errors"
 	"fmt"
 )
@@ -22,7 +24,7 @@ func cmdAddFrame(apiUrl string, frameFile string, primary bool, token string) (R
 		url += "?db=primary"
 	}
 
-	if frameData, err = loadText(frameFile); err != nil {
+	if frameData, err = http.LoadText(frameFile); err != nil {
 		return respData, err
 	}
 
@@ -50,14 +52,17 @@ func cmdAddFrame(apiUrl string, frameFile string, primary bool, token string) (R
 		return respData, err
 	}
 
-	respData, err = put(url, frameData, token)
+	respData, err = http.Put(url, frameData, token)
 	if err != nil {
-		return respData, err
+		return err
 	}
 
 	if respData.StatusCode < 200 || respData.StatusCode > 299 {
 		return respData, fmt.Errorf("%s", respData.Body)
 	}
 
-	return respData, nil
+	return nil
 }
+
+
+*/

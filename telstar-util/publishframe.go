@@ -1,5 +1,7 @@
 package main
 
+/*
+
 import (
 	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"fmt"
@@ -32,3 +34,5 @@ func cmdPublishFrame(apiUrl string, pageId string, primary bool, token string) (
 
 	return respData, nil
 }
+
+*/
