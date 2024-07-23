@@ -54,7 +54,6 @@ Returns a single frame from the currently logged in system. See the login comman
 			return err
 		}
 
-		//fmt.Printf(globals.Response, respData.Status)
 		fmt.Println(respData.Body)
 		return nil
 
