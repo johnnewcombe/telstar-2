@@ -39,6 +39,8 @@ func init() {
 	rootCmd.AddCommand(getStatus)
 	rootCmd.AddCommand(login)
 	rootCmd.AddCommand(purgeFrames)
+	rootCmd.AddCommand(publishFrame)
+	rootCmd.AddCommand(publishFrames)
 
 	rootCmd.PersistentFlags().BoolP("json", "j", false, k_json)
 	rootCmd.PersistentFlags().String("url", "", k_apiUrl)
@@ -87,6 +89,9 @@ func init() {
 	// Purge Frames
 	purgeFrames.PersistentFlags().String("page-id", "", k_pageId)
 	purgeFrames.PersistentFlags().Bool("primary", false, k_primary)
+
+	// Publish Frames
+	publishFrame.PersistentFlags().String("page-id", "", k_pageId)
 
 }
 

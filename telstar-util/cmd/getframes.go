@@ -88,8 +88,6 @@ Returns multiple frame from the currently logged in system. See the login comman
 			count++
 		}
 
-		// TODO Create jsonData
-		//respData.Body = fmt.Sprintf("{\"records saved\": %d}\r\n", count)
 		result := map[string]string{
 			"Saved": strconv.Itoa(count),
 		}

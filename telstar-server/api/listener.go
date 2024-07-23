@@ -44,7 +44,11 @@ func Start(apiPort int, settings config.Config) error {
 
 	// Mount the frame sub-router (frame and frames for compatibility with Telstar 0.x and 1.x
 	r.Mount("/frame", frameRouter(settings))
+	// TODO: can Frames be removed?
 	r.Mount("/frames", frameRouter(settings))
+
+	// Mount the publishing sub-router
+	r.Mount("/publish", publishRouter(settings))
 
 	// Mount the user sub-router
 	r.Mount("/user", userRouter(settings))

@@ -17,6 +17,26 @@ Process is as follows
     then adds the result NewUserPayloadResponse(user) to the previously obtained result of NewArticleResponse(article)
 
 */
+// TODO Think of a better name workfrlow? collection?
+func publishRouter(settings config.Config) chi.Router {
+
+	r := chi.NewRouter()
+
+	// Seek, verify and validate JWT tokens
+	r.Use(jwtauth.Verifier(TokenAuth))
+
+	// Handle valid / invalid tokens. This is a custom authenticator
+	// based on the jwtauth.Authenticator method.
+	r.Use(Authenticator)
+
+	r.Route("/{pageId:^[0-9]+[a-z]$}", func(r chi.Router) {
+		// HandlerWrapper is a custom wrapper that returns a Handler,
+		// it allows settings to be passed to the handler
+		r.Get("/", HandlerWrapper(http.HandlerFunc(publishFrame), settings))
+	})
+
+	return r
+}
 
 func frameRouter(settings config.Config) chi.Router {
 

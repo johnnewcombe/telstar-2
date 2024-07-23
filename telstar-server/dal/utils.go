@@ -25,7 +25,7 @@ func CheckPasswordHash(password, hash string) bool {
 func ValidateUser(user types.User) bool {
 
 	var (
-		userId   int64
+		userId int64
 		//password int64
 		basePage int64
 		err      error
@@ -39,21 +39,23 @@ func ValidateUser(user types.User) bool {
 	}
 	// support for non numeric passwords using CheckPasswordStrength() for checking
 	err = utils.CheckPasswordStrength(user.Password)
-	if err != nil{
+	if err != nil {
 		// just issue a warning
 		logger.LogWarn.Print(fmt.Sprintf("User %d: %s.", userId, err))
 	}
-	/*
-	if password, err = strconv.ParseInt(user.Password, 10, 64); err != nil ||
-		password < 1000 || userId > 9999999999 {
-		return false
-	}
 
-	if password, err = strconv.Atoi(user.Password); err != nil ||
-		password < 1000 || password > 9999 {
-		return false
-	}
-	 */
+	/*
+		if password, err = strconv.ParseInt(user.Password, 10, 64); err != nil ||
+			password < 1000 || userId > 9999999999 {
+			return false
+		}
+
+		if password, err = strconv.Atoi(user.Password); err != nil ||
+			password < 1000 || password > 9999 {
+			return false
+		}
+	*/
+
 	if basePage, err = strconv.ParseInt(user.UserId, 10, 64); err != nil ||
 		basePage < 100 || basePage > 9999999999 {
 		return false

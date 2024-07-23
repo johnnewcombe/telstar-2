@@ -245,6 +245,64 @@ func getFrames(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonFrames)
 }
 
+func publishFrame(w http.ResponseWriter, r *http.Request) {
+
+	var (
+		user       types.User
+		err        error
+		pageNumber int
+		frameId    string
+		authUserId string
+		settings   config.Config
+	)
+
+	// get settings from from context
+	if settings, err = getSettingsFromContext(r); err != nil {
+		_ = render.Render(w, r, ErrServerRequest(err))
+		return
+	}
+
+	// get authorised user from from context
+	if authUserId, err = getAuthUserIDFromContext(r); err != nil {
+		render.Render(w, r, ErrUnauthorizedRequest(err))
+		return
+	}
+
+	// get the current logged on user
+	if user, err = dal.GetUser(settings.Database.Connection, authUserId); err != nil {
+		render.Render(w, r, ErrUnauthorizedRequest(err))
+	}
+
+	// if we have got this far them we have been authenticated
+	user.Authenticated = true
+
+	if pageId := chi.URLParam(r, "pageId"); len(pageId) > 0 {
+
+		if pageNumber, frameId, err = utils.ConvertPageIdToPID(pageId); err != nil {
+			render.Render(w, r, ErrTeapotRequest(err))
+		}
+
+		connection := settings.Database.Connection
+
+		if err = dal.PublishFrameByUser(connection, pageNumber, frameId, user); err != nil {
+			render.Render(w, r, ErrNotFoundRequest(err))
+			return
+		}
+
+	} else {
+		render.Render(w, r, ErrNotFoundRequest(errors.New(ERR_INVALID_PAGEID)))
+		return
+	}
+	/*
+		if jsonFrame, err = json.MarshalIndent(frame, "", "    "); err != nil {
+			render.Render(w, r, ErrServerRequest(err))
+			return
+		}
+		w.Write(jsonFrame)
+
+	*/
+}
+
 // getStatus returns the API Version number and other info
 func getStatus(w http.ResponseWriter, r *http.Request) {
 

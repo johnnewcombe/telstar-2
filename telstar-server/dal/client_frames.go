@@ -18,12 +18,12 @@ import (
 )
 
 const (
-	DBNAME          = "telstardb"
-	REGEXP          = "p[0-9]"
-	REGEXS          = "s[0-9]"
-	AUTH_COLLECTION = "system-auth"
-	ERROR_SCOPE     = "user does not have sufficient scope to perform this task"
-	ERROR_AUENTICATION ="user has not have authenticated"
+	DBNAME             = "telstardb"
+	REGEXP             = "p[0-9]"
+	REGEXS             = "s[0-9]"
+	AUTH_COLLECTION    = "system-auth"
+	ERROR_SCOPE        = "user does not have sufficient scope to perform this task"
+	ERROR_AUENTICATION = "user has not have authenticated"
 )
 
 func GetFrames(connectionUrl string, primaryDb bool) ([]types.Frame, error) {
@@ -354,6 +354,8 @@ func InsertOrReplaceFrame(connectionUrl string, frame types.Frame, primaryDb boo
 		// error detected
 		return err
 	}
+
+	// if we matched 0 items then insert
 	if res.MatchedCount == 0 {
 		res, err := collection.InsertOne(ctx, data)
 		if err != nil || res.InsertedID == nil {
@@ -368,7 +370,7 @@ func InsertOrReplaceFrameByUser(connectionUrl string, frame types.Frame, primary
 
 	var (
 		//user User
-		err  error
+		err error
 	)
 
 	// get a context
@@ -463,7 +465,7 @@ func DeleteFrameByUser(connectionUrl string, pageNo int, frameId string, primary
 	// FIXME sort out user stuff
 	var (
 		//user User
-		err  error
+		err error
 	)
 
 	// get a context
@@ -567,4 +569,86 @@ func PurgeFramesByUser(connectionUrl string, pageNo int, frameId string, primary
 		}
 	}
 	return deletedCount, nil
+}
+
+func PublishFrameByUser(connectionUrl string, pageNo int, frameId string, user types.User) error {
+
+	var (
+		//user User
+		frame     types.Frame
+		err       error
+		frameData []byte
+	)
+
+	// get a context
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// connect
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			panic(err)
+		}
+	}()
+
+	//if user, err = GetUser(connectionUrl, authUser); err != nil {
+	//	return 0, err
+	//}
+
+	if !user.Authenticated {
+		return errors.New(ERROR_AUENTICATION)
+	}
+
+	if !user.IsInScope(pageNo) {
+		return errors.New(ERROR_SCOPE)
+	}
+
+	// get the secondary collection
+	collectionName, err := getCollectionName(pageNo, false)
+	if err != nil {
+		return fmt.Errorf("getting collection name for frame %d%v: %v", pageNo, frameId, err)
+	}
+	collection := client.Database(DBNAME).Collection(collectionName)
+
+	// set the filter
+	filter := bson.M{"pid.page-no": pageNo, "pid.frame-id": frameId}
+
+	// get the frame
+	err = collection.FindOne(ctx, filter).Decode(&frame)
+	if err != nil {
+		return fmt.Errorf("finding frame %d%v: %v", pageNo, frameId, err)
+	}
+
+	// get the primary collection
+	collectionName, err = getCollectionName(pageNo, true)
+	if err != nil {
+		return fmt.Errorf("getting collection name for frame %d%v: %v", pageNo, frameId, err)
+	}
+	collection = client.Database(DBNAME).Collection(collectionName)
+
+	// create the filter
+	filter = bson.M{"pid.page-no": frame.PID.PageNumber, "pid.frame-id": frame.PID.FrameId}
+
+	// marshall the frame
+	frameData, err = bson.Marshal(frame)
+	if err != nil {
+		return fmt.Errorf("converting frame frameData for frame %v to BSON: %v", frame.GetPageId(), err)
+	}
+
+	res, err := collection.ReplaceOne(ctx, filter, frameData)
+	if err != nil {
+		// error detected
+		return err
+	}
+
+	// if we matched 0 items then insert
+	if res.MatchedCount == 0 {
+		res, err := collection.InsertOne(ctx, frameData)
+		if err != nil || res.InsertedID == nil {
+			return fmt.Errorf("inserting frame %s: %v", frame.GetPageId(), err)
+		}
+	}
+
+	return err
 }
