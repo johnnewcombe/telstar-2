@@ -5,10 +5,6 @@ import (
 	"testing"
 )
 
-const (
-	TEST_ERROR_MESSAGE = "Test Description: \"%s.\""
-)
-
 // minimal frame type to use in frame validation
 /*
 type Frame struct {

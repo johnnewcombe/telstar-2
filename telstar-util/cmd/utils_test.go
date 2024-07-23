@@ -1,6 +1,8 @@
-package main
+package cmd
 
-import "testing"
+import (
+	"testing"
+)
 
 const (
 	TEST_ERROR_MESSAGE = "Test Description: \"%s.\""
@@ -31,32 +33,7 @@ func Test_createDefaultRoutingTable(t *testing.T) {
 
 	// run tests
 	for _, test := range tests {
-		if got := createDefaultRoutingTable(test.input); got[test.inputRoute] != test.wantRoute {
-			t.Errorf(TEST_ERROR_MESSAGE, test.description)
-		}
-	}
-
-}
-
-func Test_checkArgCount(t *testing.T) {
-
-	type Test struct {
-		description string
-		inputArgs   []string
-		inputCount  int
-		wantOk      bool
-	}
-
-	var tests = []Test{
-		{"", []string{"hello", "world", "dog"}, 2, false},
-		{"", []string{"hello", "world", "priMarY"}, 2, true},
-		{"", []string{"hello", "world", "secONDARY"}, 2, true},
-		{"", []string{"hello", "world", "foo", "bar"}, 5, false},
-		{"", []string{"hello", "world", "foo", "bar"}, 3, false},
-	}
-	// run tests
-	for _, test := range tests {
-		if got := checkArgCount(test.inputArgs, test.inputCount); got != test.wantOk {
+		if got := CreateDefaultRoutingTable(test.input); got[test.inputRoute] != test.wantRoute {
 			t.Errorf(TEST_ERROR_MESSAGE, test.description)
 		}
 	}
@@ -83,7 +60,7 @@ func Test_getPidFromFileName(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if got, ok := getPidFromFileName(test.input); got.PageNumber != test.wantPageNo ||
+		if got, ok := GetPidFromFileName(test.input); got.PageNumber != test.wantPageNo ||
 			got.FrameId != test.wantFrameId ||
 			ok != test.wantOk {
 			t.Errorf(TEST_ERROR_MESSAGE, test.description)

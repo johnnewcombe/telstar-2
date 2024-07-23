@@ -41,7 +41,7 @@ func parseFrame(jsonFrame string) (types.Frame, error) {
 	return frame, nil
 }
 
-func createDefaultRoutingTable(pageNo int) []int {
+func CreateDefaultRoutingTable(pageNo int) []int {
 
 	var (
 		pageNumber float64
@@ -64,17 +64,7 @@ func createDefaultRoutingTable(pageNo int) []int {
 	return routingTable
 }
 
-func deleteEmpty(s []string) []string {
-	var r []string
-	for _, str := range s {
-		if str != "" {
-			r = append(r, str)
-		}
-	}
-	return r
-}
-
-func getPidFromFileName(filename string) (pid types.Pid, ok bool) {
+func GetPidFromFileName(filename string) (pid types.Pid, ok bool) {
 
 	var (
 		regex = regexp.MustCompile("^[0-9]{1,10}[a-z].edit.tf$")

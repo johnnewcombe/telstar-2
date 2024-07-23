@@ -38,9 +38,7 @@ func init() {
 	rootCmd.AddCommand(getFrames)
 	rootCmd.AddCommand(getStatus)
 	rootCmd.AddCommand(login)
-	rootCmd.AddCommand(purgeFrames)
 	rootCmd.AddCommand(publishFrame)
-	rootCmd.AddCommand(publishFrames)
 
 	rootCmd.PersistentFlags().BoolP("json", "j", false, k_json)
 	rootCmd.PersistentFlags().String("url", "", k_apiUrl)
@@ -80,17 +78,13 @@ func init() {
 	getFrames.PersistentFlags().Bool("primary", false, k_primary)
 
 	// Get Status
-	// none
+	// none, only global ones used (root)
 
 	// Login
 	login.PersistentFlags().StringP("user-id", "u", "", k_userId)
 	login.PersistentFlags().StringP("password", "p", "", k_password)
 
-	// Purge Frames
-	purgeFrames.PersistentFlags().String("page-id", "", k_pageId)
-	purgeFrames.PersistentFlags().Bool("primary", false, k_primary)
-
-	// Publish Frames
+	// Publish Frame
 	publishFrame.PersistentFlags().String("page-id", "", k_pageId)
 
 }

@@ -51,34 +51,3 @@ Deletes a page, i.e. a frame and all follow-on frames, including zero page route
 		return nil
 	},
 }
-
-/*
-unc cmdPublishFrame(apiUrl string, pageId string, primary bool, token string) (ResponseData, error) {
-
-	var (
-		respData ResponseData
-		err      error
-		url      = apiUrl + "/publish/" + pageId
-	)
-
-	if primary {
-		url += "?db=primary"
-	}
-
-	if !utils.IsValidPageId(pageId) {
-		exitWithHelp()
-	}
-
-	respData, err = get(url, token)
-	if err != nil {
-		return respData, err
-	}
-
-	if respData.StatusCode < 200 || respData.StatusCode > 299 {
-		return respData, fmt.Errorf("%s", respData.Body)
-	}
-
-	return respData, nil
-}
-
-*/

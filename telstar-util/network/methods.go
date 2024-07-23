@@ -155,48 +155,6 @@ func Delete(apiUrl string, token string) (ResponseData, error) {
 	return respData, nil
 }
 
-func Purge(apiUrl string, token string) (ResponseData, error) {
-
-	client := &http.Client{}
-	cookie := CreateCookie("token", token)
-	jwtCookie := CreateCookie("jwt", token)
-
-	var (
-		bytData  []byte
-		respData ResponseData
-	)
-
-	req, err := http.NewRequest(http.MethodDelete, apiUrl, bytes.NewBuffer(bytData))
-	if err != nil {
-		return respData, err
-	}
-
-	// set the request header Content-Type for json
-	req.Header.Set("Content-Type", "application/json; charset=utf-8")
-
-	if len(token) > 0 {
-		req.AddCookie(&cookie)
-		req.AddCookie(&jwtCookie)
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-		return respData, err
-	}
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return respData, err
-	}
-
-	respData.StatusCode = resp.StatusCode
-	respData.Status = resp.Status
-	respData.Body = string(body)
-
-	return respData, nil
-}
-
 func CreateCookie(name string, token string) http.Cookie {
 
 	expire := time.Now().AddDate(0, 0, 1)

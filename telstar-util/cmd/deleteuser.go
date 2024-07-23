@@ -45,21 +45,3 @@ Deletes a user from the currently logged in system. See the login command.`,
 
 	},
 }
-
-/*
-	var (
-		respData ResponseData
-		url      = apiUrl + "/user/" + userId
-	)
-
-	respData, err := delete(url, token)
-	if err != nil {
-		return respData, err
-	}
-
-	if respData.StatusCode < 200 || respData.StatusCode > 299 {
-		return respData, fmt.Errorf("%s", respData.Body)
-	}
-
-	return respData, nil
-*/

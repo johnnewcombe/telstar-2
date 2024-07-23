@@ -1,6 +1,6 @@
 package dal
 
-// Database acces layer methods that are not resricted by user Id
+// Database access layer methods that are not restricted by user Id
 
 import (
 	"bitbucket.org/johnnewcombe/telstar-library/logger"

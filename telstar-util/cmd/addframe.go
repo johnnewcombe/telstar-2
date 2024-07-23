@@ -73,7 +73,7 @@ func addSingleFrame(cmd *cobra.Command, filename string) (network.ResponseData, 
 		// we need the pid from the filename as edit.tf pages do not have a PID embedded within them
 		// TODO Check the top line of the edit.tf for a PID? then we wouldn't need to rely on the filename
 		//  or do both, i.e. no PID in edit.tf then check filename?
-		if pid, ok = getPidFromFileName(filename); !ok {
+		if pid, ok = GetPidFromFileName(filename); !ok {
 			return respData, errors.New("filename format error")
 		}
 

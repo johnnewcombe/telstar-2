@@ -33,7 +33,7 @@ func createEditTfFrame(pid types.Pid, urldata string) (frame string, err error) 
 		etfFrame.AuthorId = "telstar-util"
 		etfFrame.StaticPage = true
 		etfFrame.Visible = true
-		etfFrame.RoutingTable = createDefaultRoutingTable(pid.PageNumber)
+		etfFrame.RoutingTable = CreateDefaultRoutingTable(pid.PageNumber)
 
 		j, err := json.Marshal(etfFrame)
 		if err != nil {
