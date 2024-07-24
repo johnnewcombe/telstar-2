@@ -13,7 +13,6 @@ require (
 )
 
 require (
-	bitbucket.org/johnnewcombe/telstar-library v0.0.0-00010101000000-000000000000 // indirect
 	fyne.io/systray v1.10.0 // indirect
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/creack/goselect v0.1.2 // indirect
