@@ -67,6 +67,13 @@ func addSingleFrame(cmd *cobra.Command, filename string) (network.ResponseData, 
 	if frameData, err = loadText(filename); err != nil {
 		return respData, err
 	}
+	if isEditTfFrame(frameData) {
+		return respData, errors.New("edit.t frames are only supported as part of a standard json frame definition")
+	}
+
+	respData, err = addSingleFrameJson(apiUrl, primary, frameData, token)
+
+	return respData, err
 
 	if isEditTfFrame(frameData) {
 
@@ -98,4 +105,32 @@ func addSingleFrame(cmd *cobra.Command, filename string) (network.ResponseData, 
 	}
 
 	return respData, nil
+}
+
+func addSingleFrameJson(apiUrl string, primary bool, frameData string, token string) (network.ResponseData, error) {
+
+	var (
+		err      error
+		respData network.ResponseData
+		frame    types.Frame
+		//ok       bool
+	)
+
+	// validate the frameData
+	if frame, err = parseFrame(frameData); err != nil {
+		err = fmt.Errorf("invalid frameData: %v", err)
+		return respData, err
+	}
+	if !frame.IsValid() {
+		err = errors.New("invalid frameData")
+		return respData, err
+	}
+
+	respData, err = network.Put(apiUrl, frameData, token)
+	if err != nil {
+		return respData, err
+	}
+
+	return respData, nil
+
 }
