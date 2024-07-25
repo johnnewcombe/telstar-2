@@ -16,7 +16,6 @@ type EditTfFrame struct {
 	StaticPage   bool          `json:"static-page" bson:"static-page"`
 }
 
-// FIXME No longer supported
 func createEditTfFrame(pid types.Pid, urldata string) (frame string, err error) {
 
 	var etfFrame EditTfFrame
