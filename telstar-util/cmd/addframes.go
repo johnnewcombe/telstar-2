@@ -115,7 +115,7 @@ func processFs(apiUrl string, primary bool, sourceDir string, token string) (net
 				return respData, result, errors.New("edit.t frames are only supported as part of a standard json frame definition")
 			}
 
-			if respData, err = addSingleFrameJson(apiUrl, primary, frameData, token); err != nil {
+			if respData, err = addSingleFrameJson(apiUrl, frameData, token); err != nil {
 				return respData, result, err
 			}
 
@@ -202,7 +202,7 @@ func processGit(apiUrl string, primary bool, source string, token string) (netwo
 			frameData := string(buf)
 			//println(frameData)
 
-			if respData, err = addSingleFrameJson(apiUrl, primary, frameData, token); err != nil {
+			if respData, err = addSingleFrameJson(apiUrl, frameData, token); err != nil {
 				return err
 			}
 

@@ -43,9 +43,6 @@ func addSingleFrame(cmd *cobra.Command, filename string) (network.ResponseData, 
 		err       error
 		respData  network.ResponseData
 		frameData string
-		frame     types.Frame
-		pid       types.Pid
-		ok        bool
 	)
 
 	//load token - don't want to report errors here as we want an unauthorised status code to be returned
@@ -71,43 +68,12 @@ func addSingleFrame(cmd *cobra.Command, filename string) (network.ResponseData, 
 		return respData, errors.New("edit.t frames are only supported as part of a standard json frame definition")
 	}
 
-	respData, err = addSingleFrameJson(apiUrl, primary, frameData, token)
+	respData, err = addSingleFrameJson(apiUrl, frameData, token)
 
 	return respData, err
-
-	if isEditTfFrame(frameData) {
-
-		// we need the pid from the filename as edit.tf pages do not have a PID embedded within them
-		// TODO Check the top line of the edit.tf for a PID? then we wouldn't need to rely on the filename
-		//  or do both, i.e. no PID in edit.tf then check filename?
-		if pid, ok = GetPidFromFileName(filename); !ok {
-			return respData, errors.New("filename format error")
-		}
-
-		if frameData, err = createEditTfFrame(pid, frameData); !ok {
-			return respData, err
-		}
-	}
-
-	// validate the frameData
-	if frame, err = parseFrame(frameData); err != nil {
-		err = fmt.Errorf("invalid frameData: %v", err)
-		return respData, err
-	}
-	if !frame.IsValid() {
-		err = errors.New("invalid frameData")
-		return respData, err
-	}
-
-	respData, err = network.Put(apiUrl, frameData, token)
-	if err != nil {
-		return respData, err
-	}
-
-	return respData, nil
 }
 
-func addSingleFrameJson(apiUrl string, primary bool, frameData string, token string) (network.ResponseData, error) {
+func addSingleFrameJson(apiUrl string, frameData string, token string) (network.ResponseData, error) {
 
 	var (
 		err      error
