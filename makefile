@@ -1,5 +1,5 @@
 # Set this to the build version
-version := 2.0.22
+version := 2.0.23
 
 # Remember to set the ENV REFRESHED_AT variable in the associated docker files.
 
@@ -10,7 +10,7 @@ build:
 	make -C ./telstar-rss
 	make -C ./telstar-upload
 	make -C ./telstar-emf
-# Requires SUDO
+# Requires SUDOcd
 	make -C ./telstar-openweather
 
 #   Uncomment this line when fyne-cross is fixed

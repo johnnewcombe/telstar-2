@@ -6,7 +6,7 @@
 
 FROM ubuntu
 LABEL maintainer="John Newcombe, https://glasstty.com"
-ENV REFRESHED_AT 2024-02-02
+ENV REFRESHED_AT 2024-07-24
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/London

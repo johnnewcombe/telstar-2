@@ -3,6 +3,7 @@ package cmd
 import (
 	"bitbucket.org/johnnewcombe/telstar-util/globals"
 	"bitbucket.org/johnnewcombe/telstar-util/network"
+	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -20,10 +21,7 @@ Returns the version of the system.
 
 		respData.SetOK()
 
-		result := map[string]string{
-			"Version": globals.Version,
-		}
-		stdOut(cmd, respData, result)
+		fmt.Printf("\ntelstar-util %s\n\n", globals.Version)
 
 		return nil
 	},
