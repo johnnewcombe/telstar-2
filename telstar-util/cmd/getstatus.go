@@ -18,21 +18,24 @@ The HTTP Response Code 200 (OK) is returned if the system is OK
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (
-			url      string
+			apiUrl   string
 			respData network.ResponseData
 			err      error
 		)
 
 		// get the url to be checked
-		if url, err = cmd.Flags().GetString("url"); err != nil {
+		if apiUrl, err = cmd.Flags().GetString("url"); err != nil {
 			return err
 		}
 
-		if respData, err = network.Get(url, ""); err != nil {
+		apiUrl += "/status"
+
+		if respData, err = network.Get(apiUrl, ""); err != nil {
 			return err
 		}
 		result := map[string]string{
-			"Version": globals.Version,
+			"Client Version": globals.Version,
+			"API Version":    respData.Body,
 		}
 		stdOut(cmd, respData, result)
 		return nil

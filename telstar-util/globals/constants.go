@@ -1,7 +1,7 @@
 package globals
 
 const (
-	Version = "2.5"
+	Version = "2.5.0"
 	//	Response =  "\nHttp Response: %s\n\n"
 	//Response           = "{\"HTTPStatus\": \"%s\"}\n\n"
 	//ResponseWithResult = "{\"HTTP`Status`\": \"200 OK\", \"Result\": \"\"}"

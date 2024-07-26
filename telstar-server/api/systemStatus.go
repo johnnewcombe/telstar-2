@@ -1,5 +1,6 @@
 package api
 
+/*
 type ServerStatus struct {
 	Version SystemVersion `json:"version" bson:"version"`
 }
@@ -15,3 +16,6 @@ type SystemVersion struct {
 var systemStatus = ServerStatus{
 	version,
 }
+
+
+*/

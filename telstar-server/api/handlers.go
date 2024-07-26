@@ -308,13 +308,8 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 
 	var (
 		jsonVersion []byte
-		err         error
 	)
-
-	if jsonVersion, err = json.MarshalIndent(systemStatus, "", "    "); err != nil {
-		render.Render(w, r, ErrServerRequest(err))
-		return
-	}
+	jsonVersion = []byte(version)
 	w.Write(jsonVersion)
 }
 
@@ -528,9 +523,9 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-func getUsers(w http.ResponseWriter, r *http.Request) {
-	render.Render(w, r, ErrServerRequest(errors.New("not implemented)")))
-}
+	func getUsers(w http.ResponseWriter, r *http.Request) {
+		render.Render(w, r, ErrServerRequest(errors.New("not implemented)")))
+	}
 */
 func updateUser(w http.ResponseWriter, r *http.Request) {
 
