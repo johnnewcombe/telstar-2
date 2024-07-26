@@ -12,7 +12,12 @@ var publishFrame = &cobra.Command{
 	Use:   "publish-frame",
 	Short: "Publishes frames from the primary database to the secondary.",
 	Long: `
-Deletes a page, i.e. a frame and all follow-on frames, including zero page routed pages.`,
+The Telstar database consists of two distinct parts, Primary and Secondary.
+Typically frames would be updated on the Secondary part and then checked by
+viewing them via a Telstar instance configured to point to the Secondary
+databse. These could then be published to the Primary once everything was
+deemed to be OK.
+`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (
