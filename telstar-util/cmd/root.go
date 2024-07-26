@@ -39,6 +39,7 @@ func init() {
 	rootCmd.AddCommand(getStatus)
 	rootCmd.AddCommand(login)
 	rootCmd.AddCommand(publishFrame)
+	rootCmd.AddCommand(version)
 
 	rootCmd.PersistentFlags().BoolP("json", "j", false, k_json)
 	rootCmd.PersistentFlags().String("url", "", k_apiUrl)

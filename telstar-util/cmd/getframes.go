@@ -63,7 +63,7 @@ directory can be specified as a source to the add-frames command
 
 		if respData.StatusCode < 200 || respData.StatusCode > 299 {
 			// Render HTTP response and exit
-			fmt.Printf(globals.Response, respData.Status)
+			stdOut(cmd, respData, nil)
 			return nil
 		}
 

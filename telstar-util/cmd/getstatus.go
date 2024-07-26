@@ -3,7 +3,6 @@ package cmd
 import (
 	"bitbucket.org/johnnewcombe/telstar-util/globals"
 	"bitbucket.org/johnnewcombe/telstar-util/network"
-	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -32,8 +31,10 @@ The HTTP Response Code 200 (OK) is returned if the system is OK
 		if respData, err = network.Get(url, ""); err != nil {
 			return err
 		}
-
-		fmt.Printf(globals.Response, respData.Status)
+		result := map[string]string{
+			"Version": globals.Version,
+		}
+		stdOut(cmd, respData, result)
 		return nil
 	},
 }

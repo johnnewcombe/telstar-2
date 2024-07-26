@@ -32,7 +32,7 @@ then it will be created.
 			return err
 		}
 
-		fmt.Printf(globals.Response, respData.Status)
+		stdOut(cmd, respData, nil)
 		return nil
 	},
 }
