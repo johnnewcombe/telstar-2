@@ -13,7 +13,12 @@ var getFrame = &cobra.Command{
 	Use:   "get-frame",
 	Short: "Returns a single frame from the currently logged in system.",
 	Long: `
-Returns a single frame from the currently logged in system. See the login command.`,
+Returns a single frame from the currently logged in system. See the login
+command.
+
+Frames are stored in json format and the output from this command can be
+redirected to a file as required.
+`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (

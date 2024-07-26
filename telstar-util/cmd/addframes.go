@@ -23,7 +23,10 @@ var addFrames = &cobra.Command{
 	Use:   "add-frames",
 	Short: "Adds multiple frames to the currently logged in system.",
 	Long: `
-Adds multiple frame to the currently logged in system. See the login command.`,
+Adds multiple frame to the currently logged in system. See the login command.
+If a frame already exists, it frame will be updated, if it does not exist 
+then it will be created.
+`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (

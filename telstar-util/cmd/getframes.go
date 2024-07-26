@@ -14,7 +14,15 @@ var getFrames = &cobra.Command{
 	Use:   "get-frames",
 	Short: "Returns multiple frames from the currently logged in system.",
 	Long: `
-Returns multiple frame from the currently logged in system. See the login command.`,
+Returns multiple frame from the currently logged in system. See the login command.
+
+A destination directory is specified as a location for the frames to be stored.
+Frames are returned in json format and each frame is stored as a single json file
+with the filename in <page number><frame id>.json
+
+These files can be specified as a source to the the add-frame command and the 
+directory can be specified as a source to the add-frames command
+`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (

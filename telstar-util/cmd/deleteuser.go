@@ -10,7 +10,9 @@ var deleteUser = &cobra.Command{
 	Use:   "delete-user",
 	Short: "Deletes a user from the currently logged in system.",
 	Long: `
-Deletes a user from the currently logged in system. See the login command.`,
+Deletes a user from the currently logged in system. See the login command.
+
+`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (

@@ -11,8 +11,10 @@ var login = &cobra.Command{
 	Use:   "login",
 	Short: "Logs into a system.",
 	Long: `
-Logs into a system. A successful login stores a token to the local filesystem such that all 
-subsequents commands are directed to that system.`,
+Logs into a system. A successful login stores a token to the local filesystem
+this token is used on all subsequent commands that need authentication. The
+token expires after 10 minutes of inactivity.
+`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (

@@ -11,7 +11,10 @@ var getStatus = &cobra.Command{
 	Use:   "get-status",
 	Short: "Returns the status of the specified system.",
 	Long: `
-Returns the status of the specified system. This method does not require a login.`,
+Returns the status of the specified system. This method does not require a login.
+
+The HTTP Response Code 200 (OK) is returned if the system is OK
+`,
 
 	RunE: func(cmd *cobra.Command, args []string) error {
 
