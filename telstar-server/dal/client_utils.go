@@ -50,3 +50,38 @@ func getCollectionNames(connectionUrl string) (pNames, sNames []string, err erro
 	}
 	return pNames, sNames, err
 }
+
+func createIndex(connectionUrl string, collectionName string) error {
+
+	var (
+		err error
+	)
+
+	// get a context
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// connect
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			panic(err)
+		}
+	}()
+
+	collection := client.Database(DBNAME).Collection(collectionName)
+
+	var indexModel = mongo.IndexModel{
+		Keys: bson.D{
+			{"pid", 1},
+			//{"PID.frame-id", -1},
+		},
+	}
+	name, err := collection.Indexes().CreateOne(context.TODO(), indexModel)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Name of Index Created: " + name)
+
+	return nil
+}

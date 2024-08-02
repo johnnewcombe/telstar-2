@@ -33,6 +33,8 @@ COPY ./telstar-server/version.txt /opt/telstar/version.txt
 COPY ./telstar-util/telstar-util-2.0/telstar-util-2.0.zip /opt/telstar/
 COPY ./telstar-rss/telstar-rss-2.0/telstar-rss-2.0.zip /opt/telstar/
 COPY ./telstar-upload/telstar-upload-2.0/telstar-upload-2.0.zip /opt/telstar/
+
+// add plugins
 COPY ./telstar-openweather/telstar-openweather-2.0/telstar-openweather-linux-arm64 /opt/telstar/telstar-openweather
 
 WORKDIR /opt/telstar

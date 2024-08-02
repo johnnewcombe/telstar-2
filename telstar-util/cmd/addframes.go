@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bitbucket.org/johnnewcombe/telstar-library/types"
 	"bitbucket.org/johnnewcombe/telstar-util/globals"
 	"bitbucket.org/johnnewcombe/telstar-util/network"
 	"errors"
@@ -26,23 +27,33 @@ var addFrames = &cobra.Command{
 Adds multiple frame to the currently logged in system. See the login command.
 If a frame already exists, it frame will be updated, if it does not exist 
 then it will be created.
+
+Setting the page-id option. restricts the update to a specific page. For 
+example adding Page 222 might include 222a to 222z if they existed in the 
+source. If the frames already exist, they will be updated, if they do not 
+exist then they will be created.
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (
-			apiUrl   string
-			primary  bool
-			token    string
-			err      error
-			source   string
-			respData network.ResponseData
-			result   map[string]string
+			apiUrl        string
+			primary       bool
+			includeUnsafe bool
+			token         string
+			err           error
+			source        string
+			respData      network.ResponseData
+			result        map[string]string
 		)
 
 		//load token - don't want to report errors here as we want an unauthorised status code to be returned
 		token, _ = loadText(globals.TOKENFILE)
 
 		if apiUrl, err = cmd.Flags().GetString("url"); err != nil {
+			return err
+		}
+
+		if includeUnsafe, err = cmd.Flags().GetBool("include-unsafe"); err != nil {
 			return err
 		}
 
@@ -63,13 +74,14 @@ then it will be created.
 
 		// if its a git repo clone the repo in temp to get the files
 		// other wise assume its a local folder
-
 		if isGitUrl(source) {
-			if respData, result, err = processGit(apiUrl, primary, source, token); err != nil {
+			// note that setting page ID to "" prevents any restrictions in updating
+			if respData, result, err = processFramesGit(apiUrl, source, includeUnsafe, token); err != nil {
 				return err
 			}
 		} else {
-			if respData, result, err = processFs(apiUrl, primary, source, token); err != nil {
+			// note that setting page ID to "" prevents any restrictions in updating
+			if respData, result, err = processFramesFs(apiUrl, source, includeUnsafe, token); err != nil {
 				return err
 			}
 		}
@@ -79,12 +91,13 @@ then it will be created.
 	},
 }
 
-// processFs This passes the filenames of the specified folder to the AddFrame command for processing
-func processFs(apiUrl string, primary bool, sourceDir string, token string) (network.ResponseData, map[string]string, error) {
+// processFramesFs This passes the filenames of the specified folder to the AddFrame command for processing
+func processFramesFs(apiUrl string, sourceDir string, includeUnsafe bool, token string) (network.ResponseData, map[string]string, error) {
 
 	var (
 		err       error
 		files     []os.DirEntry
+		frame     types.Frame
 		count     int
 		respData  network.ResponseData
 		result    map[string]string
@@ -96,9 +109,6 @@ func processFs(apiUrl string, primary bool, sourceDir string, token string) (net
 	if files, err = os.ReadDir(sourceDir); err != nil {
 		return respData, result, err
 	}
-
-	// Sort the range of files based on name, so that the 'last' reported means something
-	sortFileNameAscend(files)
 
 	for _, f := range files {
 
@@ -115,22 +125,29 @@ func processFs(apiUrl string, primary bool, sourceDir string, token string) (net
 				return respData, result, err
 			}
 			if isEditTfFrame(frameData) {
-				return respData, result, errors.New("edit.t frames are only supported as part of a standard json frame definition")
+				return respData, result, errors.New("edit.tf frames are only supported as part of a standard json frame definition")
 			}
 
-			if respData, err = addSingleFrameJson(apiUrl, frameData, token); err != nil {
+			// validate the frameData
+			if frame, err = parseFrame(frameData); err != nil {
+				err = fmt.Errorf("invalid frame data: %v", err)
 				return respData, result, err
 			}
 
+			if respData, err = addSingleFrameJson(apiUrl, frame, includeUnsafe, token); err != nil {
+				return respData, result, err
+			}
+
+			count++
 			if respData.StatusCode < 200 || respData.StatusCode > 299 {
 				break
 			}
 
 			// keep a count of frames updated
-			count++
 			//last = f.Name()
 		}
 	}
+
 	result = map[string]string{
 		"Updated": strconv.Itoa(count),
 		//"Last":    last,
@@ -140,7 +157,7 @@ func processFs(apiUrl string, primary bool, sourceDir string, token string) (net
 
 // processGit The function clones/pulls the specified repo into memory and extracts each frame as json data.
 // Each json frame this is passed to the helper method addSingleFrameJson used by the AddFrame command.
-func processGit(apiUrl string, primary bool, source string, token string) (network.ResponseData, map[string]string, error) {
+func processFramesGit(apiUrl string, source string, includeUnsafe bool, token string) (network.ResponseData, map[string]string, error) {
 
 	const (
 		maxFileSize int64 = 16 * 1024 // 16Kb
@@ -155,6 +172,7 @@ func processGit(apiUrl string, primary bool, source string, token string) (netwo
 		err      error
 		commit   *object.Commit
 		tree     *object.Tree
+		frame    types.Frame
 		count    int
 		result   map[string]string
 		reader   io.ReadCloser
@@ -202,10 +220,13 @@ func processGit(apiUrl string, primary bool, source string, token string) (netwo
 			_, err = reader.Read(buf) // reader reads len(buf) bytes
 			reader.Close()
 
-			frameData := string(buf)
-			//println(frameData)
+			// validate the frameData
+			if frame, err = parseFrame(string(buf)); err != nil {
+				err = fmt.Errorf("invalid frame data: %v", err)
+				return err
+			}
 
-			if respData, err = addSingleFrameJson(apiUrl, frameData, token); err != nil {
+			if respData, err = addSingleFrameJson(apiUrl, frame, includeUnsafe, token); err != nil {
 				return err
 			}
 

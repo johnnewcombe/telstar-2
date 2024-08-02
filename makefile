@@ -1,5 +1,5 @@
 # Set this to the build version
-version := 2.0.23
+version := 2.5.RC1
 
 # Remember to set the ENV REFRESHED_AT variable in the associated docker files.
 

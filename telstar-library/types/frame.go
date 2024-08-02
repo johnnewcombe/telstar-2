@@ -9,18 +9,18 @@ import (
 type Frame struct {
 	//ID interface{} `bson:"_id,omitempty"` // this was used by some on stack overflow
 	//ID         primitive.ObjectID `bson:"_id,omitempty"`
-	PID        Pid    `json:"pid" bson:"pid"`
-	Visible    bool   `json:"visible" bson:"visible"`
-	HeaderText string `json:"header-text" bson:"header-text"`
-	Cost       int    `json:"cost" bson:"cost"`
-	DisableClear bool `json:"disable-clear" bson:"disable-clear"`
+	PID          Pid    `json:"pid" bson:"pid"`
+	Visible      bool   `json:"visible" bson:"visible"`
+	HeaderText   string `json:"header-text" bson:"header-text"`
+	Cost         int    `json:"cost" bson:"cost"`
+	DisableClear bool   `json:"disable-clear" bson:"disable-clear"`
 	//CacheId          string       `json:"cache-id" bson:"cache-id"`
-	FrameType    string       `json:"frame-type" bson:"frame-type"`
-	Redirect     Pid          `json:"redirect" bson:"redirect"`
-	Content      Content      `json:"content" bson:"content"`
-	Footer       Title        `json:"footer" bson:"footer"`
-	Title        Title        `json:"title" bson:"title"`
-	RoutingTable []int        `json:"routing-table" bson:"routing-table"`
+	FrameType    string  `json:"frame-type" bson:"frame-type"`
+	Redirect     Pid     `json:"redirect" bson:"redirect"`
+	Content      Content `json:"content" bson:"content"`
+	Footer       Title   `json:"footer" bson:"footer"`
+	Title        Title   `json:"title" bson:"title"`
+	RoutingTable []int   `json:"routing-table" bson:"routing-table"`
 	// FIXME The Cursor field doesn't seem to be being used at all, either remove it or find a use for it
 	//  the cursor in the nav field is added using markup
 	Cursor       bool         `json:"cursor" bson:"cursor"`
@@ -191,6 +191,7 @@ func (f *Frame) Dump() ([]byte, error) {
 
 	return data, nil
 }
+
 func (p *Pid) String() string {
 	return fmt.Sprintf("%d%s", p.PageNumber, p.FrameId)
 }

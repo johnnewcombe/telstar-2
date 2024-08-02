@@ -362,6 +362,7 @@ func InsertOrReplaceFrame(connectionUrl string, frame types.Frame, primaryDb boo
 			return fmt.Errorf("inserting frame %s: %v", frame.GetPageId(), err)
 		}
 	}
+
 	return err
 
 }
@@ -422,6 +423,7 @@ func InsertOrReplaceFrameByUser(connectionUrl string, frame types.Frame, primary
 			return fmt.Errorf("inserting frame %s: %v", frame.GetPageId(), err)
 		}
 	}
+
 	return err
 
 }

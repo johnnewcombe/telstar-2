@@ -9,22 +9,24 @@ import (
 )
 
 const (
-	k_apiUrl      = "URL of the API to be accessed."
-	k_userId      = "User ID."
-	k_userIdAdd   = "User ID to add or update."
-	k_password    = "Password."
-	k_name        = "User's display name."
-	k_pageId      = "Page ID."
-	k_primary     = "Specify the primary database."
-	k_source      = "Directory or GIT repository containing the json files to upload."
-	k_destination = "Directory where the json files should be stored."
-	k_fileName    = "Filename of json file."
-	k_json        = "Output results in json"
-	k_admin       = "Sets the admin status of the new user, default on non-admin."
-	k_api         = "Sets the api access status of the new user, default on no-access."
-	k_editor      = "Sets the editor status of the new user, default on non-editor."
-	k_basepage    = "Sets the base page. The base page determines where in the tree that frames can be added. Default is 999999999"
-	k_purge       = "Deletes all of the associated frames including 'zero page' extension frames"
+	k_apiUrl        = "URL of the API to be accessed."
+	k_userId        = "User ID."
+	k_userIdAdd     = "User ID to add or update."
+	k_password      = "Password."
+	k_name          = "User's display name."
+	k_pageNo        = "Restricts the update to a specific page."
+	k_frameId       = "Frame ID."
+	k_primary       = "Specify the primary database."
+	k_source        = "Directory or GIT repository containing the json files to upload."
+	k_destination   = "Directory where the json files should be stored."
+	k_fileName      = "Filename of json file."
+	k_json          = "Output results in json"
+	k_admin         = "Sets the admin status of the new user, default on non-admin."
+	k_api           = "Sets the api access status of the new user, default on no-access."
+	k_editor        = "Sets the editor status of the new user, default on non-editor."
+	k_basepage      = "Sets the base page. The base page determines where in the tree that frames can be added. Default is 999999999"
+	k_purge         = "Deletes all of the associated frames including 'zero page' extension frames"
+	k_includeUnsafe = "Include frames such as response frames and gateway frames."
 )
 
 func init() {
@@ -39,18 +41,29 @@ func init() {
 	rootCmd.AddCommand(getStatus)
 	rootCmd.AddCommand(login)
 	rootCmd.AddCommand(publishFrame)
+	rootCmd.AddCommand(addPage)
 	rootCmd.AddCommand(version)
 
-	rootCmd.PersistentFlags().BoolP("json", "j", false, k_json)
 	rootCmd.PersistentFlags().String("url", "", k_apiUrl)
 
 	// Add Frame
 	addFrame.PersistentFlags().StringP("filename", "f", "", k_fileName)
 	addFrame.PersistentFlags().Bool("primary", false, k_primary)
+	addFrame.PersistentFlags().BoolP("json", "j", false, k_json)
+	addFrame.PersistentFlags().Bool("include-unsafe", false, k_includeUnsafe)
 
 	// Add Frames
 	addFrames.PersistentFlags().StringP("source", "s", "", k_source)
 	addFrames.PersistentFlags().Bool("primary", false, k_primary)
+	addFrames.PersistentFlags().BoolP("json", "j", false, k_json)
+	addFrames.PersistentFlags().Bool("include-unsafe", false, k_includeUnsafe)
+
+	// Add Page
+	addPage.PersistentFlags().StringP("source", "s", "", k_source)
+	addPage.PersistentFlags().Int("page-no", -1, k_pageNo)
+	addPage.PersistentFlags().Bool("primary", false, k_primary)
+	addPage.PersistentFlags().BoolP("json", "j", false, k_json)
+	addPage.PersistentFlags().Bool("include-unsafe", false, k_includeUnsafe)
 
 	// Add User
 	//addUser.PersistentFlags().String("url", "", k_apiUrl)
@@ -61,22 +74,26 @@ func init() {
 	addUser.PersistentFlags().Bool("api-access", false, k_api)
 	addUser.PersistentFlags().Bool("editor", false, k_editor)
 	addUser.PersistentFlags().IntP("base-page", "b", 999999999, k_basepage)
+	addUser.PersistentFlags().BoolP("json", "j", false, k_json)
 
 	// Delete Frame
-	deleteFrame.PersistentFlags().String("page-id", "", k_pageId)
+	deleteFrame.PersistentFlags().String("frame-id", "", k_frameId)
 	deleteFrame.PersistentFlags().Bool("primary", false, k_primary)
 	deleteFrame.PersistentFlags().Bool("purge", false, k_purge)
+	deleteFrame.PersistentFlags().BoolP("json", "j", false, k_json)
 
 	// Delete User
 	deleteUser.PersistentFlags().StringP("user-id", "u", "", k_userId)
+	deleteUser.PersistentFlags().BoolP("json", "j", false, k_json)
 
 	// Get Frame <url> <page id> [primary|secondary]"
-	getFrame.PersistentFlags().String("page-id", "", k_pageId)
+	getFrame.PersistentFlags().String("frame-id", "", k_frameId)
 	getFrame.PersistentFlags().Bool("primary", false, k_primary)
 
 	// Get Frames
 	getFrames.PersistentFlags().StringP("destination", "d", "", k_destination)
 	getFrames.PersistentFlags().Bool("primary", false, k_primary)
+	getFrames.PersistentFlags().BoolP("json", "j", false, k_json)
 
 	// Get Status
 	// none, only global ones used (root)
@@ -84,9 +101,11 @@ func init() {
 	// Login
 	login.PersistentFlags().StringP("user-id", "u", "", k_userId)
 	login.PersistentFlags().StringP("password", "p", "", k_password)
+	login.PersistentFlags().BoolP("json", "j", false, k_json)
 
 	// Publish Frame
-	publishFrame.PersistentFlags().String("page-id", "", k_pageId)
+	publishFrame.PersistentFlags().String("frame-id", "", k_frameId)
+	publishFrame.PersistentFlags().BoolP("json", "j", false, k_json)
 
 }
 

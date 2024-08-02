@@ -21,9 +21,9 @@ const (
 	ERR_NON_API_ACCOUNT  = "this accounts does not have API access"
 	ERR_INVALID_HASH     = "invalid user"
 	ERR_INVALID_PAGEID   = "invalid pageId"
-	ERR_PAGEID_NOT_FOUND = "pageId not found"
+	ERR_PAGEID_NOT_FOUND = "frame not found"
 	ERR_USER_SCOPE       = "user does not have sufficient scope to perform this task"
-	ERR_INVALID_USERID   = "invalid userId"
+	ERR_INVALID_USERID   = "invalid user ID"
 	ERR_USER_NOT_FOUND   = "user not found"
 	MSG_USER_DELETED     = "user deleted"
 	MSG_USER_UPDATED     = "user updated"
@@ -136,7 +136,7 @@ func putLogin(w http.ResponseWriter, r *http.Request) {
 	// send a status 200 back in the response body
 	// Note that the HttpStatusCode gets set in the HttpResponse
 	// the msg appears in the response body, the two are not related
-	render.Render(w, r, Result(200, MSG_LOGIN_SUCCESS))
+	render.Render(w, r, HttpResult(200, MSG_LOGIN_SUCCESS))
 
 }
 
@@ -369,7 +369,7 @@ func updateFrame(w http.ResponseWriter, r *http.Request) {
 	// send a status 200 back in the response body
 	// Note that the HttpStatusCode gets set in the HttpResponse
 	// the msg appears in the response body, the two are not related
-	render.Render(w, r, Result(200, MSG_FRAME_UPDATED))
+	render.Render(w, r, HttpResult(200, MSG_FRAME_UPDATED))
 }
 
 func deleteFrame(w http.ResponseWriter, r *http.Request) {
@@ -432,7 +432,7 @@ func deleteFrame(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if deletedCount == 0 {
-			render.Render(w, r, Result(404, ERR_PAGEID_NOT_FOUND))
+			render.Render(w, r, HttpResult(404, ERR_PAGEID_NOT_FOUND))
 			return
 		}
 
@@ -441,7 +441,7 @@ func deleteFrame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.Render(w, r, Result(200, msg))
+	render.Render(w, r, HttpResult(200, msg))
 
 }
 
@@ -579,7 +579,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	// send a status 200 back in the response body
 	// Note that the HttpStatusCode gets set in the HttpResponse
 	// the msg appears in the response body, the two are not related
-	render.Render(w, r, Result(200, MSG_USER_UPDATED))
+	render.Render(w, r, HttpResult(200, MSG_USER_UPDATED))
 
 }
 
@@ -640,7 +640,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if deletedCount == 0 {
-			render.Render(w, r, Result(404, ERR_USER_NOT_FOUND))
+			render.Render(w, r, HttpResult(404, ERR_USER_NOT_FOUND))
 			return
 		}
 
@@ -651,8 +651,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	// send a status 200 back in the response body
 	// Note that the HttpStatusCode gets set in the HttpResponse
 	// the msg appears in the response body, the two are not related
-	render.Render(w, r, Result(200, MSG_USER_DELETED))
-
+	render.Render(w, r, HttpResult(200, MSG_USER_DELETED))
 }
 
 // getAuthUserIDFromContext gets the authorised user from context
@@ -674,4 +673,13 @@ func getAuthUserIDFromContext(r *http.Request) (string, error) {
 func getSettingsFromContext(r *http.Request) (config.Config, error) {
 	ctxData := r.Context().Value("ctx-data").(*ContextData)
 	return ctxData.Settings, nil
+}
+
+func HttpResult(httpResponseCode int, msg string) render.Renderer {
+	return &types.ApiResponse{
+		// the HttpStatusCode gets set in the HttpResponse
+		// the result Text appears in the body
+		HTTPStatusCode: httpResponseCode,
+		ResultText:     msg,
+	}
 }

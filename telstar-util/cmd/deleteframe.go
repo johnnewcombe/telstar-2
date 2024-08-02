@@ -45,15 +45,12 @@ length.
 		if apiUrl, err = cmd.Flags().GetString("url"); err != nil {
 			return err
 		}
-
-		if pageId, err = cmd.Flags().GetString("page-id"); err != nil {
+		if pageId, err = cmd.Flags().GetString("frame-id"); err != nil {
 			return err
 		}
-
 		if primary, err = cmd.Flags().GetBool("primary"); err != nil {
 			return err
 		}
-
 		if purge, err = cmd.Flags().GetBool("purge"); err != nil {
 			return err
 		}
@@ -71,8 +68,7 @@ length.
 			}
 		}
 
-		respData, err = network.Delete(apiUrl, token)
-		if err != nil {
+		if respData, err = deleteSingleFrame(apiUrl, token); err != nil {
 			return err
 		}
 
@@ -80,4 +76,18 @@ length.
 
 		return nil
 	},
+}
+
+func deleteSingleFrame(apiUrl string, token string) (network.ResponseData, error) {
+	var (
+		err      error
+		respData network.ResponseData
+	)
+
+	respData, err = network.Delete(apiUrl, token)
+	if err != nil {
+		return respData, err
+	}
+
+	return respData, nil
 }

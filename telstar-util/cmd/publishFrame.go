@@ -35,7 +35,7 @@ deemed to be OK.
 			return err
 		}
 
-		if pageId, err = cmd.Flags().GetString("page-id"); err != nil {
+		if pageId, err = cmd.Flags().GetString("frame-id"); err != nil {
 			return err
 		}
 

@@ -81,7 +81,7 @@ func ErrNotFoundRequest(err error) render.Renderer {
 
 //var ErrNotFound = &ErrResponse{HTTPStatusCode: 404, StatusText: "not found"}
 //var ErrUnAuthorised = &ErrResponse{HTTPStatusCode: 401, StatusText: "unauthorized."}
-
+/*
 type ResultResponse struct {
 	HTTPStatusCode int    `json:"-"`
 	ResultText     string `json:"result"` // user-level status message
@@ -93,7 +93,7 @@ func (s *ResultResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func Result(httpResponseCode int, msg string) render.Renderer {
+func HttpResult(httpResponseCode int, msg string) render.Renderer {
 	return &ResultResponse{
 		// the HttpStatusCode gets set in the HttpResponse
 		// the result Text appears in the body
@@ -101,6 +101,7 @@ func Result(httpResponseCode int, msg string) render.Renderer {
 		ResultText:     msg,
 	}
 }
+*/
 
 //func ResultUpdated(msg string) render.Renderer {
 //	return &ResultResponse{
