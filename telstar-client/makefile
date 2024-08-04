@@ -19,7 +19,7 @@ build:
 	#rm -r licences
 	#go-licenses check .
 	#go-licenses save . --save_path="licences"
-	#go-licenses save "bitbucket.org/johnnewcombe/telstar-client" --save_path="tmp/licenses"
+	#go-licenses save "github.com/johnnewcombe/telstar-client" --save_path="tmp/licenses"
 
 	# MacOS/AMD copy config files to app bundle resources
 	#cp nxtel.yml ./fyne-cross/dist/darwin-amd64/telstar-client.app/Contents/Resources

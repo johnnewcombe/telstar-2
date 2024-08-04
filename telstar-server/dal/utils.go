@@ -1,10 +1,10 @@
 package dal
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/utils"
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
 )

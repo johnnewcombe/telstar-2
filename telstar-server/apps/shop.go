@@ -1,6 +1,6 @@
 package apps
 
-import "bitbucket.org/johnnewcombe/telstar/config"
+import "github.com/johnnewcombe/telstar/config"
 
 func ShopAddPurchase(sessionId string, settings config.Config, args []string) (bool, error) {
 

@@ -1,10 +1,10 @@
 package api
 
 import (
-	"bitbucket.org/johnnewcombe/telstar/config"
 	"context"
 	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
+	"github.com/johnnewcombe/telstar/config"
 	"github.com/lestrrat-go/jwx/jwt"
 	"net/http"
 )
@@ -91,11 +91,11 @@ func LoggedInOnly(next http.Handler) http.Handler {
 // These are placed in context before calling the actualk handler. This is used as follows...
 // Instead of using a basic handler like this;
 //
-//          r.Get("/", getFrame)
+//	r.Get("/", getFrame)
 //
 // We can leverage the wrapper as follows;
 //
-//          r.Get("/", HandlerWrapper(http.HandlerFunc(getFrame), settings))
+//	r.Get("/", HandlerWrapper(http.HandlerFunc(getFrame), settings))
 //
 // This second approach places settings into context so that the actual handler
 // can get access to them.

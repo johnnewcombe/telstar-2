@@ -1,12 +1,12 @@
-module bitbucket.org/johnnewcombe/telstar-util
+module github.com/johnnewcombe/telstar-util
 
 go 1.22
 
 // use the local library rather than the one in bitbucket
-replace bitbucket.org/johnnewcombe/telstar-library => ../telstar-library
+replace github.com/johnnewcombe/telstar-library => ../telstar-library
 
 require (
-	bitbucket.org/johnnewcombe/telstar-library v0.0.0-20220314174241-c5c80a4acadb
+	github.com/johnnewcombe/telstar-library v0.0.0-20220314174241-c5c80a4acadb
 	github.com/go-git/go-git/v5 v5.12.0
 	github.com/spf13/cobra v1.8.1
 )

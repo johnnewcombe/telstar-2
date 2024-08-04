@@ -1,10 +1,10 @@
 package display
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-client/constants"
 	"bitbucket.org/johnnewcombe/telstar-client/customFyne"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
+	"github.com/johnnewcombe/telstar-client/constants"
 )
 
 func (s *Screen) isLastRow(row int) bool {
@@ -66,7 +66,7 @@ func (s *Screen) isDoubleHeightLowerRow(row int) bool {
 
 func (s *Screen) clearToEndOfLine(cursorCol int, cursorRow int) {
 	for col := cursorCol; col < constants.COLS; col++ {
-		s.setText(0x20, col, cursorRow, false,customFyne.CharTypeNone)
+		s.setText(0x20, col, cursorRow, false, customFyne.CharTypeNone)
 	}
 }
 
@@ -130,7 +130,7 @@ func (s *Screen) getMosaicContainer(index int) *customFyne.Block {
 	return &block
 }
 
-//func (s *Screen) getTextCanvas(index int) *bugButton {
+// func (s *Screen) getTextCanvas(index int) *bugButton {
 func (s *Screen) getTextCanvas(index int) *canvas.Text {
 
 	if index >= constants.COLS*constants.ROWS {
@@ -154,8 +154,6 @@ func (s *Screen) getCursorCanvas(index int) *canvas.Rectangle {
 	return bg
 }
 
-
-
 func (s *Screen) roll() {
 	if s.cursorRow >= constants.ROWS {
 		s.cursorRow = s.cursorRow - constants.ROWS
@@ -175,4 +173,3 @@ func (s *Screen) wrap() {
 		s.cursorRow--
 	}
 }
-

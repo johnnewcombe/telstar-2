@@ -1,15 +1,15 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/file"
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
-	"bitbucket.org/johnnewcombe/telstar-library/text"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
-	"bitbucket.org/johnnewcombe/telstar-rss/article"
 	_ "embed"
 	"flag"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/file"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/text"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/utils"
+	"github.com/johnnewcombe/telstar-rss/article"
 	"github.com/mmcdole/gofeed"
 	"io/fs"
 	"io/ioutil"
@@ -97,7 +97,6 @@ func createFrames(articles []article.Article, templatePath string, outputDirecto
 		TITLETAG       = "[TITLE]"
 		CONTENTTAG     = "[CONTENT]"
 		PUBLISHDATETAG = "[PUBLISHDATE]"
-
 	)
 
 	var (

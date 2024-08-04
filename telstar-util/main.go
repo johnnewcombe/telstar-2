@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-util/cmd"
+	"github.com/johnnewcombe/telstar-util/cmd"
 	"os"
 )
 

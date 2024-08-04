@@ -1,11 +1,11 @@
 package install
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/convert"
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar/config"
-	"bitbucket.org/johnnewcombe/telstar/dal"
+	"github.com/johnnewcombe/telstar-library/convert"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/dal"
 	"strings"
 )
 
@@ -65,8 +65,6 @@ func CreateSystemPages(settings config.Config) error {
 	if err = create101Page(settings); err != nil {
 		return err
 	}
-
-
 
 	return nil
 }
@@ -185,7 +183,7 @@ func create91c(settings config.Config) error {
 	var (
 		frame   types.Frame
 		primary bool
-		sb = strings.Builder{}
+		sb      = strings.Builder{}
 	)
 
 	frame.PID.PageNumber = 91
@@ -325,7 +323,7 @@ func create99a(settings config.Config) error {
 	sb.WriteString("   [W][NAME]\n\n\r\n")
 	sb.WriteString("[b][h-]")
 	sb.WriteString("[g[ Welcome to Telstar]]") // alphagraphics delineated with [[ and ]] small g = graphics green
-	sb.WriteString("[b][h-]")                 // horizontal line
+	sb.WriteString("[b][h-]")                  // horizontal line
 	sb.WriteString("\n\n\r\n")
 	sb.WriteString("      [G]YOU ARE CONNECTED TO [SERVER]\r\n")
 	sb.WriteString("      [G]     [DATE] [TIME]\r\n")

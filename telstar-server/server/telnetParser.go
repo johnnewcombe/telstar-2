@@ -1,17 +1,17 @@
 package server
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/logger"
 )
 
 const (
-	TELNET_undefined  = iota
-	IAC_found  // 1
-	SB_found   // 2
-	DO_found   // 3
-	WILL_found // 4
-	DONT_found // 5
-	WONT_found // 6
+	TELNET_undefined = iota
+	IAC_found        // 1
+	SB_found         // 2
+	DO_found         // 3
+	WILL_found       // 4
+	DONT_found       // 5
+	WONT_found       // 6
 )
 
 type TelnetParser struct {

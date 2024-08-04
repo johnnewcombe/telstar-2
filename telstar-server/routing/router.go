@@ -1,14 +1,14 @@
 package routing
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
-	"bitbucket.org/johnnewcombe/telstar/session"
 	"errors"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/utils"
+	"github.com/johnnewcombe/telstar/session"
 	"strings"
 
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/logger"
 )
 
 const ( // iota is reset to 0
@@ -275,7 +275,7 @@ func preProcessInputByte(request *RouterRequest, response *RouterResponse) {
 			response.RoutingBuffer = response.RoutingBuffer[:len(response.RoutingBuffer)-1]
 			response.Status = BufferCharacterDeleted
 
-			if len(response.RoutingBuffer) == 0{
+			if len(response.RoutingBuffer) == 0 {
 				response.ImmediateMode = true
 			}
 		}

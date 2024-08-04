@@ -1,8 +1,8 @@
 package file
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
 	"errors"
+	"github.com/johnnewcombe/telstar-library/logger"
 	"io/fs"
 	"io/ioutil"
 	"os"
@@ -36,15 +36,15 @@ func DeleteFiles(fileSpec string) {
 	}
 }
 
-func WriteFile(filename string, data []byte) error{
+func WriteFile(filename string, data []byte) error {
 	return ioutil.WriteFile(filename, data, 0644)
 }
 
-func ReadFile(path string) ([]byte, error){
+func ReadFile(path string) ([]byte, error) {
 
-	var(
+	var (
 		bytes []byte
-		err error
+		err   error
 	)
 	if bytes, err = ioutil.ReadFile(path); err != nil {
 		return bytes, err
@@ -66,6 +66,3 @@ func ReadFiles(directory string) ([]fs.FileInfo, error) {
 
 	return files, nil
 }
-
-
-

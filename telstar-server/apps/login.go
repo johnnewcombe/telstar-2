@@ -1,11 +1,11 @@
 package apps
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar/config"
-	"bitbucket.org/johnnewcombe/telstar/dal"
-	"bitbucket.org/johnnewcombe/telstar/session"
 	"errors"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/dal"
+	"github.com/johnnewcombe/telstar/session"
 )
 
 func Login(sessionId string, settings config.Config, args []string) (bool, error) {
@@ -14,7 +14,7 @@ func Login(sessionId string, settings config.Config, args []string) (bool, error
 		user     types.User
 		userId   string
 		password string
-		err error
+		err      error
 	)
 	if !(len(args) <= 3) { // un, password, current pageId
 		return false, errors.New("Incorrect number of arguments for login")
@@ -37,5 +37,3 @@ func Login(sessionId string, settings config.Config, args []string) (bool, error
 
 	return user.Authenticated, nil
 }
-
-

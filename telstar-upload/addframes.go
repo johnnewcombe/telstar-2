@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/utils"
 	"io/fs"
 	"io/ioutil"
 	"log"
@@ -71,7 +71,7 @@ func cmdAddFrames(apiUrl string, srcDirectory string, primary bool, token string
 	return respData, nil
 }
 
-func getPageIdFromFilename (filename string) string{
+func getPageIdFromFilename(filename string) string {
 
 	// get page ID
 	_, filename = path.Split(filename)

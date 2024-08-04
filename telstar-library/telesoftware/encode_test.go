@@ -1,9 +1,9 @@
 package telesoftware
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/text"
 	"encoding/hex"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/text"
 	"testing"
 )
 
@@ -121,7 +121,7 @@ func Test_enblock(t *testing.T) {
 	}
 }
 
-//|A|Gc|I|L002|Zm
+// |A|Gc|I|L002|Zm
 func Test_CreateFrames(t *testing.T) {
 	t.Error("Test not implemented!")
 }

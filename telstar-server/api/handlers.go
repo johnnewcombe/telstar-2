@@ -1,17 +1,17 @@
 package api
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
-	"bitbucket.org/johnnewcombe/telstar/config"
-	"bitbucket.org/johnnewcombe/telstar/dal"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/utils"
+	"github.com/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/dal"
 	"net/http"
 	"strings"
 )

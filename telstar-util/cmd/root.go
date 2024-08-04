@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-util/globals"
 	_ "embed"
 	"fmt"
+	"github.com/johnnewcombe/telstar-util/globals"
 	"github.com/spf13/cobra"
 	"os"
 )

@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-util/globals"
-	"bitbucket.org/johnnewcombe/telstar-util/network"
 	"fmt"
+	"github.com/johnnewcombe/telstar-util/globals"
+	"github.com/johnnewcombe/telstar-util/network"
 	"github.com/spf13/cobra"
 )
 

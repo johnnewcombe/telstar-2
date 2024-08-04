@@ -1,10 +1,10 @@
 package install
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar/config"
-	"bitbucket.org/johnnewcombe/telstar/dal"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/dal"
 	"strings"
 )
 
@@ -172,4 +172,3 @@ func create64Page(settings config.Config) error {
 	return dal.InsertOrReplaceFrame(settings.Database.Connection, frame, primary)
 
 }
-

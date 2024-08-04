@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
-	"bitbucket.org/johnnewcombe/telstar-util/globals"
-	"bitbucket.org/johnnewcombe/telstar-util/network"
 	"errors"
+	"github.com/johnnewcombe/telstar-library/utils"
+	"github.com/johnnewcombe/telstar-util/globals"
+	"github.com/johnnewcombe/telstar-util/network"
 	"github.com/spf13/cobra"
 )
 

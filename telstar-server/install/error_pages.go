@@ -1,11 +1,11 @@
 package install
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar/config"
-	"bitbucket.org/johnnewcombe/telstar/dal"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/dal"
 	"strings"
 )
 
@@ -55,7 +55,7 @@ func create9901Page(settings config.Config) error {
 	frame.FrameType = globals.FRAME_TYPE_INFORMATION
 	frame.Cursor = false
 	frame.RoutingTable = []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	frame.NavMessage = fmt.Sprintf("[R][n][Y]PRESS[W]%s[Y]TO CONTINUE,[W]",string(globals.HASH))
+	frame.NavMessage = fmt.Sprintf("[R][n][Y]PRESS[W]%s[Y]TO CONTINUE,[W]", string(globals.HASH))
 	frame.NavMessageNotFound = NavNotFoundBlue
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
@@ -82,7 +82,7 @@ func create9902Page(settings config.Config) error {
 	frame.FrameType = globals.FRAME_TYPE_INITIAL
 	frame.Cursor = false
 	frame.RoutingTable = []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	frame.NavMessage = fmt.Sprintf("[B][n][Y]PRESS[W]%s[Y]TO CONTINUE,[W]",string(globals.HASH))
+	frame.NavMessage = fmt.Sprintf("[B][n][Y]PRESS[W]%s[Y]TO CONTINUE,[W]", string(globals.HASH))
 	frame.NavMessageNotFound = NavNotFoundBlue
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
@@ -110,7 +110,7 @@ func create9903Page(settings config.Config) error {
 	frame.FrameType = globals.FRAME_TYPE_INITIAL
 	frame.Cursor = false
 	frame.RoutingTable = []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	frame.NavMessage = fmt.Sprintf("[B][n][Y]PRESS[W]%s[Y]TO CONTINUE,[W]",string(globals.HASH))
+	frame.NavMessage = fmt.Sprintf("[B][n][Y]PRESS[W]%s[Y]TO CONTINUE,[W]", string(globals.HASH))
 	frame.NavMessageNotFound = NavNotFoundBlue
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY

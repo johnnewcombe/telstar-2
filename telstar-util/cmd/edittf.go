@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/types"
 	"encoding/json"
 	"errors"
+	"github.com/johnnewcombe/telstar-library/types"
 	"strings"
 )
 

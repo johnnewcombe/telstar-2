@@ -1,13 +1,13 @@
 package display
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-client/constants"
 	"bitbucket.org/johnnewcombe/telstar-client/customFyne"
 	"context"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"github.com/johnnewcombe/telstar-client/constants"
 	"image/color"
 	"sync"
 	"time"
@@ -355,7 +355,7 @@ func (s *Screen) addMosaicOffset(b byte) byte {
 
 }
 
-//getDoubleHeightMosaicUpper Accepts mosaic char and returns upper and lower portions of double height chars
+// getDoubleHeightMosaicUpper Accepts mosaic char and returns upper and lower portions of double height chars
 func (s *Screen) getDoubleHeightMosaic(c byte) (upper byte, lower byte) {
 
 	c = s.removeMosaicOffset(c)

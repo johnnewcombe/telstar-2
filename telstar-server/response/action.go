@@ -1,11 +1,11 @@
 package response
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar/apps"
-	"bitbucket.org/johnnewcombe/telstar/config"
 	"context"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar/apps"
+	"github.com/johnnewcombe/telstar/config"
 	"os/exec"
 	"time"
 )
@@ -20,7 +20,7 @@ func action(sessionId string, frame *types.Frame, args []string, settings config
 		err           error
 	)
 	cmd = frame.ResponseData.Action.Exec
-	if len(cmd) >0 {
+	if len(cmd) > 0 {
 		switch cmd {
 		case "telstar.login":
 

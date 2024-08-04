@@ -1,11 +1,11 @@
-module bitbucket.org/johnnewcombe/telstar-client
+module github.com/johnnewcombe/telstar-client
 
 go 1.17
 
-replace bitbucket.org/johnnewcombe/telstar-library => ../telstar-library
+replace github.com/johnnewcombe/telstar-library => ../telstar-library
 
 require (
-	bitbucket.org/johnnewcombe/telstar-library v0.0.0-00010101000000-000000000000
+	github.com/johnnewcombe/telstar-library v0.0.0-00010101000000-000000000000
 	fyne.io/fyne/v2 v2.2.1
 	github.com/ilyakaznacheev/cleanenv v1.2.6
 	go.bug.st/serial.v1 v0.0.0-20191202182710-24a6610f0541

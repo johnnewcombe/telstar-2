@@ -5,10 +5,10 @@ import (
 	"net"
 	"time"
 
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/logger"
 )
 
-const(
+const (
 	MAX_INACTIVE_CRS = 3
 )
 

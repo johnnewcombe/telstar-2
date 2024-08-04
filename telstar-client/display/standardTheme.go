@@ -1,9 +1,9 @@
 package display
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-client/constants"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/theme"
+	"github.com/johnnewcombe/telstar-client/constants"
 	"image/color"
 )
 
@@ -49,11 +49,11 @@ func (m StandardTheme) Icon(name fyne.ThemeIconName) fyne.Resource {
 		return constants.CloudIcon
 	} else if name == "close" {
 		return constants.CloseIcon
-	} else{		return theme.DefaultTheme().Icon(name)
+	} else {
+		return theme.DefaultTheme().Icon(name)
 	}
 }
 
 func (m StandardTheme) Size(name fyne.ThemeSizeName) float32 {
 	return theme.DefaultTheme().Size(name)
 }
-

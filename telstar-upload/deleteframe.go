@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/logger"
 )
 
 func cmdDeleteFrame(apiUrl, pageId string, primary bool, token string) (ResponseData, error) {
@@ -14,9 +14,9 @@ func cmdDeleteFrame(apiUrl, pageId string, primary bool, token string) (Response
 
 	if primary {
 		url += "?db=primary"
-		url+= "&purge=true"
+		url += "&purge=true"
 	} else {
-		url+="?purge=true"
+		url += "?purge=true"
 	}
 
 	respData, err := delete(url, token)
@@ -27,7 +27,7 @@ func cmdDeleteFrame(apiUrl, pageId string, primary bool, token string) (Response
 	if respData.StatusCode < 200 || respData.StatusCode > 299 {
 		return respData, fmt.Errorf("%s", respData.Body)
 	}
-	logger.LogInfo.Printf("Deleting frame %s.", pageId )
+	logger.LogInfo.Printf("Deleting frame %s.", pageId)
 
 	return respData, nil
 }

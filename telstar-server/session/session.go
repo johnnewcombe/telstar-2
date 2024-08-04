@@ -1,8 +1,8 @@
 package session
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/types"
 	"errors"
+	"github.com/johnnewcombe/telstar-library/types"
 )
 
 // global session data, holds data for ALL connected users
@@ -115,7 +115,7 @@ func PeekHistory(sessionId string) (string, bool) {
 	if IsHistoryEmpty(sessionId) {
 		return "", false
 	} else {
-		index := len(s.History) - 1   // Get the index of the top most element.
+		index := len(s.History) - 1     // Get the index of the top most element.
 		return (s.History)[index], true // Index into the slice and obtain the element.
 	}
 }

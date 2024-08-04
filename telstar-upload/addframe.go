@@ -1,10 +1,10 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"errors"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/utils"
 	"strings"
 )
 
@@ -89,7 +89,7 @@ func cmdAddFrame(apiUrl string, frameFile string, primary bool, token string, ba
 		return respData, fmt.Errorf("%s", respData.Body)
 	}
 
-	logger.LogInfo.Printf("Adding frame %d%s.", frame.PID.PageNumber, frame.PID.FrameId )
+	logger.LogInfo.Printf("Adding frame %d%s.", frame.PID.PageNumber, frame.PID.FrameId)
 
 	return respData, nil
 }

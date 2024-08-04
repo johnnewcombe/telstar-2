@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/convert"
 	"encoding/json"
 	"errors"
+	"github.com/johnnewcombe/telstar-library/convert"
 	"strings"
 )
 

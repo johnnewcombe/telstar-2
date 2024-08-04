@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/logger"
 )
 
 func Connect(conn net.Conn, url string, dataLinkEscape byte, baudRate int, initBytes []byte) bool {
@@ -68,7 +68,7 @@ func xfer(ctx context.Context, waitgroup *sync.WaitGroup, src net.Conn, dst net.
 
 	var (
 		initDisabled bool
-		reader           *bufio.Reader
+		reader       *bufio.Reader
 	)
 
 	// the last thing we do is tell the waitgroup when we have completed
@@ -128,7 +128,7 @@ func xfer(ctx context.Context, waitgroup *sync.WaitGroup, src net.Conn, dst net.
 		}
 		logger.LogInfo.Printf("Byte '%02x' received from %s.", inputByte, src.RemoteAddr().String())
 
-		write :=func(data []byte){
+		write := func(data []byte) {
 			if _, err := dst.Write(data); err != nil {
 				logger.LogError.Printf("WRITE: %s", err)
 			} else {
@@ -145,27 +145,27 @@ func xfer(ctx context.Context, waitgroup *sync.WaitGroup, src net.Conn, dst net.
 
 		} else {
 			//
-			if len(initBytes)>0  && !initDisabled {
+			if len(initBytes) > 0 && !initDisabled {
 				// if we have init bytes e.g. from the minitel parser, send them
 				write(initBytes)
 				// we only do this once
 				initDisabled = true
 			}
 			write([]byte{inputByte})
-/*
-			if _, err := dst.Write([]byte{inputByte}); err != nil {
-				logger.LogError.Printf("WRITE: %s", err)
-			} else {
-				logger.LogInfo.Printf("Byte Sent to %s.", dst.RemoteAddr().String())
-			}
-*/
+			/*
+				if _, err := dst.Write([]byte{inputByte}); err != nil {
+					logger.LogError.Printf("WRITE: %s", err)
+				} else {
+					logger.LogInfo.Printf("Byte Sent to %s.", dst.RemoteAddr().String())
+				}
+			*/
 		}
-
 
 		// baud rate simulation
 		time.Sleep(time.Duration(baudRate))
 	}
 }
+
 // TODO this same function is defined in PAD, SERVER and Net Client
 func readByte(reader *bufio.Reader) (bool, byte) {
 
@@ -177,6 +177,7 @@ func readByte(reader *bufio.Reader) (bool, byte) {
 	logger.LogInfo.Println("character read:", inputByte)
 	return true, inputByte
 }
+
 /*
 func readByte(conn net.Conn) (bool, byte) {
 
@@ -203,4 +204,4 @@ func readByte(conn net.Conn) (bool, byte) {
 	}
 }
 
- */
+*/

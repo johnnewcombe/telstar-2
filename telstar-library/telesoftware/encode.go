@@ -1,16 +1,16 @@
 package telesoftware
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/utils"
 )
 
 const (
-	BLOCK_START      = "\x7C\x41" // 'A'
-	BLOCK_END        = "\x7C\x5A" // 'Z'
-	BLOCK_G          = "\x7C\x47" // G
-	BLOCK_I          = "\x7C\x49" // I
-	EOL              = "\x7c\x4c" // EOL
+	BLOCK_START = "\x7C\x41" // 'A'
+	BLOCK_END   = "\x7C\x5A" // 'Z'
+	BLOCK_G     = "\x7C\x47" // G
+	BLOCK_I     = "\x7C\x49" // I
+	EOL         = "\x7c\x4c" // EOL
 
 	// MAX_CHARS_PER_BLOCK spec not clear whether 859 includes all block/chksum bytes
 	// in this implementation all data and block markers and chksum falls within this value.
@@ -139,7 +139,7 @@ func Enblock(encodedData []byte, pageNumber int, frameId rune, name string, maxC
 		block          Block
 		charsAvailable int
 		checksum       byte
-		err        error
+		err            error
 	)
 
 	charsAvailable = maxCharsPerBlock

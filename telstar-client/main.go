@@ -1,9 +1,7 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-client/comms"
 	"bitbucket.org/johnnewcombe/telstar-client/constants"
-	"bitbucket.org/johnnewcombe/telstar-client/display"
 	"bitbucket.org/johnnewcombe/telstar-client/keyboard"
 	"context"
 	_ "embed"
@@ -18,6 +16,8 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
+	"github.com/johnnewcombe/telstar-client/comms"
+	"github.com/johnnewcombe/telstar-client/display"
 	"gopkg.in/yaml.v3"
 	"image/color"
 	"io/fs"
@@ -176,7 +176,7 @@ func main() {
 		return nil
 	}
 
-	closeFunc := func () {
+	closeFunc := func() {
 		// close the previous client and stop the read goroutine.
 		// The commsClient.Read() goroutine blocks on serial/net. Closing the
 		// connection/port will cause a read error and allow the go routine to continue
@@ -647,7 +647,6 @@ func main() {
 
 	w.ShowAndRun()
 }
-
 
 func execAction(cmd string, args ...string) (string, error) {
 	var (

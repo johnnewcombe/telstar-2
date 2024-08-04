@@ -1,7 +1,7 @@
 package apps
 
 import (
-	"bitbucket.org/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/config"
 )
 
 func MailSend(sessionId string, settings config.Config, args []string) (bool, error) {

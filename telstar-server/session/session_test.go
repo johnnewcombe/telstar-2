@@ -1,7 +1,7 @@
 package session
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/types"
 	"testing"
 )
 
@@ -39,7 +39,7 @@ func Test_getCurrentFrameIdFromCache(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if got, ok := PeekHistory(sessionId); got != test.want || !ok || IsHistoryEmpty(sessionId){
+		if got, ok := PeekHistory(sessionId); got != test.want || !ok || IsHistoryEmpty(sessionId) {
 			t.Errorf(TEST_ERROR_MESSAGE, test.description)
 		}
 	}

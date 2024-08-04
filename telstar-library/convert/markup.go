@@ -1,7 +1,7 @@
 package convert
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/globals"
 	"regexp"
 	"strings"
 )

@@ -1,9 +1,9 @@
 package convert
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
 	"errors"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/globals"
 	"strings"
 )
 

@@ -1,12 +1,12 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/utils"
 	"io"
 	"log"
 	"net/http"

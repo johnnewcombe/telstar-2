@@ -1,4 +1,4 @@
-module bitbucket.org/johnnewcombe/telstar-library
+module github.com/johnnewcombe/telstar-library
 
 go 1.17
 

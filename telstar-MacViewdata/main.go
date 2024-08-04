@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/file"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/file"
 	"os"
 	"strings"
 )
@@ -16,7 +16,7 @@ func main() {
 	)
 
 	// check the number of arguments
-	if len(os.Args) <2 {
+	if len(os.Args) < 2 {
 		fmt.Fprint(os.Stderr, "error: filename not specified\n")
 		os.Exit(1)
 	}
@@ -25,7 +25,7 @@ func main() {
 	filename := os.Args[1]
 
 	// check it exists
-	if !file.Exists(filename){
+	if !file.Exists(filename) {
 		fmt.Fprint(os.Stderr, "error: file not found\n")
 		os.Exit(1)
 	}

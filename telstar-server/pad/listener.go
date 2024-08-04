@@ -1,13 +1,13 @@
 package pad
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
-	"bitbucket.org/johnnewcombe/telstar/config"
-	"bitbucket.org/johnnewcombe/telstar/netClient"
-	"bitbucket.org/johnnewcombe/telstar/server"
 	"bufio"
 	"context"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/netClient"
+	"github.com/johnnewcombe/telstar/server"
 	"net"
 	"strconv"
 	"time"
@@ -53,7 +53,7 @@ func handleConn(conn net.Conn, settings config.Config, hosts map[string]string) 
 
 	// handles one connection at a time
 	var (
-		reader           *bufio.Reader
+		reader          *bufio.Reader
 		minitelResponse string
 		minitelParser   server.MinitelParser
 		err             error
@@ -77,8 +77,8 @@ func handleConn(conn net.Conn, settings config.Config, hosts map[string]string) 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	writeString(conn,WELCOME_MESSAGE,baudRate)
-	writeString(conn,PROMPT,baudRate)
+	writeString(conn, WELCOME_MESSAGE, baudRate)
+	writeString(conn, PROMPT, baudRate)
 
 	// create a new buffered reader
 	reader = bufio.NewReader(conn)
@@ -171,6 +171,7 @@ func readByte(reader *bufio.Reader) (bool, byte) {
 	logger.LogInfo.Println("character read:", inputByte)
 	return true, inputByte
 }
+
 /*
 func readByte(conn net.Conn) (bool, byte) {
 

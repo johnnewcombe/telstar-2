@@ -1,7 +1,7 @@
 package server
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/logger"
 )
 
 const (

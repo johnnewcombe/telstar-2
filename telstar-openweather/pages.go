@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/utils"
 	"strings"
 )
 
@@ -18,7 +18,7 @@ func createWeatherPage(weather WeatherResponse) string {
 	outputWeather.WriteString("[W]") // White text
 	outputWeather.WriteString(utils.GetDateTimeFromUnixData(weather.Dt))
 	outputWeather.WriteString("\r\n[b][m.]\r\n") // dots horizontal line
-	outputWeather.WriteString("[D]")                 // double height
+	outputWeather.WriteString("[D]")             // double height
 	outputWeather.WriteString(weather.Weather[0].Main)
 	outputWeather.WriteString(": ")
 	outputWeather.WriteString(weather.Weather[0].Description)

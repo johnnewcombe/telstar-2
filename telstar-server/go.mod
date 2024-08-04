@@ -1,12 +1,12 @@
-module bitbucket.org/johnnewcombe/telstar
+module github.com/johnnewcombe/telstar
 
 go 1.16
 
 // use the local library rather than the one in bitbucket
-replace bitbucket.org/johnnewcombe/telstar-library => ../telstar-library
+replace github.com/johnnewcombe/telstar-library => ../telstar-library
 
 require (
-	bitbucket.org/johnnewcombe/telstar-library v0.0.0-00010101000000-000000000000
+	github.com/johnnewcombe/telstar-library v0.0.0-00010101000000-000000000000
 	github.com/go-chi/chi/v5 v5.0.1
 	github.com/go-chi/jwtauth v1.2.0
 	github.com/go-chi/render v1.0.3

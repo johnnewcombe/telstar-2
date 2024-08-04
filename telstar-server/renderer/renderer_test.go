@@ -1,10 +1,10 @@
 package renderer
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar/config"
 	"context"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar/config"
 	"testing"
 	"time"
 )
@@ -52,7 +52,7 @@ func Test_getGreeting(t *testing.T) {
 func Test_renderHeader(t *testing.T) {
 
 	t.Error("Test not implemented!")
-	sessionId:="1234567890"
+	sessionId := "1234567890"
 
 	conn := MockConn{} // mock connection object
 	ctx, cancel := context.WithCancel(context.Background())
@@ -198,7 +198,7 @@ func Test_getLen(t *testing.T) {
 func getTestConfig() config.Config {
 	settings := config.Config{}
 	settings.Server.Strings.DefaultPageNotFoundMessage = ""
-	settings.Server.Strings.DefaultNavMessage= "[B][n][Y]Select item or[W]*page# : "
+	settings.Server.Strings.DefaultNavMessage = "[B][n][Y]Select item or[W]*page# : "
 	settings.Server.Strings.DefaultHeaderText = "[G]T[R]E[C]L[B]S[W]T[M]A[Y]R"
 	return settings
 }
@@ -213,4 +213,3 @@ func getTestRenderOptions() RenderOptions {
 func getEmptyFrame() types.Frame {
 	return types.Frame{}
 }
-

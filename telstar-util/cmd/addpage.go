@@ -1,16 +1,16 @@
 package cmd
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
-	"bitbucket.org/johnnewcombe/telstar-util/globals"
-	"bitbucket.org/johnnewcombe/telstar-util/network"
 	"errors"
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/storage/memory"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/utils"
+	"github.com/johnnewcombe/telstar-util/globals"
+	"github.com/johnnewcombe/telstar-util/network"
 	"github.com/spf13/cobra"
 	"io"
 	"net/url"

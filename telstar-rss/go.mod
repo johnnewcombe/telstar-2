@@ -1,12 +1,12 @@
-module bitbucket.org/johnnewcombe/telstar-rss
+module github.com/johnnewcombe/telstar-rss
 
 go 1.17
 
 // use the local library rather than the one in bitbucket
-replace bitbucket.org/johnnewcombe/telstar-library => ../telstar-library
+replace github.com/johnnewcombe/telstar-library => ../telstar-library
 
 require (
-	bitbucket.org/johnnewcombe/telstar-library v0.0.0-00010101000000-000000000000
+	github.com/johnnewcombe/telstar-library v0.0.0-00010101000000-000000000000
 	github.com/mmcdole/gofeed v1.1.3
 )
 

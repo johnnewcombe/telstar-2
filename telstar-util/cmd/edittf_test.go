@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/types"
 	"testing"
 )
 

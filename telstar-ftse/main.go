@@ -1,15 +1,15 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-ftse/FtseItem"
-	"bitbucket.org/johnnewcombe/telstar-library/file"
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
-	"bitbucket.org/johnnewcombe/telstar-library/text"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"flag"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/johnnewcombe/telstar-ftse/FtseItem"
+	"github.com/johnnewcombe/telstar-library/file"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/text"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/utils"
 	"io/fs"
 	"io/ioutil"
 	"log"
@@ -255,7 +255,7 @@ func parseHtml(dataDirectory string, filename string) ([]ftseItem.FtseItem, erro
 	data = getHtmlTable(htmlData, SELECTOR)
 	for _, f := range data {
 
-		fmt.Printf("%v\r\n",f)
+		fmt.Printf("%v\r\n", f)
 		var item = ftseItem.FtseItem{}
 		if len(f) > 0 {
 			item.Load(f)

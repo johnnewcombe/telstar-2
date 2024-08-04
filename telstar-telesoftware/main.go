@@ -1,13 +1,13 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/file"
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
-	"bitbucket.org/johnnewcombe/telstar-library/telesoftware"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
 	"flag"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/file"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/telesoftware"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/utils"
 	"log"
 	"os"
 	"path"

@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar-util/network"
 	"encoding/json"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-util/network"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"math"

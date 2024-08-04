@@ -1,9 +1,9 @@
 package api
 
 import (
-	"bitbucket.org/johnnewcombe/telstar/config"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth"
+	"github.com/johnnewcombe/telstar/config"
 	"net/http"
 )
 

@@ -1,16 +1,16 @@
 package response
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
-	"bitbucket.org/johnnewcombe/telstar-library/logger"
-	"bitbucket.org/johnnewcombe/telstar-library/types"
-	"bitbucket.org/johnnewcombe/telstar-library/utils"
-	"bitbucket.org/johnnewcombe/telstar/config"
-	"bitbucket.org/johnnewcombe/telstar/renderer"
-	"bitbucket.org/johnnewcombe/telstar/session"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/utils"
+	"github.com/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/renderer"
+	"github.com/johnnewcombe/telstar/session"
 	"net"
 	"path/filepath"
 	"time"
@@ -210,4 +210,3 @@ func renderBuffer(conn net.Conn, buffer []byte, baudRate int) error {
 	}
 	return nil
 }
-
