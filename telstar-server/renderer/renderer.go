@@ -452,7 +452,6 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 		default:
 		}
 
-
 		if _, err := conn.Write([]byte{b}); err != nil {
 			logger.LogError.Print(err)
 		}
@@ -595,7 +594,7 @@ func getSysInfo(settings config.Config, user types.User, options RenderOptions) 
 		sb   strings.Builder
 		baud string
 	)
-	ver, err := utils.GetVersion()
+	ver, err := globals.GetVersion()
 	if err != nil {
 		logger.LogError.Printf("error loading version file %v", err)
 		ver = ""

@@ -4,13 +4,12 @@ version := 2.5.RC1
 # Remember to set the ENV REFRESHED_AT variable in the associated docker files.
 
 build:
-	echo $(version) > ./telstar-server/version.txt
+	echo $(version) > ./telstar-library/globals/version.txt
 	make -C ./telstar-server
 	make -C ./telstar-util
 	make -C ./telstar-rss
 	make -C ./telstar-upload
-	make -C ./telstar-emf
-# Requires SUDOcd
+	#make -C ./telstar-emf
 	make -C ./telstar-openweather
 
 #   Uncomment this line when fyne-cross is fixed

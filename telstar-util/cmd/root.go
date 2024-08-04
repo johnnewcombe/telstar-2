@@ -19,7 +19,7 @@ const (
 	k_primary       = "Specify the primary database."
 	k_source        = "Directory or GIT repository containing the json files to upload."
 	k_destination   = "Directory where the json files should be stored."
-	k_fileName      = "Filename of json file."
+	k_fileName      = "Source filename of json file."
 	k_json          = "Output results in json"
 	k_admin         = "Sets the admin status of the new user, default on non-admin."
 	k_api           = "Sets the api access status of the new user, default on no-access."
@@ -46,8 +46,25 @@ func init() {
 
 	rootCmd.PersistentFlags().String("url", "", k_apiUrl)
 
+	// Get Status
+	getStatus.PersistentFlags().BoolP("json", "j", false, k_json)
+
+	// Login
+	login.PersistentFlags().StringP("user-id", "u", "", k_userId)
+	login.PersistentFlags().StringP("password", "p", "", k_password)
+	login.PersistentFlags().BoolP("json", "j", false, k_json)
+
+	// Get Frame <url> <page id> [primary|secondary]"
+	getFrame.PersistentFlags().StringP("frame-id", "f", "", k_frameId)
+	getFrame.PersistentFlags().Bool("primary", false, k_primary)
+
+	// Get Frames
+	getFrames.PersistentFlags().StringP("destination", "d", "", k_destination)
+	getFrames.PersistentFlags().Bool("primary", false, k_primary)
+	getFrames.PersistentFlags().BoolP("json", "j", false, k_json)
+
 	// Add Frame
-	addFrame.PersistentFlags().StringP("filename", "f", "", k_fileName)
+	addFrame.PersistentFlags().StringP("source", "s", "", k_fileName)
 	addFrame.PersistentFlags().Bool("primary", false, k_primary)
 	addFrame.PersistentFlags().BoolP("json", "j", false, k_json)
 	addFrame.PersistentFlags().Bool("include-unsafe", false, k_includeUnsafe)
@@ -65,8 +82,17 @@ func init() {
 	addPage.PersistentFlags().BoolP("json", "j", false, k_json)
 	addPage.PersistentFlags().Bool("include-unsafe", false, k_includeUnsafe)
 
+	// Delete Frame
+	deleteFrame.PersistentFlags().String("frame-id", "f", k_frameId)
+	deleteFrame.PersistentFlags().Bool("primary", false, k_primary)
+	deleteFrame.PersistentFlags().Bool("purge", false, k_purge)
+	deleteFrame.PersistentFlags().BoolP("json", "j", false, k_json)
+
+	// Publish Frame
+	publishFrame.PersistentFlags().String("frame-id", "f", k_frameId)
+	publishFrame.PersistentFlags().BoolP("json", "j", false, k_json)
+
 	// Add User
-	//addUser.PersistentFlags().String("url", "", k_apiUrl)
 	addUser.PersistentFlags().StringP("user-id", "u", "", k_userIdAdd)
 	addUser.PersistentFlags().StringP("password", "p", "", k_password)
 	addUser.PersistentFlags().StringP("name", "n", "", k_name)
@@ -76,36 +102,9 @@ func init() {
 	addUser.PersistentFlags().IntP("base-page", "b", 999999999, k_basepage)
 	addUser.PersistentFlags().BoolP("json", "j", false, k_json)
 
-	// Delete Frame
-	deleteFrame.PersistentFlags().String("frame-id", "", k_frameId)
-	deleteFrame.PersistentFlags().Bool("primary", false, k_primary)
-	deleteFrame.PersistentFlags().Bool("purge", false, k_purge)
-	deleteFrame.PersistentFlags().BoolP("json", "j", false, k_json)
-
 	// Delete User
 	deleteUser.PersistentFlags().StringP("user-id", "u", "", k_userId)
 	deleteUser.PersistentFlags().BoolP("json", "j", false, k_json)
-
-	// Get Frame <url> <page id> [primary|secondary]"
-	getFrame.PersistentFlags().String("frame-id", "", k_frameId)
-	getFrame.PersistentFlags().Bool("primary", false, k_primary)
-
-	// Get Frames
-	getFrames.PersistentFlags().StringP("destination", "d", "", k_destination)
-	getFrames.PersistentFlags().Bool("primary", false, k_primary)
-	getFrames.PersistentFlags().BoolP("json", "j", false, k_json)
-
-	// Get Status
-	// none, only global ones used (root)
-
-	// Login
-	login.PersistentFlags().StringP("user-id", "u", "", k_userId)
-	login.PersistentFlags().StringP("password", "p", "", k_password)
-	login.PersistentFlags().BoolP("json", "j", false, k_json)
-
-	// Publish Frame
-	publishFrame.PersistentFlags().String("frame-id", "", k_frameId)
-	publishFrame.PersistentFlags().BoolP("json", "j", false, k_json)
 
 }
 
@@ -118,6 +117,6 @@ func Execute() {
 
 var rootCmd = &cobra.Command{
 	Use:   "telstar-util",
-	Short: "Utility program for interacting with the Telstar Server API. Version: " + globals.Version,
-	Long:  `Utility program for interacting with the Telstar Server API.`,
+	Short: "Utility program for interacting with the Telstar Server API. (c) John Newcombe 2024. Version: " + globals.Version,
+	Long:  `Utility program for interacting with the Telstar Server API. (c) John Newcombe 2024.`,
 }

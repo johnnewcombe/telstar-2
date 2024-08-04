@@ -32,7 +32,7 @@ then it will be created.
 			filename      string
 		)
 
-		if filename, err = cmd.Flags().GetString("filename"); err != nil {
+		if filename, err = cmd.Flags().GetString("source"); err != nil {
 			return err
 		}
 

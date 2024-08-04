@@ -30,7 +30,7 @@ COPY ./telstar-server/version.txt /opt/telstar/version.txt
 # add utilities and apps to the container
 COPY ./telstar-util/bin/telstar-util.zip /opt/telstar/
 COPY ./telstar-rss/bin/telstar-rss.zip /opt/telstar/
-COPY ./telstar-upload/bin/telstar-upload.zip /opt/telstar/
+# COPY ./telstar-upload/bin/telstar-upload.zip /opt/telstar/
 
 // add plugins
 COPY ./telstar-openweather/bin/telstar-openweather-linux-amd64 /opt/telstar/telstar-openweather

@@ -8,6 +8,8 @@ replace bitbucket.org/johnnewcombe/telstar-library => ../telstar-library
 require bitbucket.org/johnnewcombe/telstar-library v0.0.0-20220314174241-c5c80a4acadb
 
 require (
+	github.com/ajg/form v1.5.1 // indirect
+	github.com/go-chi/render v1.0.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/wagslane/go-password-validator v0.3.0 // indirect
 )

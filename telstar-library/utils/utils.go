@@ -1,15 +1,13 @@
 package utils
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-library/globals"
 	"bytes"
+	_ "embed"
 	"encoding/binary"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/wagslane/go-password-validator"
-	"os"
-	"path"
 	"regexp"
 	"strconv"
 	"strings"
@@ -34,21 +32,6 @@ func PageInScope(basePage int, pageNumber int) bool {
 		return true
 	}
 	return false
-}
-
-func GetVersion() (string, error) {
-
-	var (
-		ver []byte
-		err error
-	)
-
-	wd, _ := os.Getwd()
-	versionFile := path.Join(wd, globals.VERSION_FILE)
-	if ver, err = os.ReadFile(versionFile); err != nil {
-		return "", err
-	}
-	return strings.Replace(string(ver), "\n", "", -1), nil
 }
 
 func CreateGuid() string {
@@ -404,10 +387,10 @@ func TruncateToEndOfHour(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), 59, 59, 0, t.Location())
 }
 
-func ToUpperCamelCase(word string) string{
-	if len(word) >2  {
-		return strings.ToUpper(string(word[0]))+ strings.ToLower(word[1:])
-	} else{
+func ToUpperCamelCase(word string) string {
+	if len(word) > 2 {
+		return strings.ToUpper(string(word[0])) + strings.ToLower(word[1:])
+	} else {
 		return word
 	}
 }

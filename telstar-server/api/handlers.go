@@ -308,8 +308,16 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 
 	var (
 		jsonVersion []byte
+		version     string
+		err         error
 	)
+
+	if version, err = globals.GetVersion(); err != nil {
+		render.Render(w, r, ErrServerRequest(err))
+	}
+
 	jsonVersion = []byte(version)
+
 	w.Write(jsonVersion)
 }
 
