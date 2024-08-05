@@ -130,7 +130,7 @@ func processFramesFs(apiUrl string, sourceDir string, includeUnsafe bool, token 
 
 			// validate the frameData
 			if frame, err = parseFrame(frameData); err != nil {
-				err = fmt.Errorf("invalid frame data: %v", err)
+				err = fmt.Errorf("invalid frame data: %v (frame %s)", err, frame.PID.String())
 				return respData, result, err
 			}
 

@@ -89,7 +89,7 @@ func addSingleFrameJson(apiUrl string, frame types.Frame, includeUnSafe bool, to
 	)
 
 	if !frame.IsValid() {
-		err = errors.New("invalid frameData")
+		err = errors.New("invalid frame data")
 		return respData, err
 	}
 
