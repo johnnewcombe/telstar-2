@@ -9,6 +9,7 @@ import (
 	"github.com/johnnewcombe/telstar-library/logger"
 	"github.com/johnnewcombe/telstar-library/types"
 	"github.com/johnnewcombe/telstar-library/utils"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"slices"
 	"strconv"
 	"time"
@@ -102,10 +103,6 @@ func GetFramesByUser(connectionUrl string, primaryDb bool, user types.User) ([]t
 		}
 	}()
 
-	//if user, err = GetUser(connectionUrl, authUser); err != nil {
-	//	return result, err
-	//}
-
 	if pCollectionNames, sCollectionNames, err = getCollectionNames(connectionUrl); err != nil {
 		return result, err
 	}
@@ -137,18 +134,28 @@ func GetFramesByUser(connectionUrl string, primaryDb bool, user types.User) ([]t
 			if err != nil {
 				return nil, fmt.Errorf(ERROR_FRAMEDECODE, frame.GetPageId(), err)
 			}
-			if !frame.IsValid() {
-				// TODO could delete dodgy frames here
 
-				continue
-			}
 			if !user.Authenticated {
 				return []types.Frame{}, errors.New(ERROR_AUTHENTICATION)
 			}
 
+			if !frame.IsValid() {
+				// TODO specific DB clean type command
+				// FIXME this does not delete anything is the data actually in the database?
+				//       The dodgy data stems from a completely blank frame
+				//       i.e. page-no: 0, frame-id: "" but early indications suggest that
+				//       there is an ID associated with the frame.
+				//coll := client.Database(DBNAME).Collection(collection)
+				//delFilter := bson.M{"pid.page-no": frame.PID.PageNumber, "pid.frame-id": frame.PID.FrameId}
+				//res, err := coll.DeleteMany(ctx, delFilter)
+				//fmt.Printf("%d, %v",res.DeletedCount, err)
+
+				// dodgy data (see above) so ignore.
+				//continue
+			}
+
 			if user.IsInScope(frame.PID.PageNumber) {
 				result = append(result, frame)
-
 			}
 		}
 	}
@@ -367,6 +374,9 @@ func InsertOrReplaceFrame(connectionUrl string, frame types.Frame, primaryDb boo
 
 	filter := bson.M{"pid.page-no": frame.PID.PageNumber, "pid.frame-id": frame.PID.FrameId}
 
+	// remove the ID or an update might fail i.e. when taking frames from one db to another
+	frame.ID = primitive.NilObjectID
+
 	// marshall the data
 	data, err := bson.Marshal(frame)
 	if err != nil {
@@ -433,6 +443,9 @@ func InsertOrReplaceFrameByUser(connectionUrl string, frame types.Frame, primary
 	collection := client.Database(DBNAME).Collection(collectionName)
 
 	filter := bson.M{"pid.page-no": frame.PID.PageNumber, "pid.frame-id": frame.PID.FrameId}
+
+	// remove the ID or an update might fail i.e. when taking frames from one db to another
+	frame.ID = primitive.NilObjectID
 
 	// marshall the data
 	data, err := bson.Marshal(frame)
@@ -659,6 +672,9 @@ func PublishFrameByUser(connectionUrl string, pageNo int, frameId string, user t
 
 	// create the filter
 	filter = bson.M{"pid.page-no": frame.PID.PageNumber, "pid.frame-id": frame.PID.FrameId}
+
+	// remove the ID or an update might fail i.e. a frame that already exists in the primary will have its own ID
+	frame.ID = primitive.NilObjectID
 
 	// marshall the frame
 	frameData, err = bson.Marshal(frame)

@@ -27,50 +27,54 @@
 # Use "telstar-util [command] --help" for more information about a command.
 #-----------------------------------------------------------------------------------------------
 PORT=25234
-# API Version wrong
-# Get Frames, no json output
-# Publish says 0a not found
 
 clear
 
-# Status and Login
 echo Version:
 telstar-util version
+read -p "Press return any key to resume ..."
 
 echo Login:
 telstar-util login --url http://localhost:$PORT --user-id 2222222222 --password 1234 -j
+read -p "Press return any key to resume ..."
 
 echo Get Status:
 telstar-util get-status --url http://localhost:$PORT -j
+read -p "Press return any key to resume ..."
 
 echo Get Frame:
-telstar-util get-frame --url http://localhost:$PORT --frame-id 0
+telstar-util get-frame --url http://localhost:$PORT --frame-id 0a
+read -p "Press return any key to resume ..."
 
 echo Get Frames:
 telstar-util get-frames --url http://localhost:$PORT -d temp  -j
+read -p "Press return any key to resume ..."
 
 echo Delete Frame:
 telstar-util delete-frame --url http://localhost:$PORT --frame-id 0a -j
+read -p "Press return any key to resume ..."
 
 echo Add Frame:
 telstar-util add-frame --url http://localhost:$PORT -s temp/0a.json -j
+read -p "Press return any key to resume ..."
 
 echo Publish Frame:
 telstar-util publish-frame --url http://localhost:$PORT --frame-id 0a -j
+read -p "Press return any key to resume ..."
 
 echo Add Frames:
 telstar-util add-frames --url http://localhost:$PORT -s temp --include-unsafe
+read -p "Press return any key to resume ..."
+
+echo Add Page:
+telstar-util add-page --url http://localhost:$PORT --page-no 800171 -s temp --include-unsafe -j
+read -p "Press return any key to resume ..."
 
 exit 0
 
-echo Add Page:
-telstar-util add-page --url http://localhost:$PORT --page-id 800171 -s temp --include-unsafe -j
-
-# User
 echo Add User:
 telstar-util add-user --url http://localhost:$PORT -j
+read -p "Press return key to resume ..."
 
 echo Delete User:
 telstar-util delete-user --url http://localhost:$PORT -j
-
-

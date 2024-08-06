@@ -3,26 +3,29 @@ package types
 import (
 	"encoding/json"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net"
 )
 
 type Frame struct {
 	//ID interface{} `bson:"_id,omitempty"` // this was used by some on stack overflow
-	//ID           primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
-	PID          Pid          `json:"pid" bson:"pid"`
-	Visible      bool         `json:"visible" bson:"visible"`
-	HeaderText   string       `json:"header-text" bson:"header-text"`
-	Cost         int          `json:"cost" bson:"cost"`
-	DisableClear bool         `json:"disable-clear" bson:"disable-clear"`
-	FrameType    string       `json:"frame-type" bson:"frame-type"`
-	Redirect     Pid          `json:"redirect" bson:"redirect"`
-	Content      Content      `json:"content" bson:"content"`
-	Footer       Title        `json:"footer" bson:"footer"`
-	Title        Title        `json:"title" bson:"title"`
-	RoutingTable []int        `json:"routing-table" bson:"routing-table"`
-	Connection   Connection   `json:"connection" bson:"connection"`
-	AuthorIdOld  string       `json:"author-id" bson:"author-id"`
-	ResponseData ResponseData `json:"response-data" bson:"response-data"`
+	// FIXME Need to include Object ID for internal use i.e. data cleaning etc
+	//       but remove it before sending json to caller
+	ID           primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
+	PID          Pid                `json:"pid" bson:"pid"`
+	Visible      bool               `json:"visible" bson:"visible"`
+	HeaderText   string             `json:"header-text" bson:"header-text"`
+	Cost         int                `json:"cost" bson:"cost"`
+	DisableClear bool               `json:"disable-clear" bson:"disable-clear"`
+	FrameType    string             `json:"frame-type" bson:"frame-type"`
+	Redirect     Pid                `json:"redirect" bson:"redirect"`
+	Content      Content            `json:"content" bson:"content"`
+	Footer       Title              `json:"footer" bson:"footer"`
+	Title        Title              `json:"title" bson:"title"`
+	RoutingTable []int              `json:"routing-table" bson:"routing-table"`
+	Connection   Connection         `json:"connection" bson:"connection"`
+	AuthorIdOld  string             `json:"author-id" bson:"author-id"`
+	ResponseData ResponseData       `json:"response-data" bson:"response-data"`
 	//CacheId          string       `json:"cache-id" bson:"cache-id"`
 	// FIXME The Cursor field doesn't seem to be being used at all, either remove it or find a use for it
 	//  the cursor in the nav field is added using markup
