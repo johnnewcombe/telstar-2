@@ -43,33 +43,31 @@ telstar-util login --url http://localhost:$PORT --user-id 2222222222 --password 
 echo Get Status:
 telstar-util get-status --url http://localhost:$PORT -j
 
-# Frame
 echo Get Frame:
-telstar-util get-frame --url http://localhost:$PORT --frame-id 0a
-
+telstar-util get-frame --url http://localhost:$PORT --frame-id 0
 
 echo Get Frames:
 telstar-util get-frames --url http://localhost:$PORT -d temp  -j
-
-exit 0
 
 echo Delete Frame:
 telstar-util delete-frame --url http://localhost:$PORT --frame-id 0a -j
 
 echo Add Frame:
-telstar-util add-frame --url http://localhost:$PORT  -s temp/0a.json -j
+telstar-util add-frame --url http://localhost:$PORT -s temp/0a.json -j
 
 echo Publish Frame:
 telstar-util publish-frame --url http://localhost:$PORT --frame-id 0a -j
 
 echo Add Frames:
-telstar-util add-frames --url http://localhost:$PORT  -s temp
+telstar-util add-frames --url http://localhost:$PORT -s temp --include-unsafe
+
+exit 0
 
 echo Add Page:
-telstar-util add-page --url http://localhost:$PORT  --page-id temp/0a.json -j
+telstar-util add-page --url http://localhost:$PORT --page-id 800171 -s temp --include-unsafe -j
 
 # User
-echo Get User:
+echo Add User:
 telstar-util add-user --url http://localhost:$PORT -j
 
 echo Delete User:

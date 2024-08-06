@@ -130,7 +130,13 @@ func processFramesFs(apiUrl string, sourceDir string, includeUnsafe bool, token 
 
 			// validate the frameData
 			if frame, err = parseFrame(frameData); err != nil {
-				err = fmt.Errorf("invalid frame data: %v (frame %s)", err, frame.PID.String())
+				err = fmt.Errorf("invalid frame data: %v", err)
+				return respData, result, err
+			}
+
+			// validate the PID
+			if !frame.IsValid() {
+				err = fmt.Errorf("invalid frame id: (frame %s)", frame.PID.String())
 				return respData, result, err
 			}
 
@@ -222,8 +228,11 @@ func processFramesGit(apiUrl string, source string, includeUnsafe bool, token st
 
 			// validate the frameData
 			if frame, err = parseFrame(string(buf)); err != nil {
-				err = fmt.Errorf("invalid frame data: %v", err)
-				return err
+				return fmt.Errorf("invalid frame data: %v", err)
+			}
+
+			if !frame.IsValid() {
+				return fmt.Errorf("invalid frame data for frame %s", frame.GetPageId())
 			}
 
 			if respData, err = addSingleFrameJson(apiUrl, frame, includeUnsafe, token); err != nil {

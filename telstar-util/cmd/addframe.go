@@ -89,16 +89,14 @@ func addSingleFrameJson(apiUrl string, frame types.Frame, includeUnSafe bool, to
 	)
 
 	if !frame.IsValid() {
-		err = errors.New("invalid frame data")
-		return respData, err
+		return respData, fmt.Errorf("invalid frame data for frame %s", frame.GetPageId())
 	}
 
 	if !includeUnSafe {
 
 		// can't bulk upload these as users could use their frames to run system utils etc.
 		if strings.ToLower(frame.FrameType) == "response" {
-			err = fmt.Errorf("frame %d%s is a response frame, set option --include-unsafe to force", frame.PID.PageNumber, frame.PID.FrameId)
-			return respData, err
+			return respData, fmt.Errorf("frame %d%s is a response frame, set option --include-unsafe to force", frame.PID.PageNumber, frame.PID.FrameId)
 		}
 
 		// can't bulk upload these as users could use their frames to run system utils etc.

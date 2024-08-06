@@ -9,6 +9,7 @@ import (
 	"github.com/johnnewcombe/telstar-library/logger"
 	"github.com/johnnewcombe/telstar-library/types"
 	"github.com/johnnewcombe/telstar-library/utils"
+	"slices"
 	"strconv"
 	"time"
 
@@ -18,12 +19,13 @@ import (
 )
 
 const (
-	DBNAME             = "telstardb"
-	REGEXP             = "p[0-9]"
-	REGEXS             = "s[0-9]"
-	AUTH_COLLECTION    = "system-auth"
-	ERROR_SCOPE        = "user does not have sufficient scope to perform this task"
-	ERROR_AUENTICATION = "user has not have authenticated"
+	DBNAME               = "telstardb"
+	REGEXP               = "p[0-9]"
+	REGEXS               = "s[0-9]"
+	AUTH_COLLECTION      = "system-auth"
+	ERROR_SCOPE          = "user does not have sufficient scope to perform this task"
+	ERROR_AUTHENTICATION = "user has not have authenticated"
+	ERROR_FRAMEDECODE    = "decoding frame %s: %v"
 )
 
 func GetFrames(connectionUrl string, primaryDb bool) ([]types.Frame, error) {
@@ -114,32 +116,46 @@ func GetFramesByUser(connectionUrl string, primaryDb bool, user types.User) ([]t
 		collectionNames = sCollectionNames
 	}
 
+	// sort them, not essential but helps with debugging
+	slices.Sort(collectionNames)
+
 	// create the filter
 	filter := bson.D{{}}
 
 	for _, collection := range collectionNames {
+
 		if frameDocs, err = client.Database(DBNAME).Collection(collection).Find(ctx, filter); err != nil {
 			return result, err
 		}
 
 		for frameDocs.Next(ctx) {
-			var frame types.Frame
-			err = frameDocs.Decode(&frame)
-			if err != nil {
-				return nil, fmt.Errorf("decoding frame %s: %v", frame.GetPageId(), err)
-			}
 
+			var frame types.Frame
+
+			err = frameDocs.Decode(&frame)
+
+			if err != nil {
+				return nil, fmt.Errorf(ERROR_FRAMEDECODE, frame.GetPageId(), err)
+			}
+			if !frame.IsValid() {
+				// TODO could delete dodgy frames here
+
+				continue
+			}
 			if !user.Authenticated {
-				return []types.Frame{}, errors.New(ERROR_AUENTICATION)
+				return []types.Frame{}, errors.New(ERROR_AUTHENTICATION)
 			}
 
 			if user.IsInScope(frame.PID.PageNumber) {
 				result = append(result, frame)
+
 			}
 		}
 	}
 
+	types.SortFrames(result)
 	return result, nil
+
 }
 
 func GetFramesByCollection(connectionUrl string, collectionName string) ([]types.Frame, error) {
@@ -270,7 +286,7 @@ func GetFrameByUser(connectionUrl string, pageNo int, frameId string, primaryDb 
 	}
 
 	if !user.Authenticated {
-		return result, errors.New(ERROR_AUENTICATION)
+		return result, errors.New(ERROR_AUTHENTICATION)
 	}
 
 	if !user.IsInScope(result.PID.PageNumber) {
@@ -286,6 +302,10 @@ func InsertFrame(connectionUrl string, frame types.Frame, primaryDb bool) (bool,
 	// unique index on pageNo/frameId
 
 	var err error
+
+	if !frame.IsValid() {
+		return false, fmt.Errorf("invalid frame data for frame %s", frame.GetPageId())
+	}
 
 	// get a context
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -322,6 +342,10 @@ func InsertOrReplaceFrame(connectionUrl string, frame types.Frame, primaryDb boo
 	var (
 		err error
 	)
+
+	if !frame.IsValid() {
+		return fmt.Errorf("invalid frame data for frame %s", frame.GetPageId())
+	}
 
 	// get a context
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -391,11 +415,15 @@ func InsertOrReplaceFrameByUser(connectionUrl string, frame types.Frame, primary
 	//}
 
 	if !user.Authenticated {
-		return errors.New(ERROR_AUENTICATION)
+		return errors.New(ERROR_AUTHENTICATION)
 	}
 
 	if !user.IsInScope(frame.PID.PageNumber) {
 		return errors.New(ERROR_SCOPE)
+	}
+
+	if !frame.IsValid() {
+		return fmt.Errorf("invalid frame data for frame %s", frame.GetPageId())
 	}
 
 	collectionName, err := getCollectionName(frame.PID.PageNumber, primaryDb)
@@ -487,7 +515,7 @@ func DeleteFrameByUser(connectionUrl string, pageNo int, frameId string, primary
 	//}
 
 	if !user.Authenticated {
-		return 0, errors.New(ERROR_AUENTICATION)
+		return 0, errors.New(ERROR_AUTHENTICATION)
 	}
 
 	if !user.IsInScope(pageNo) {
@@ -533,7 +561,7 @@ func PurgeFramesByUser(connectionUrl string, pageNo int, frameId string, primary
 	}()
 
 	if !user.Authenticated {
-		return 0, errors.New(ERROR_AUENTICATION)
+		return 0, errors.New(ERROR_AUTHENTICATION)
 	}
 
 	if !user.IsInScope(pageNo) {
@@ -599,7 +627,7 @@ func PublishFrameByUser(connectionUrl string, pageNo int, frameId string, user t
 	//}
 
 	if !user.Authenticated {
-		return errors.New(ERROR_AUENTICATION)
+		return errors.New(ERROR_AUTHENTICATION)
 	}
 
 	if !user.IsInScope(pageNo) {

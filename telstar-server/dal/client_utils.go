@@ -48,6 +48,7 @@ func getCollectionNames(connectionUrl string) (pNames, sNames []string, err erro
 			pNames = append(pNames, names[i])
 		}
 	}
+
 	return pNames, sNames, err
 }
 

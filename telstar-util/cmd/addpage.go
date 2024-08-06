@@ -310,6 +310,10 @@ func processPageGit(apiUrl string, source string, includeUnsafe bool, pageNo int
 	// send frames to telstar
 	for _, frame = range frames {
 
+		if !frame.IsValid() {
+			return respData, result, fmt.Errorf("invalid frame data for frame %s", frame.GetPageId())
+		}
+
 		if respData, err = addSingleFrameJson(apiUrl, frame, includeUnsafe, token); err != nil {
 			return respData, result, err
 		}

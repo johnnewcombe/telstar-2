@@ -8,25 +8,25 @@ import (
 
 type Frame struct {
 	//ID interface{} `bson:"_id,omitempty"` // this was used by some on stack overflow
-	//ID         primitive.ObjectID `bson:"_id,omitempty"`
-	PID          Pid    `json:"pid" bson:"pid"`
-	Visible      bool   `json:"visible" bson:"visible"`
-	HeaderText   string `json:"header-text" bson:"header-text"`
-	Cost         int    `json:"cost" bson:"cost"`
-	DisableClear bool   `json:"disable-clear" bson:"disable-clear"`
-	//CacheId          string       `json:"cache-id" bson:"cache-id"`
-	FrameType    string  `json:"frame-type" bson:"frame-type"`
-	Redirect     Pid     `json:"redirect" bson:"redirect"`
-	Content      Content `json:"content" bson:"content"`
-	Footer       Title   `json:"footer" bson:"footer"`
-	Title        Title   `json:"title" bson:"title"`
-	RoutingTable []int   `json:"routing-table" bson:"routing-table"`
-	// FIXME The Cursor field doesn't seem to be being used at all, either remove it or find a use for it
-	//  the cursor in the nav field is added using markup
-	Cursor       bool         `json:"cursor" bson:"cursor"`
+	//ID           primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
+	PID          Pid          `json:"pid" bson:"pid"`
+	Visible      bool         `json:"visible" bson:"visible"`
+	HeaderText   string       `json:"header-text" bson:"header-text"`
+	Cost         int          `json:"cost" bson:"cost"`
+	DisableClear bool         `json:"disable-clear" bson:"disable-clear"`
+	FrameType    string       `json:"frame-type" bson:"frame-type"`
+	Redirect     Pid          `json:"redirect" bson:"redirect"`
+	Content      Content      `json:"content" bson:"content"`
+	Footer       Title        `json:"footer" bson:"footer"`
+	Title        Title        `json:"title" bson:"title"`
+	RoutingTable []int        `json:"routing-table" bson:"routing-table"`
 	Connection   Connection   `json:"connection" bson:"connection"`
 	AuthorIdOld  string       `json:"author-id" bson:"author-id"`
 	ResponseData ResponseData `json:"response-data" bson:"response-data"`
+	//CacheId          string       `json:"cache-id" bson:"cache-id"`
+	// FIXME The Cursor field doesn't seem to be being used at all, either remove it or find a use for it
+	//  the cursor in the nav field is added using markup
+	Cursor bool `json:"cursor" bson:"cursor"`
 	// a transient page will not be stored in the database e.g. results of response pages etc.
 	//TransientPage bool `json:"transient-page" bson:"transient-page"`
 	// these will override the defaults specified in settings at the page level
