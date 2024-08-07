@@ -2,7 +2,7 @@ module github.com/johnnewcombe/telstar-util
 
 go 1.22
 
-// use the local library rather than the one in bitbucket
+// use the local library rather than the one in git
 replace github.com/johnnewcombe/telstar-library => ../telstar-library
 
 require (

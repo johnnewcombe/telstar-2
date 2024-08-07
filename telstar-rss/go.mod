@@ -6,7 +6,7 @@ go 1.17
 replace github.com/johnnewcombe/telstar-library => ../telstar-library
 
 require (
-	github.com/johnnewcombe/telstar-library v0.0.0-00010101000000-000000000000
+	github.com/johnnewcombe/telstar-library v0.0.0-20220314174241-c5c80a4acadb
 	github.com/mmcdole/gofeed v1.1.3
 )
 
@@ -21,6 +21,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
 	github.com/wagslane/go-password-validator v0.3.0 // indirect
+	go.mongodb.org/mongo-driver v1.16.0 // indirect
 	golang.org/x/net v0.0.0-20200301022130-244492dfa37a // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.14.0 // indirect
 )

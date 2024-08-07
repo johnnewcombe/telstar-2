@@ -12,4 +12,5 @@ require (
 	github.com/go-chi/render v1.0.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/wagslane/go-password-validator v0.3.0 // indirect
+	go.mongodb.org/mongo-driver v1.16.0 // indirect
 )

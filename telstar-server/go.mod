@@ -10,7 +10,7 @@ require (
 	github.com/go-chi/jwtauth v1.2.0
 	github.com/go-chi/render v1.0.3
 	github.com/ilyakaznacheev/cleanenv v1.2.5
-	github.com/johnnewcombe/telstar-library v0.0.0-00010101000000-000000000000
+	github.com/johnnewcombe/telstar-library v0.0.0-20220314174241-c5c80a4acadb
 	github.com/lestrrat-go/jwx v1.1.0
 	go.mongodb.org/mongo-driver v1.16.0
 	golang.org/x/crypto v0.22.0
