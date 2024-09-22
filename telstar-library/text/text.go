@@ -33,12 +33,12 @@ func RuneToString(r rune) string {
 	return string(r)
 }
 
-//RunesToString converts a slice of runes to a string.
+// RunesToString converts a slice of runes to a string.
 func RunesToString(r []rune) string {
 	return string(r)
 }
 
-//GetMarkupLen returns length of text after any markup has been evaluated.
+// GetMarkupLen returns length of text after any markup has been evaluated.
 func GetMarkupLen(markupText string) int {
 
 	// See https://regex101.com/
@@ -142,7 +142,7 @@ func PadTextRight(text string, newLength int) string {
 	return text
 }
 
-//Format Returns the specified text in rows of given length split by words, and the number of rows.
+// Format Returns the specified text in rows of given length split by words, and the number of rows.
 func Format(text string, cols int) ([]string, int) {
 	if cols > 0 {
 
@@ -151,6 +151,23 @@ func Format(text string, cols int) ([]string, int) {
 		return result, len(result)
 	}
 	return []string{}, 0
+}
+
+// RemoveTextBetween removes all characters (including new lines) between the start and end
+// markers
+func RemoveTextBetween(text, start, end string) string {
+
+	startIndex := strings.Index(text, start) + len(start)
+	stopIndex := strings.Index(text, end)
+
+	if stopIndex <= len(text) && stopIndex >= 0 {
+		res := text[:startIndex] + text[stopIndex:]
+		res = strings.ReplaceAll(res, "\n\n", "\n")
+		return res
+	} else {
+		return text
+	}
+
 }
 
 func forceASCII(s string) string {
@@ -171,6 +188,12 @@ func cleanText(s string) string {
 	s = strings.ReplaceAll(s, "&lt;p&gt;", "")
 	s = strings.ReplaceAll(s, "</p>", "</p> ")
 	s = strings.ReplaceAll(s, "</P>", "</P> ")
+
+	// special case for Reuters and possibly others
+	s = strings.ReplaceAll(s, "&#8230;", "...")
+	s = strings.ReplaceAll(s, "&#8217;", "'")
+
+	s = strings.ReplaceAll(s, "&amp;", "&")
 
 	// Setup a string builder and allocate enough memory for the new string.
 	var builder strings.Builder

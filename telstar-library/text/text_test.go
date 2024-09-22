@@ -21,7 +21,7 @@ func Test_RuneToString(t *testing.T) {
 	t.Error("Test not implemented!")
 }
 
-//RunesToString converts a slice of runes to a string.
+// RunesToString converts a slice of runes to a string.
 func Test_RunesToString(t *testing.T) {
 	t.Error("Test not implemented!")
 }
@@ -112,6 +112,32 @@ func Test_Format(t *testing.T) {
 	// TODO: Implement Test
 	t.Error("Test not implemented!")
 }
+
+func Test_RemoveTextBetween(t *testing.T) {
+
+	type Test struct {
+		description string
+		input       string
+		start       string
+		end         string
+		want        string
+	}
+
+	var tests = []Test{
+		{"Test 1", "Hello testing World", "Hello", " World", "Hello World"},
+		{"Test 2", "Hello test World", "Hello", " World", "Hello World"},
+		{"Test 3", "Hello testing world", "Hello", " World", "Hello testing world"},
+		{"Test 4", "The post <a href=\"\"/> appeared", "The post", " appeared", "The post appeared"},
+	}
+
+	// run tests
+	for _, test := range tests {
+		if got := RemoveTextBetween(test.input, test.start, test.end); got != test.want {
+			t.Errorf(TEST_ERROR_MESSAGE, test.description)
+		}
+	}
+}
+
 func Test_cleanText(t *testing.T) {
 
 	type Test struct {
@@ -121,15 +147,15 @@ func Test_cleanText(t *testing.T) {
 	}
 
 	var tests = []Test{
-		{"Test 1","Hello   World","Hello World"},
-		{"Test 2","Hello   \r\nWorld","Hello World"},
-		{"Test 3","Hello   \r\n\r\nWorld","Hello \r\n\r\nWorld"},
-		{"Test 4","Hello   World :","Hello World:"},
-		{"Test 5","Hello   \tWorld .","Hello World."},
-		{"Test 6","‘Hello‘ World .","'Hello' World."},
-		{"Test 7","<p>Hello</p><p>World</p>.","Hello World."},
+		{"Test 1", "Hello   World", "Hello World"},
+		{"Test 2", "Hello   \r\nWorld", "Hello World"},
+		{"Test 3", "Hello   \r\n\r\nWorld", "Hello \r\n\r\nWorld"},
+		{"Test 4", "Hello   World :", "Hello World:"},
+		{"Test 5", "Hello   \tWorld .", "Hello World."},
+		{"Test 6", "‘Hello‘ World .", "'Hello' World."},
+		{"Test 7", "<p>Hello</p><p>World</p>.", "Hello World."},
 	}
-//‘
+	//‘
 	// run tests
 	for _, test := range tests {
 		if got := cleanText(test.input); got != test.want {
@@ -155,7 +181,7 @@ func Test_CleanUtf8(t *testing.T) {
 	}
 
 	var tests = []Test{
-		{"a\xc5z","a\xc5z","az"},
+		{"a\xc5z", "a\xc5z", "az"},
 	}
 
 	// run tests

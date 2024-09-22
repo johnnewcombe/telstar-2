@@ -23,6 +23,12 @@ const (
 	DefaultTemplateDirectory = "./data/templates"
 	DefaultOutputDirectory   = "/data/frames"
 	Cols                     = 40
+
+	MAXLINES       = 18
+	MAXCOLS        = 38 // leave an extra space for a final full stop if needed.
+	TITLETAG       = "[TITLE]"
+	CONTENTTAG     = "[CONTENT]"
+	PUBLISHDATETAG = "[PUBLISHDATE]"
 )
 
 type templateStruct struct {
@@ -91,14 +97,6 @@ func main() {
 
 func createFrames(articles []article.Article, templatePath string, outputDirectory string) error {
 
-	const (
-		MAXLINES       = 18
-		MAXCOLS        = 39
-		TITLETAG       = "[TITLE]"
-		CONTENTTAG     = "[CONTENT]"
-		PUBLISHDATETAG = "[PUBLISHDATE]"
-	)
-
 	var (
 		err           error
 		templateJson  []byte
@@ -109,7 +107,7 @@ func createFrames(articles []article.Article, templatePath string, outputDirecto
 	)
 
 	// load the appropriate templateJson
-	if templateJson, err = ioutil.ReadFile(templatePath); err != nil {
+	if templateJson, err = os.ReadFile(templatePath); err != nil {
 		return err
 	}
 
@@ -153,7 +151,7 @@ func createFrames(articles []article.Article, templatePath string, outputDirecto
 		// TODO functionalise this ?
 		if strings.Contains(templateLine, TITLETAG) {
 
-			//  count how long is the markup line is  without the [TITLE] placeholder
+			//  count how long is the markup line is without the [TITLE] placeholder
 			//  this will allow us to calculate the format textWidth needed e.g.
 			length = text.GetMarkupLen(templateLine) - len(TITLETAG)
 
@@ -296,8 +294,14 @@ func createFrames(articles []article.Article, templatePath string, outputDirecto
 func applyTemplate(textLines []string, template string, placeHolder string) string {
 
 	var sbText strings.Builder
-	for _, line := range textLines {
-		sbText.WriteString(strings.ReplaceAll(template, placeHolder, line))
+	for index, line := range textLines {
+
+		if index == len(textLines)-1 && !strings.HasSuffix(line, ".") && placeHolder == TITLETAG {
+			// last line with no full stop, we can safely add one because max length has been set at 38
+			sbText.WriteString(strings.Trim(strings.ReplaceAll(template, placeHolder, line), " ") + ".")
+		} else {
+			sbText.WriteString(strings.Trim(strings.ReplaceAll(template, placeHolder, line), " "))
+		}
 		sbText.WriteString("\r\n")
 	}
 
@@ -329,7 +333,7 @@ func parseRss(dataDirectory string, filename string) ([]article.Article, error) 
 		xmlData []byte
 	)
 
-	if xmlData, err = ioutil.ReadFile(fmt.Sprintf("%s/%s", dataDirectory, filename)); err != nil {
+	if xmlData, err = os.ReadFile(fmt.Sprintf("%s/%s", dataDirectory, filename)); err != nil {
 		return nil, fmt.Errorf("%v\n", err)
 	}
 	sData := text.CleanUtf8(string(xmlData))
@@ -341,9 +345,24 @@ func parseRss(dataDirectory string, filename string) ([]article.Article, error) 
 
 	for _, item := range feed.Items {
 
+		description := strings.Trim(item.Description, " ")
+		title := strings.Trim(item.Title, " ")
+
+		// -------------------------------------------------------------------------------------
+		// handle a few special cases
+		// REUTERS
+		// FIXME: this is really clumsy, a more generic method of parsing may be necessary
+		//if strings.Contains(feed.Title, "Reuters") {
+		//	// for reuters we need to remove the 'link text' surrounded by 'The Post' and 'appeared' whilst leaving
+		//	// those strings in place...
+		//	description = text.RemoveTextBetween(description, "The post ", " appeared")
+		//	title = text.RemoveTextBetween(title, "The post ", " appeared")
+		//}
+		// -------------------------------------------------------------------------------------
+
 		result = append(result, article.Article{
-			Title:       item.Title,
-			Description: item.Description,
+			Title:       title,
+			Description: description,
 			Date:        item.Published,
 		})
 	}
@@ -379,7 +398,7 @@ func getFrame(templateJson []byte, pid types.Pid) (types.Frame, error) {
 func saveFrame(frame types.Frame, outputDirectory string) (types.Frame, error) {
 
 	frameBytes, err := frame.Dump()
-	if err = ioutil.WriteFile(outputDirectory, frameBytes, 0644); err != nil {
+	if err = os.WriteFile(outputDirectory, frameBytes, 0644); err != nil {
 		return frame, err
 	}
 
