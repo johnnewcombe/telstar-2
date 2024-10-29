@@ -170,8 +170,14 @@ func GetUser(connectionUrl string, userId string) (types.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	var result types.User
+
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return result, fmt.Errorf("finding user %s: %v", userId, err)
+	}
+
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -180,8 +186,6 @@ func GetUser(connectionUrl string, userId string) (types.User, error) {
 
 	filter := bson.M{"user-id": userId}
 	collection := client.Database(DBNAME).Collection(AUTH_COLLECTION)
-
-	var result types.User
 
 	err = collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
