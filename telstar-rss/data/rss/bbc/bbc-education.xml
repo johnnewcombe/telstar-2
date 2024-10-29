@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet title="XSL_formatting" type="text/xsl" href="/shared/bsp/xsl/rss/nolsol.xsl"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title><![CDATA[BBC News - Family & Education]]></title>
+        <description><![CDATA[BBC News - Family & Education]]></description>
+        <link>https://www.bbc.co.uk/news/</link>
+        <image>
+            <url>https://news.bbcimg.co.uk/nol/shared/img/bbc_news_120x60.gif</url>
+            <title>BBC News - Family &amp; Education</title>
+            <link>https://www.bbc.co.uk/news/</link>
+        </image>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Fri, 22 Apr 2022 20:53:10 GMT</lastBuildDate>
+        <copyright><![CDATA[Copyright: (C) British Broadcasting Corporation, see http://news.bbc.co.uk/2/hi/help/rss/4498287.stm for terms and conditions of reuse.]]></copyright>
+        <language><![CDATA[en-gb]]></language>
+        <ttl>15</ttl>
+        <item>
+            <title><![CDATA[Periods: TikTok gives better education than schools, say teens]]></title>
+            <description><![CDATA[Young women say they learn more about periods outside school as a report reveals shortcomings.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61155377?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61155377</guid>
+            <pubDate>Fri, 22 Apr 2022 05:07:36 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Spike in child hepatitis cases linked to common virus]]></title>
+            <description><![CDATA[UK child hepatitis cases rise to 108, with a common virus increasingly likely to be the trigger.]]></description>
+            <link>https://www.bbc.co.uk/news/health-61177329?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/health-61177329</guid>
+            <pubDate>Thu, 21 Apr 2022 17:52:26 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Teacher sacked for sending maskless vulnerable boy out of class]]></title>
+            <description><![CDATA[The teacher forgot she had sent the vulnerable 15-year-old out of the room, a tribunal report says.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61165004?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61165004</guid>
+            <pubDate>Thu, 21 Apr 2022 20:19:21 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Covid: Tain family ends more than two years self isolation]]></title>
+            <description><![CDATA[The Arthurs stayed at home to protect seven-year-old twins Orin and Olivia who have a rare disease.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-scotland-highlands-islands-61174816?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-scotland-highlands-islands-61174816</guid>
+            <pubDate>Fri, 22 Apr 2022 05:42:30 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Oxfordshire boy campaigns on climate change]]></title>
+            <description><![CDATA[Eight-year-old Joe has started a YouTube channel to help teach other children about climate change.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-oxfordshire-61177381?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-oxfordshire-61177381</guid>
+            <pubDate>Fri, 22 Apr 2022 06:09:24 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ex-Nicholas Hammond Academy teacher banned after completing pupils' work]]></title>
+            <description><![CDATA[The pupils were unaware their assignments had been fabricated by their teacher, a report says.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-norfolk-61167136?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-norfolk-61167136</guid>
+            <pubDate>Thu, 21 Apr 2022 16:38:09 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Child Q: Strip-search schoolgirl head teacher steps down]]></title>
+            <description><![CDATA[The school's governing body says teachers were not aware a strip-search was taking place.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-london-61163175?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-london-61163175</guid>
+            <pubDate>Wed, 20 Apr 2022 14:02:03 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Mid-day meal plan struggles to feed India's hungry students]]></title>
+            <description><![CDATA[The world's most ambitious free school food programme resumes post pandemic, but problems remain.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-india-61162642?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-india-61162642</guid>
+            <pubDate>Fri, 22 Apr 2022 00:11:43 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[When do parents find out about primary-school places?]]></title>
+            <description><![CDATA[Councils are contacting parents and carers with offers of primary-school places in England and Wales.]]></description>
+            <link>https://www.bbc.co.uk/news/education-61148592?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/education-61148592</guid>
+            <pubDate>Tue, 19 Apr 2022 13:21:31 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Online porn: 'My pupils ask me about violence']]></title>
+            <description><![CDATA[Teachers are discussing how best to tackle pornography and its impact on children - and staff.]]></description>
+            <link>https://www.bbc.co.uk/news/education-61045514?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/education-61045514</guid>
+            <pubDate>Wed, 13 Apr 2022 10:44:58 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Syrian refugee retraining to become teacher in Wales]]></title>
+            <description><![CDATA[Inas wants to be a role model for those "who stop their life when they change their country".]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61150252?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61150252</guid>
+            <pubDate>Wed, 20 Apr 2022 05:08:19 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Here's what you should know about student debt]]></title>
+            <description><![CDATA[What you need to know about student loan repayments - and how they differ from normal bank loans.]]></description>
+            <link>https://www.bbc.co.uk/news/newsbeat-51190779?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/newsbeat-51190779</guid>
+            <pubDate>Fri, 25 Feb 2022 10:17:45 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Covid: How will my exams be different this year?]]></title>
+            <description><![CDATA[What changes are being made to give pupils a fair chance after two years of disruption due to Covid?]]></description>
+            <link>https://www.bbc.co.uk/news/education-60142475?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/education-60142475</guid>
+            <pubDate>Wed, 09 Feb 2022 09:06:33 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Child Q impact: 'Our voices need to be heard']]></title>
+            <description><![CDATA[A social justice charity is helping empower young black people after a girl was strip-searched in school.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-london-61170195?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-london-61170195</guid>
+            <pubDate>Thu, 21 Apr 2022 07:02:01 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA['Life without Covid rules is much worse than we thought']]></title>
+            <description><![CDATA[Vaccines and treatments have helped many in the UK but Isabel, 11, is among those still at risk.]]></description>
+            <link>https://www.bbc.co.uk/news/disability-60846686?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/disability-60846686</guid>
+            <pubDate>Fri, 08 Apr 2022 23:03:10 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Local elections 2022: How do you get young people to vote?]]></title>
+            <description><![CDATA[About 300 students have been learning about politics as the local elections approach in Wales.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-wales-61121364?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-wales-61121364</guid>
+            <pubDate>Sat, 16 Apr 2022 20:55:19 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ukraine war: Bringing up a baby among the bombs]]></title>
+            <description><![CDATA[More than 1.5 million children have fled Ukraine since the beginning of Russia's invasion, says the UN.]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-60903513?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-60903513</guid>
+            <pubDate>Mon, 28 Mar 2022 23:01:21 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Coda star and Oscar nominee inspires deaf children to dream big]]></title>
+            <description><![CDATA[Troy Kotsur is a star of CODA and the first deaf male actor ever to be nominated for an Oscar.]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-60882714?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-60882714</guid>
+            <pubDate>Sat, 26 Mar 2022 02:32:48 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

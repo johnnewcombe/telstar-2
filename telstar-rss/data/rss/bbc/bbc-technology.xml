@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet title="XSL_formatting" type="text/xsl" href="/shared/bsp/xsl/rss/nolsol.xsl"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title><![CDATA[BBC News - Technology]]></title>
+        <description><![CDATA[BBC News - Technology]]></description>
+        <link>https://www.bbc.co.uk/news/</link>
+        <image>
+            <url>https://news.bbcimg.co.uk/nol/shared/img/bbc_news_120x60.gif</url>
+            <title>BBC News - Technology</title>
+            <link>https://www.bbc.co.uk/news/</link>
+        </image>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Fri, 22 Apr 2022 20:52:52 GMT</lastBuildDate>
+        <copyright><![CDATA[Copyright: (C) British Broadcasting Corporation, see http://news.bbc.co.uk/2/hi/help/rss/4498287.stm for terms and conditions of reuse.]]></copyright>
+        <language><![CDATA[en-gb]]></language>
+        <ttl>15</ttl>
+        <item>
+            <title><![CDATA[Kardashians deny faking Roblox sex tape scene]]></title>
+            <description><![CDATA[Questions are being asked about a scene in The Kardashians, when Kim's son finds a sex tape ad on Roblox.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61178189?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61178189</guid>
+            <pubDate>Fri, 22 Apr 2022 01:07:09 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[CNN streaming service to shut a month after launch]]></title>
+            <description><![CDATA[It comes as Netflix has reported a plunge in subscribers in the face of stiff competition from rivals.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61185298?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61185298</guid>
+            <pubDate>Fri, 22 Apr 2022 05:03:34 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Actors launch campaign against AI 'show stealers']]></title>
+            <description><![CDATA[Equity, the performing arts workers union, says actors need protection from computer-generated substitutes.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61166272?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61166272</guid>
+            <pubDate>Wed, 20 Apr 2022 23:21:43 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Binance crypto exchange forced to scrap swastika-like emoji]]></title>
+            <description><![CDATA[Binance said the situation was "really embarrassing", after Twitter users noticed the similarity.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61166276?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61166276</guid>
+            <pubDate>Thu, 21 Apr 2022 15:11:58 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Tesla profits soar as customers pay more]]></title>
+            <description><![CDATA[Elon Musk's Tesla has raised prices for its electric cars as it faces higher costs.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61170691?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61170691</guid>
+            <pubDate>Wed, 20 Apr 2022 23:45:33 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Netflix hints at password sharing crackdown as subscribers fall]]></title>
+            <description><![CDATA[The firm needs to sign up new subscribers after losing 200,000 in the first quarter of the year.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61153252?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61153252</guid>
+            <pubDate>Wed, 20 Apr 2022 13:41:32 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[US bans anti-satellite missile tests]]></title>
+            <description><![CDATA[US Vice-President Harris says US will stop testing missiles designed to destroy spacecraft in orbit.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61151141?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61151141</guid>
+            <pubDate>Tue, 19 Apr 2022 14:08:03 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Highway Code: Watching TV in self-driving cars to be allowed]]></title>
+            <description><![CDATA[Mobile phone use while driving will remain illegal, as changes to the Highway Code are announced.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61155735?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61155735</guid>
+            <pubDate>Wed, 20 Apr 2022 02:17:06 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Apple staff make bid for first union at a US store]]></title>
+            <description><![CDATA[Employees must get signatures from 30% of staff at New York's Grand Central Station for a union election.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61145127?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61145127</guid>
+            <pubDate>Mon, 18 Apr 2022 19:53:03 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[No 10 network targeted with spyware, says group]]></title>
+            <description><![CDATA[Researchers say they warned UK officials about being targeted, but the software's makers deny the claims.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-61142687?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-61142687</guid>
+            <pubDate>Mon, 18 Apr 2022 21:59:14 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Twitter board takes action to fight Musk bid]]></title>
+            <description><![CDATA[The so-called "poison pill" measure is in response to Elon Musk's $43bn cash buyout offer.]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-61123200?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-61123200</guid>
+            <pubDate>Fri, 15 Apr 2022 19:55:05 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[North Korean hackers target gamers in $615m crypto heist - US]]></title>
+            <description><![CDATA[Crypto worth at least $615 million was stolen from players of popular online game Axie Infinity.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-61036733?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-61036733</guid>
+            <pubDate>Fri, 15 Apr 2022 02:58:18 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Child sex abuse victims want Online Safety Bill strengthened]]></title>
+            <description><![CDATA[Charities say online predators increasingly live-stream, an area not covered by the bill.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61082449?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61082449</guid>
+            <pubDate>Thu, 14 Apr 2022 23:01:44 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Three arrests over unofficial Club Penguin site]]></title>
+            <description><![CDATA[Disney launch copyright claim against latest unauthorised version of the defunct children's game.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61107939?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61107939</guid>
+            <pubDate>Thu, 14 Apr 2022 11:44:08 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[NFT of Jack Dorsey's first tweet struggles to sell]]></title>
+            <description><![CDATA[Malaysia-based Sina Estavi has been offered just a small fraction of the $2.9m he paid for the tweet.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61102759?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61102759</guid>
+            <pubDate>Thu, 14 Apr 2022 07:56:19 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[How facial recognition is identifying the dead in Ukraine]]></title>
+            <description><![CDATA[A controversial facial recognition platform has been used more than 1,000 times by Ukrainian officials.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61055319?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61055319</guid>
+            <pubDate>Wed, 13 Apr 2022 01:08:45 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[US cryptocurrency expert jailed for helping North Korea evade sanctions]]></title>
+            <description><![CDATA[Virgil Griffith was sentenced to five years and three months in prison by a court in New York.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61090064?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61090064</guid>
+            <pubDate>Wed, 13 Apr 2022 04:48:25 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Shanghai lockdown: iPhone maker halts operations at China sites]]></title>
+            <description><![CDATA[Taiwanese firm Pegatron is latest manufacturer to halt operations because of the Shanghai lockdown.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61089733?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61089733</guid>
+            <pubDate>Wed, 13 Apr 2022 04:32:22 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Elon Musk 'not sure' his takeover bid for Twitter will be successful]]></title>
+            <description><![CDATA[The Tesla boss claims he has a 'Plan B' if his offer, which values the firm at $43bn, is rejected.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61115738?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61115738</guid>
+            <pubDate>Fri, 15 Apr 2022 08:23:54 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Raidforums marketplace shut down in global operation]]></title>
+            <description><![CDATA[A forum which allowed criminals access to stolen personal data - for a fee - has been taken down.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61082144?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61082144</guid>
+            <pubDate>Tue, 12 Apr 2022 16:14:54 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ukrainian power grid 'lucky' to withstand Russian cyber-attack]]></title>
+            <description><![CDATA[Cyber experts say the malicious software used points to notorious military attackers.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61085480?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61085480</guid>
+            <pubDate>Tue, 12 Apr 2022 15:58:10 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Self-driving car stopped by San Francisco police]]></title>
+            <description><![CDATA[Video shows how law enforcers are having to adapt to a new era of autonomous vehicles.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61080666?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61080666</guid>
+            <pubDate>Tue, 12 Apr 2022 12:36:18 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Elon Musk will not join Twitter board, says boss]]></title>
+            <description><![CDATA[Tesla's chief executive was due to join the social media platform's board after buying a 9.2% stake.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61063905?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61063905</guid>
+            <pubDate>Mon, 11 Apr 2022 07:28:20 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Google removes apps for secretly copying phone numbers]]></title>
+            <description><![CDATA[More than a dozen apps were taken out of its Play Store for harvesting users' phone numbers.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61023379?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61023379</guid>
+            <pubDate>Fri, 08 Apr 2022 10:49:46 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Gen Z calling for more honesty on social media, experts say]]></title>
+            <description><![CDATA[Analysts say young people now expect to see greater levels of realism in their feeds.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-england-somerset-60022871?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-england-somerset-60022871</guid>
+            <pubDate>Sat, 09 Apr 2022 08:49:14 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Mystery of alleged Chinese hack on eve of Ukraine invasion]]></title>
+            <description><![CDATA[A western intelligence official believes the aim was espionage - but questions remain.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-60983346?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-60983346</guid>
+            <pubDate>Thu, 07 Apr 2022 17:39:47 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ronin Network bailed out by crypto giant Binance after hack]]></title>
+            <description><![CDATA[Hacked cryptocurrency and games company says its customers will now be reimbursed.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61023381?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61023381</guid>
+            <pubDate>Thu, 07 Apr 2022 15:24:20 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Nano ink solar cells allow tech to charge in any light]]></title>
+            <description><![CDATA[Custom nano inks allow solar cells to be made to any shape and can use ambient light to power devices.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61025430?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61025430</guid>
+            <pubDate>Thu, 07 Apr 2022 13:53:59 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Cuddly toy reviews used for headphones on Amazon]]></title>
+            <description><![CDATA[Sellers are boosting ratings of electronics with reviews for completely different products, Which? finds.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61009406?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61009406</guid>
+            <pubDate>Thu, 07 Apr 2022 01:59:27 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Elon Musk to answer Twitter staff questions]]></title>
+            <description><![CDATA[Employees will be able quiz the entrepreneur as he joins the board of Twitter, after share purchase.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61042412?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61042412</guid>
+            <pubDate>Fri, 08 Apr 2022 16:50:02 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Instagram: Presenter Rachel Riley received series of porn messages]]></title>
+            <description><![CDATA[The Center for Countering Digital Hate found abuse in the Instagram DMs of five high-profile females.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-60983593?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-60983593</guid>
+            <pubDate>Wed, 06 Apr 2022 09:26:26 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Twitter confirms it is working on an edit button]]></title>
+            <description><![CDATA[It comes after new board member Elon Musk asked his followers if they wanted the feature.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61003270?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61003270</guid>
+            <pubDate>Wed, 06 Apr 2022 03:42:29 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Amazon secures rockets for broadband project]]></title>
+            <description><![CDATA[It has booked 83 launches for its low earth orbit satellite internet system Project Kuiper.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61009163?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61009163</guid>
+            <pubDate>Wed, 06 Apr 2022 17:56:55 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Twitter moves to limit Russian government accounts]]></title>
+            <description><![CDATA[The platform has taken action to limit more than 300 Kremlin accounts, including President Putin's.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-60992373?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-60992373</guid>
+            <pubDate>Tue, 05 Apr 2022 16:10:59 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[What are Elon Musk's plans for Twitter?]]></title>
+            <description><![CDATA[The Tesla founder has become the social network's biggest single shareholder, and a board member.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-60995694?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-60995694</guid>
+            <pubDate>Tue, 05 Apr 2022 13:19:05 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Hydra: How German police dismantled Russian darknet site]]></title>
+            <description><![CDATA[German police say illegal sales on the site amounted to at least £1bn a year]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61002904?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61002904</guid>
+            <pubDate>Tue, 05 Apr 2022 23:31:42 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Broadband firms 'must do more to promote social tariffs']]></title>
+            <description><![CDATA[The culture secretary says suppliers must do more to promote discounted rates to low-income homes.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-60983343?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-60983343</guid>
+            <pubDate>Tue, 05 Apr 2022 22:09:14 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Cryptocurrency: UK Treasury to regulate some stablecoins]]></title>
+            <description><![CDATA[Treasury Minister John Glen says "stablecoins" could be used as a means of payment.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60983561?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60983561</guid>
+            <pubDate>Mon, 04 Apr 2022 17:15:17 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[The Works forced to shut some shops after cyber-attack]]></title>
+            <description><![CDATA[The retailer said that five of its 526 shops have temporarily been shut since the attack last week.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60993635?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60993635</guid>
+            <pubDate>Tue, 05 Apr 2022 11:06:24 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ukraine war: Fortnite maker Epic Games raises $144m (£110m) to help victims]]></title>
+            <description><![CDATA[Fundraising campaigns by games companies have raised millions of dollars for humanitarian causes.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-60983344?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-60983344</guid>
+            <pubDate>Mon, 04 Apr 2022 15:42:20 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Electric hydroplane boat: ‘It feels like we’re flying’]]></title>
+            <description><![CDATA[With the hull out of the water, the craft uses 80% less power than a boat would conventionally need.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-61080066?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-61080066</guid>
+            <pubDate>Tue, 12 Apr 2022 11:30:23 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ukraine war scams: Cybercriminals stole my identity]]></title>
+            <description><![CDATA[Scammers are using emotionally charged tricks in a bid to steal online donations.]]></description>
+            <link>https://www.bbc.co.uk/news/world-61100181?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-61100181</guid>
+            <pubDate>Sat, 16 Apr 2022 23:03:05 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Former Twitter exec questions seriousness of Musk offer]]></title>
+            <description><![CDATA[Vivian Schiller, who used to work there, tells Newsnight Elon Musk enjoys "throwing bombs" on Twitter.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61117092?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61117092</guid>
+            <pubDate>Fri, 15 Apr 2022 06:28:24 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[This plug socket tells you if your energy is green]]></title>
+            <description><![CDATA[A power socket that helps you save electricity and tells you if it's from renewable sources.]]></description>
+            <link>https://www.bbc.co.uk/news/stories-61030903?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/stories-61030903</guid>
+            <pubDate>Sat, 09 Apr 2022 23:00:15 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Prince Charles visits sustainable aviation laboratory]]></title>
+            <description><![CDATA[Prince Charles meets staff from the Whittle Laboratory to learn about sustainable aviation.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-60985913?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-60985913</guid>
+            <pubDate>Mon, 04 Apr 2022 13:06:02 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Why Argentina is embracing cryptocurrency]]></title>
+            <description><![CDATA[The nation that has seen economic trauma is open to the possibility of alternative money like Bitcoin.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60912789?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60912789</guid>
+            <pubDate>Thu, 21 Apr 2022 23:09:39 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Are there affordable ways to cut your heating bill?]]></title>
+            <description><![CDATA[Alternatives to gas and oil heating are becoming more popular but are still expensive.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61068688?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61068688</guid>
+            <pubDate>Mon, 18 Apr 2022 23:17:43 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Crypto boss says fraudsters have 'special place in hell']]></title>
+            <description><![CDATA[An executive at one of the largest cryptocurrency exchanges hits out at scammers who target the vulnerable.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61011151?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61011151</guid>
+            <pubDate>Thu, 14 Apr 2022 23:12:31 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Streaming is driving a 'golden age' for Indian drama]]></title>
+            <description><![CDATA[India's 30 streaming services want to reach 60 million households meaning a lot more work for actors.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60873073?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60873073</guid>
+            <pubDate>Mon, 11 Apr 2022 23:01:18 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[The microchip implants that let you pay with your hand]]></title>
+            <description><![CDATA[You can now get a payment chip injected beneath your skin, turning you into a human bank card.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61008730?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61008730</guid>
+            <pubDate>Sun, 10 Apr 2022 23:01:34 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Why France's daily baguette is costing so much dough]]></title>
+            <description><![CDATA[Every part of the cost of the daily staple is rising - flour, electricity, gas and wages.]]></description>
+            <link>https://www.bbc.co.uk/news/business-61015290?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-61015290</guid>
+            <pubDate>Fri, 08 Apr 2022 21:26:19 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Bafta Games Awards 2022: 'Plucky underdogs' go up against hit titles]]></title>
+            <description><![CDATA[Hit titles go up against games made by four people during the pandemic "because they were bored".]]></description>
+            <link>https://www.bbc.co.uk/news/entertainment-arts-61009456?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/entertainment-arts-61009456</guid>
+            <pubDate>Wed, 06 Apr 2022 23:30:45 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Does it matter if we know where our food comes from?]]></title>
+            <description><![CDATA[Increasingly sophisticated tech tells us more than ever about our food's journey from farm to fork.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60617094?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60617094</guid>
+            <pubDate>Mon, 04 Apr 2022 23:05:05 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Pet cloning is getting more popular despite the cost]]></title>
+            <description><![CDATA[The controversial process of cloning your dog or cat is growing more popular, despite its high cost.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60924936?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60924936</guid>
+            <pubDate>Sun, 03 Apr 2022 23:42:39 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Chip shortage: Has Europe's plan arrived too late?]]></title>
+            <description><![CDATA[The European Union is investing billions of euros in developing a world-beating chip industry.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60554228?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60554228</guid>
+            <pubDate>Fri, 01 Apr 2022 00:30:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Can tech help you to manage the cost of living?]]></title>
+            <description><![CDATA[Personal finance apps are everywhere but are they useful if you are already in debt or on low wages.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60680531?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60680531</guid>
+            <pubDate>Mon, 28 Mar 2022 23:03:39 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Beating noise pollution with smart tech]]></title>
+            <description><![CDATA[A growing number of firms are offering solutions to cut the excessive noise that's harming our health]]></description>
+            <link>https://www.bbc.co.uk/news/business-60858571?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60858571</guid>
+            <pubDate>Sun, 27 Mar 2022 23:01:37 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Electric cars: Five big questions answered]]></title>
+            <description><![CDATA[The electric car revolution is speeding up but what do buyers really want to know?]]></description>
+            <link>https://www.bbc.co.uk/news/business-60838192?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60838192</guid>
+            <pubDate>Sat, 26 Mar 2022 23:46:16 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Why patients are flocking to India for surgery]]></title>
+            <description><![CDATA[There has been a sharp growth in medical tourism to India but the sector needs better regulation.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60569647?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60569647</guid>
+            <pubDate>Fri, 25 Mar 2022 00:03:54 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Not smart but clever? The return of 'dumbphones']]></title>
+            <description><![CDATA[Why sales of very basic mobile phones, without apps and internet connection, are increasing.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60763168?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60763168</guid>
+            <pubDate>Mon, 21 Mar 2022 00:04:45 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[How a jetpack design helped create a flying motorbike]]></title>
+            <description><![CDATA[The developers of a powerful mini aircraft hope it will be used by the armed forces.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60333565?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60333565</guid>
+            <pubDate>Fri, 18 Mar 2022 01:06:11 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[The popular apps aiming to tame the chaos of family life]]></title>
+            <description><![CDATA[How tech is helping young families and couples regain their busy social lives after Covid.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60213795?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60213795</guid>
+            <pubDate>Tue, 15 Mar 2022 00:22:57 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[The innovative surfing tech making waves]]></title>
+            <description><![CDATA[The sport of surfing is modernising, using technology to offer bigger, better and safer thrills.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60689501?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60689501</guid>
+            <pubDate>Mon, 14 Mar 2022 00:18:49 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Russia-Ukraine war: A warm hug meant that war had begun]]></title>
+            <description><![CDATA[Why so many Ukrainians are determined to keep on working through the conflict.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-60684120?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-60684120</guid>
+            <pubDate>Sat, 12 Mar 2022 01:34:13 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

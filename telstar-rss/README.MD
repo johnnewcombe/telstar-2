@@ -1,4 +1,4 @@
-This program is designed to take the rss xml data file and turn it into frames based on a frame template.
+This program is designed to take the rss data file (see associated 'getdatasource.sh' script) and turn it into frames based on a frame template.
 
 Usage:
 
@@ -12,8 +12,12 @@ To copy the templates to the remote server, use SFTP e.g.
 
     # navigate to local telstar-rss directory using lcd
     # navigate to remote /opt/telstar directory using cd
-    $ put ./bin/telstar-rss-linux-amd64 telstar-rss
-
+    $ put getdatasources.sh .
+    $ put createframes.sh .
+    $ put cron-test.sh .
+    $ put cron-live.sh .
+    $ put ./telstar-rss-2.0/telstar-rss-linux-amd64 telstar-rss
+    $ put ../telstar-util/telstar-util-2.0/telstar-util-linux-amd64 telstar-util
 
 Create data/frames, data/rss and data/templates and copy files to folders.
 

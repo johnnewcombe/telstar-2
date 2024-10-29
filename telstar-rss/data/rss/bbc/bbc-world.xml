@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet title="XSL_formatting" type="text/xsl" href="/shared/bsp/xsl/rss/nolsol.xsl"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title><![CDATA[BBC News - World]]></title>
+        <description><![CDATA[BBC News - World]]></description>
+        <link>https://www.bbc.co.uk/news/</link>
+        <image>
+            <url>https://news.bbcimg.co.uk/nol/shared/img/bbc_news_120x60.gif</url>
+            <title>BBC News - World</title>
+            <link>https://www.bbc.co.uk/news/</link>
+        </image>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Fri, 22 Apr 2022 20:55:33 GMT</lastBuildDate>
+        <copyright><![CDATA[Copyright: (C) British Broadcasting Corporation, see http://news.bbc.co.uk/2/hi/help/rss/4498287.stm for terms and conditions of reuse.]]></copyright>
+        <language><![CDATA[en-gb]]></language>
+        <ttl>15</ttl>
+        <item>
+            <title><![CDATA[Ukraine war: Russia 'plans to seize southern Ukraine']]></title>
+            <description><![CDATA[A senior general says the aim is to open a route into a separatist region of Moldova, Transnistria.]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-61188943?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-61188943</guid>
+            <pubDate>Fri, 22 Apr 2022 17:15:32 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ukraine war: The Russia I knew no longer exists - Steve Rosenberg]]></title>
+            <description><![CDATA[The BBC's Steve Rosenberg takes in the sites of Moscow apparently distorted by the war against Ukraine.]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-61188783?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-61188783</guid>
+            <pubDate>Fri, 22 Apr 2022 10:08:04 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ukraine war: Inside Kyiv's trench defences]]></title>
+            <description><![CDATA[Kyiv's defence force remains on high alert, dug into trenches in case of the return of Russian troops.]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-61191111?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-61191111</guid>
+            <pubDate>Fri, 22 Apr 2022 16:00:02 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Afghanistan: Kunduz mosque attacked during Friday prayers]]></title>
+            <description><![CDATA[The deadly explosion comes amid a revival of violence claimed by Islamic State militants.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-61191643?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-61191643</guid>
+            <pubDate>Fri, 22 Apr 2022 16:59:48 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Gun deaths were the leading killer of US children in 2020]]></title>
+            <description><![CDATA[Guns have overtaken car crashes as the leading cause of death among young Americans.]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-61192975?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-61192975</guid>
+            <pubDate>Fri, 22 Apr 2022 15:16:17 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Mike Tyson punched plane passenger 'after bottle thrown']]></title>
+            <description><![CDATA[Video shows the former heavyweight boxer repeatedly punching a man in the head.]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-61192417?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-61192417</guid>
+            <pubDate>Fri, 22 Apr 2022 18:42:39 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Marjorie Taylor Greene: I did not call for violent capitol insurrection]]></title>
+            <description><![CDATA[Georgia Republican Marjorie Taylor Greene is on trial for allegedly violating a Civil War era law.]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-61196311?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-61196311</guid>
+            <pubDate>Fri, 22 Apr 2022 18:56:56 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[#JusticeForSheila: Kenyan anger after lesbian's murder]]></title>
+            <description><![CDATA[People in Kenyan are expressing their upset about LGBTQ discrimination after]]></description>
+            <link>https://www.bbc.co.uk/news/world-africa-61192594?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-africa-61192594</guid>
+            <pubDate>Fri, 22 Apr 2022 16:23:44 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Somalia: At least six killed in Mogadishu attack near beach]]></title>
+            <description><![CDATA[The attack reportedly happened near a beach in the capital, Mogadishu.]]></description>
+            <link>https://www.bbc.co.uk/news/world-africa-61196325?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-africa-61196325</guid>
+            <pubDate>Fri, 22 Apr 2022 20:46:41 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Imran Khan: Inside the huge rally in Lahore for Pakistan's ousted PM]]></title>
+            <description><![CDATA[The former prime minister's narrative of a US-led conspiracy to oust him is resonating with his supporters.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-61189745?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-61189745</guid>
+            <pubDate>Fri, 22 Apr 2022 11:12:07 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Jerusalem holy site clashes fuel fears of return to war]]></title>
+            <description><![CDATA[Tensions are high following several days of violence in and around the al-Aqsa Mosque compound.]]></description>
+            <link>https://www.bbc.co.uk/news/world-middle-east-61154373?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-middle-east-61154373</guid>
+            <pubDate>Fri, 22 Apr 2022 19:30:53 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Mwai Kibaki: Kenya's first opposition president dies aged 90]]></title>
+            <description><![CDATA[Mwai Kibaki ended 40 years of one-party rule but his 2007 re-election sparked nationwide violence.]]></description>
+            <link>https://www.bbc.co.uk/news/world-africa-61188963?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-africa-61188963</guid>
+            <pubDate>Fri, 22 Apr 2022 13:44:17 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Kenya's Mwai Kibaki: The hope and disappointment]]></title>
+            <description><![CDATA[Ex-Kenyan President Mwai Kibaki is remembered for ending the stranglehold of the former ruling party.]]></description>
+            <link>https://www.bbc.co.uk/news/world-africa-61191761?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-africa-61191761</guid>
+            <pubDate>Fri, 22 Apr 2022 15:09:10 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Mariupol: Driving into the 'apocalypse' to save mum and dad]]></title>
+            <description><![CDATA[How a young Ukrainian woman travelled into the besieged city of Mariupol to save her parents.]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-61178199?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-61178199</guid>
+            <pubDate>Fri, 22 Apr 2022 01:29:42 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Africa's week in pictures: 15-21 April 2022]]></title>
+            <description><![CDATA[A selection of the best photos from across Africa and beyond this week.]]></description>
+            <link>https://www.bbc.co.uk/news/world-africa-61173922?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-africa-61173922</guid>
+            <pubDate>Fri, 22 Apr 2022 01:11:29 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Mid-day meal plan struggles to feed India's hungry students]]></title>
+            <description><![CDATA[The world's most ambitious free school food programme resumes post pandemic, but problems remain.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-india-61162642?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-india-61162642</guid>
+            <pubDate>Fri, 22 Apr 2022 00:11:43 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Why Argentina is embracing cryptocurrency]]></title>
+            <description><![CDATA[The nation that has seen economic trauma is open to the possibility of alternative money like Bitcoin.]]></description>
+            <link>https://www.bbc.co.uk/news/business-60912789?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-60912789</guid>
+            <pubDate>Thu, 21 Apr 2022 23:09:39 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[What weapons has the US given Ukraine - and how much do they help?]]></title>
+            <description><![CDATA[President Biden has announced a new $800m assistance package that includes ammunition and drones.]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-60774098?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-60774098</guid>
+            <pubDate>Thu, 21 Apr 2022 19:26:30 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Khodorkovsky: Oil ban would deal Putin ‘very serious blow’]]></title>
+            <description><![CDATA[Exiled Russian tycoon says oil embargo could halve country’s cash and damage Putin’s war capability.]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-61187658?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-61187658</guid>
+            <pubDate>Fri, 22 Apr 2022 14:50:18 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Johnny Depp and Amber Heard face off in court]]></title>
+            <description><![CDATA[Depp says she stubbed a cigarette on his face. The court sees a Depp text saying: "Lets burn Amber!!!"]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-61156743?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-61156743</guid>
+            <pubDate>Fri, 22 Apr 2022 01:48:45 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[The German towns in Paraguay with a surge in European immigrants]]></title>
+            <description><![CDATA[Thousands of German nationals have migrated to Paraguay to escape Covid restrictions and immigration in Europe.]]></description>
+            <link>https://www.bbc.co.uk/news/world-latin-america-61184479?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-latin-america-61184479</guid>
+            <pubDate>Thu, 21 Apr 2022 23:25:20 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[France election: What far-right leader Marine Le Pen said before… and now]]></title>
+            <description><![CDATA[Has Marine Le Pen's strong views on immigration, the EU and Nato shifted since the last election?]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-61168776?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-61168776</guid>
+            <pubDate>Thu, 21 Apr 2022 23:20:07 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ukrainians injured or killed by unexploded ammunition]]></title>
+            <description><![CDATA[Across Ukraine’s Kyiv region, efforts have begun to clear the countless pieces of unexploded ammunition left behind after fierce fighting.]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-61181978?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-61181978</guid>
+            <pubDate>Thu, 21 Apr 2022 23:28:00 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

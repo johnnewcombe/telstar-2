@@ -7,7 +7,7 @@
 
 FROM arm64v8/ubuntu
 LABEL maintainer="John Newcombe, https://glasstty.com"
-ENV REFRESHED_AT 2024-08-07
+ENV REFRESHED_AT 2024-07-24
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/London
@@ -26,16 +26,16 @@ RUN mkdir -p /opt/telstar/
 
 # If Config not supplied, uses env vars
 COPY ./telstar-server/hosts /opt/telstar
-COPY ./telstar-server/bin/telstar-server-linux-arm64 /opt/telstar/
-#COPY ./telstar-server/version.txt /opt/telstar/version.txt
+COPY ./telstar-server/telstar-server-2.0/telstar-server-linux-arm64 /opt/telstar/
+COPY ./telstar-server/version.txt /opt/telstar/version.txt
 
 # add utilities and apps to the volume
-COPY ./telstar-util/bin/telstar-util.zip /opt/telstar/
-COPY ./telstar-rss/bin/telstar-rss.zip /opt/telstar/
-#COPY ./telstar-upload/bin/telstar-upload-2.0.zip /opt/telstar/
+COPY ./telstar-util/telstar-util-2.0/telstar-util-2.0.zip /opt/telstar/
+COPY ./telstar-rss/telstar-rss-2.0/telstar-rss-2.0.zip /opt/telstar/
+COPY ./telstar-upload/telstar-upload-2.0/telstar-upload-2.0.zip /opt/telstar/
 
-# add plugins
-COPY ./telstar-openweather/bin/telstar-openweather-linux-arm64 /opt/telstar/telstar-openweather
+// add plugins
+COPY ./telstar-openweather/telstar-openweather-2.0/telstar-openweather-linux-arm64 /opt/telstar/telstar-openweather
 
 WORKDIR /opt/telstar
 ENTRYPOINT ["./telstar-server-linux-arm64"]
