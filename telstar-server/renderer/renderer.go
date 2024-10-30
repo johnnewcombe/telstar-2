@@ -179,14 +179,15 @@ func renderHeader(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 		}
 	}
 
+	// the extra HOME characters are sent as they provide a delay for slower machines to complete a clear screen
+	// it is safer to send repeated HOME than a NULL
 	if !frame.DisableClear && frame.FrameType == globals.FRAME_TYPE_INITIAL {
-		//	if options.ClearScreen && frame.FrameType == "initial" {
 		metadata = getMetaData(time.Now())
-		cls = string(globals.CLS) + metadata + string(globals.CLS)
+		cls = string(globals.CLS) + string(globals.HOME) + string(globals.HOME) + string(globals.HOME) + metadata + string(globals.CLS) + string(globals.HOME) + string(globals.HOME) + string(globals.HOME)
 	} else if !frame.DisableClear {
-		cls = string(globals.CLS)
+		cls = string(globals.CLS) + string(globals.HOME) + string(globals.HOME) + string(globals.HOME)
 	} else {
-		cls = string(globals.HOME)
+		cls = string(globals.HOME) + string(globals.HOME) + string(globals.HOME) + string(globals.HOME)
 	}
 
 	if !settings.Server.HidePageId {
