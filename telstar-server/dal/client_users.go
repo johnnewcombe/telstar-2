@@ -19,6 +19,9 @@ func InsertOrReplaceUser(connectionUrl string, user types.User) error {
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -69,6 +72,9 @@ func InsertOrReplaceUserByUser(connectionUrl string, newUser types.User, user ty
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -119,6 +125,10 @@ func DeleteUser(connectionUrl string, userId string) (int64, error) {
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return 0, err
+	}
+
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -147,6 +157,10 @@ func DeleteUserByUser(connectionUrl string, userId string, user types.User) (int
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return 0, err
+	}
+
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -175,7 +189,7 @@ func GetUser(connectionUrl string, userId string) (types.User, error) {
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
 	if err != nil {
-		return result, fmt.Errorf("finding user %s: %v", userId, err)
+		return result, err
 	}
 
 	defer func() {
@@ -197,6 +211,8 @@ func GetUser(connectionUrl string, userId string) (types.User, error) {
 
 func GetUserByUser(connectionUrl string, userId string, user types.User) (types.User, error) {
 
+	var result types.User
+
 	// FIXME FIXME user param needs to be checked for permissions etc.
 	//  i.e. admin and new users base page is in scope with current user.
 
@@ -206,6 +222,10 @@ func GetUserByUser(connectionUrl string, userId string, user types.User) (types.
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return result, err
+	}
+
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -214,8 +234,6 @@ func GetUserByUser(connectionUrl string, userId string, user types.User) (types.
 
 	filter := bson.M{"user-id": userId}
 	collection := client.Database(DBNAME).Collection(AUTH_COLLECTION)
-
-	var result types.User
 
 	err = collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {

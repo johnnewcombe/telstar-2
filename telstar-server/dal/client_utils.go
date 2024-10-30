@@ -18,6 +18,9 @@ func getCollectionNames(connectionUrl string) (pNames, sNames []string, err erro
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return nil, nil, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -64,6 +67,9 @@ func createIndex(connectionUrl string, collectionName string) error {
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)

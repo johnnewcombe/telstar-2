@@ -37,6 +37,9 @@ func GetFrames(connectionUrl string, primaryDb bool) ([]types.Frame, error) {
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return nil, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -96,6 +99,9 @@ func GetFramesByUser(connectionUrl string, primaryDb bool, user types.User) ([]t
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return nil, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -167,21 +173,24 @@ func GetFramesByUser(connectionUrl string, primaryDb bool, user types.User) ([]t
 
 func GetFramesByCollection(connectionUrl string, collectionName string) ([]types.Frame, error) {
 
+	// define the result type
+	var result []types.Frame
+
 	// get a context
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return result, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
 			//TODO should this n=be a panic??
 		}
 	}()
-
-	// define the result type
-	var result []types.Frame
 
 	// get the collection
 	collection := client.Database(DBNAME).Collection(collectionName)
@@ -220,20 +229,24 @@ func GetFramesByCollection(connectionUrl string, collectionName string) ([]types
 
 func GetFrame(connectionUrl string, pageNo int, frameId string, primaryDb bool, visibleOnly bool) (types.Frame, error) {
 
+	// define the result type
+	var result types.Frame
+
 	// get a context
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return result, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
 		}
 	}()
 
-	// define the result type
-	var result types.Frame
 	var filter bson.M
 	if visibleOnly {
 		filter = bson.M{"pid.page-no": pageNo, "pid.frame-id": frameId, "visible": true}
@@ -269,6 +282,9 @@ func GetFrameByUser(connectionUrl string, pageNo int, frameId string, primaryDb 
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return result, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -320,6 +336,9 @@ func InsertFrame(connectionUrl string, frame types.Frame, primaryDb bool) (bool,
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return false, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -360,6 +379,9 @@ func InsertOrReplaceFrame(connectionUrl string, frame types.Frame, primaryDb boo
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -414,6 +436,9 @@ func InsertOrReplaceFrameByUser(connectionUrl string, frame types.Frame, primary
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -481,6 +506,9 @@ func DeleteFrame(connectionUrl string, pageNo int, frameId string, primaryDb boo
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return 0, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -517,6 +545,9 @@ func DeleteFrameByUser(connectionUrl string, pageNo int, frameId string, primary
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return 0, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -567,6 +598,9 @@ func PurgeFramesByUser(connectionUrl string, pageNo int, frameId string, primary
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return 0, err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -629,6 +663,9 @@ func PublishFrameByUser(connectionUrl string, pageNo int, frameId string, user t
 
 	// connect
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionUrl))
+	if err != nil {
+		return err
+	}
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
