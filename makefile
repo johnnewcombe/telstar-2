@@ -1,5 +1,5 @@
 # Set this to the build version, no other version files need to be updated (see echo command below)
-version := 2.5.RC1
+version := 2.0.23
 
 # Remember to set the ENV REFRESHED_AT variable in the associated docker files.
 
@@ -18,8 +18,10 @@ build:
 docker: #build
 	# Build the architectures
 	# this adds the latest tag to this release
-	docker build -f Dockerfile.amd64 --rm --no-cache --tag johnnewcombe/telstar:latest --tag johnnewcombe/telstar:amd64-$(version) .
-	docker build -f Dockerfile.arm64v8 --rm --no-cache --tag johnnewcombe/telstar:arm64v8-$(version) .
+	docker build -f Dockerfile.amd64 --platform linux/amd64 --rm --no-cache --tag johnnewcombe/telstar:latest --tag johnnewcombe/telstar:amd64-$(version) .
+	docker build -f Dockerfile.arm64v8 --platform linux/arm64/v8 --rm --no-cache --tag johnnewcombe/telstar:arm64v8-$(version) .
+
+#	docker build -f Dockerfile.arm64v8 --platform linux/arm64 --rm --no-cache --tag johnnewcombe/telstar:arm64v8-$(version) .
 
 docker-push: #docker
 	docker push johnnewcombe/telstar:amd64-$(version)

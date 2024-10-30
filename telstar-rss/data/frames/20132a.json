@@ -1,0 +1,55 @@
+{
+  "_id": "000000000000000000000000",
+  "pid": {
+    "page-no": 20132,
+    "frame-id": "a"
+  },
+  "visible": true,
+  "header-text": "",
+  "cost": 0,
+  "disable-clear": false,
+  "frame-type": "information",
+  "redirect": {
+    "page-no": 0,
+    "frame-id": ""
+  },
+  "content": {
+    "data": "[W]Arm aims to capture 50% of PC market\r\n[W]in five years, CEO says.\r\n\r\n[R]Mon, 03 Jun 2024 20:32:12 +0000.\r\n[w][l.]\r\n[W]TikTok preparing a US copy of the\r\n[W]app's core algorithm.\r\n\r\n[R]Thu, 30 May 2024 14:14:03 +0000.\r\n[w][l.]\r\n[W]Nvidia cuts China prices in Huawei\r\n[W]chip fight.\r\n\r\n",
+    "type": "markup"
+  },
+  "footer": {
+    "data": "",
+    "type": "",
+    "merge-data": null
+  },
+  "title": {
+    "data": "https://edit.tf/#0:QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECAigQIEGB8_f9EBfQsyaFizQg0KNizQsWaFmTAsyIECBAgQICKBAgQavfv37QF9SzNqWJNSDUg1INSxJqWZkSzIgQIECBAgIoECBAi2_fqdAXVIFSpYsRLEyBUgVLFipAqRLEyBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECA",
+    "type": "edit.tf,5",
+    "merge-data": null
+  },
+  "routing-table": null,
+  "connection": {
+    "address": "",
+    "mode": "",
+    "port": 0
+  },
+  "author-id": "telstar-rss",
+  "response-data": {
+    "response-fields": null,
+    "response-action": {
+      "exec": "",
+      "args": null,
+      "post-action-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      },
+      "post-cancel-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      }
+    }
+  },
+  "cursor": false,
+  "navmessage-select": "",
+  "navmessage-notfound": ""
+}

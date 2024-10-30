@@ -1,0 +1,57 @@
+{
+  "_id": "000000000000000000000000",
+  "pid": {
+    "page-no": 2221,
+    "frame-id": "d"
+  },
+  "visible": true,
+  "header-text": "",
+  "cost": 0,
+  "disable-clear": false,
+  "frame-type": "information",
+  "redirect": {
+    "page-no": 0,
+    "frame-id": ""
+  },
+  "content": {
+    "data": "[W]previously owned by Fayed.\r\n[R]Sat, 21 Sep 2024 10:08:05 GMT\r\n[w][l.]\r\n[R]Middle East crisis live: children\r\n[R]and Hezbollah commander among 31\r\n[R]killed in Beirut strike, Lebanon\r\n[R]says.\r\n[W]Lebanon's health ministry has\r\n[W]revised up the death toll from\r\n[W]Friday's attack Reuters reports that\r\n[W]Iran's supreme leader, Ayatollah Ali\r\n[W]Khamenei, said on Saturday that\r\n[W]Israel is committing 'shameless\r\n[W]crimes' against children, not\r\nmore...",
+    "type": "markup"
+  },
+  "footer": {
+    "data": "",
+    "type": "",
+    "merge-data": null
+  },
+  "title": {
+    "data": "https://edit.tf/#0:QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECAvobotqBX__oECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIC_9AgQIEGv-gQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgL_0Cj4kQav6BAgQIECBAgQIECBAgQIECBAgQIECBAgQIECAuq64P6Dx__oECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECA",
+    "type": "edit.tf,5",
+    "merge-data": [
+      "[w[             Headlines]]"
+    ]
+  },
+  "routing-table": null,
+  "connection": {
+    "address": "",
+    "mode": "",
+    "port": 0
+  },
+  "author-id": "telstar-rss",
+  "response-data": {
+    "response-fields": null,
+    "response-action": {
+      "exec": "",
+      "args": null,
+      "post-action-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      },
+      "post-cancel-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      }
+    }
+  },
+  "cursor": false,
+  "navmessage-select": "",
+  "navmessage-notfound": ""
+}

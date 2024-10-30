@@ -1,0 +1,57 @@
+{
+  "_id": "000000000000000000000000",
+  "pid": {
+    "page-no": 2221,
+    "frame-id": "c"
+  },
+  "visible": true,
+  "header-text": "",
+  "cost": 0,
+  "disable-clear": false,
+  "frame-type": "information",
+  "redirect": {
+    "page-no": 0,
+    "frame-id": ""
+  },
+  "content": {
+    "data": "[W]Haugenes The former manager of\r\n[W]Fulham women's team has said female\r\n[W]players were 'protected' from the\r\n[W]club's late owner, after staff\r\n[W]became 'aware' the billionaire had a\r\n[W]predilection for 'young, blond\r\n[W]girls'. Five women have alleged in\r\n[W]recent days that they were raped by\r\n[W]Fayed, and a number of others have\r\n[W]alleged sexual misconduct took place\r\n[W]while they worked at Harrods, the\r\n[W]luxury department store that was\r\nmore...",
+    "type": "markup"
+  },
+  "footer": {
+    "data": "",
+    "type": "",
+    "merge-data": null
+  },
+  "title": {
+    "data": "https://edit.tf/#0:QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECAvobotqBX__oECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIC_9AgQIEGv-gQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgL_0Cj4kQav6BAgQIECBAgQIECBAgQIECBAgQIECBAgQIECAuq64P6Dx__oECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECA",
+    "type": "edit.tf,5",
+    "merge-data": [
+      "[w[             Headlines]]"
+    ]
+  },
+  "routing-table": null,
+  "connection": {
+    "address": "",
+    "mode": "",
+    "port": 0
+  },
+  "author-id": "telstar-rss",
+  "response-data": {
+    "response-fields": null,
+    "response-action": {
+      "exec": "",
+      "args": null,
+      "post-action-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      },
+      "post-cancel-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      }
+    }
+  },
+  "cursor": false,
+  "navmessage-select": "",
+  "navmessage-notfound": ""
+}

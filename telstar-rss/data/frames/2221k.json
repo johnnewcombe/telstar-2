@@ -1,0 +1,57 @@
+{
+  "_id": "000000000000000000000000",
+  "pid": {
+    "page-no": 2221,
+    "frame-id": "k"
+  },
+  "visible": true,
+  "header-text": "",
+  "cost": 0,
+  "disable-clear": false,
+  "frame-type": "information",
+  "redirect": {
+    "page-no": 0,
+    "frame-id": ""
+  },
+  "content": {
+    "data": "[R]'It deserves to be called iconic':\r\n[R]London tube map creator's archive\r\n[R]goes up for sale.\r\n[W]Designer Harry Beck's famous\r\n[W]transport diagram, first published\r\n[W]in 1933, has spawned imitators\r\n[W]around the world Harry Beck may not\r\n[W]have a London Underground line named\r\n[W]after him as Queen Victoria and\r\n[W]Queen Elizabeth have, but there is a\r\n[W]plaque on a platform at Finchley\r\n[W]Central, once his local stop, that\r\n[W]marks his legacy: the design of the\r\n[W]tube map. And this autumn, as a new\r\nmore...",
+    "type": "markup"
+  },
+  "footer": {
+    "data": "",
+    "type": "",
+    "merge-data": null
+  },
+  "title": {
+    "data": "https://edit.tf/#0:QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECAvobotqBX__oECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIC_9AgQIEGv-gQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgL_0Cj4kQav6BAgQIECBAgQIECBAgQIECBAgQIECBAgQIECAuq64P6Dx__oECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECA",
+    "type": "edit.tf,5",
+    "merge-data": [
+      "[w[             Headlines]]"
+    ]
+  },
+  "routing-table": null,
+  "connection": {
+    "address": "",
+    "mode": "",
+    "port": 0
+  },
+  "author-id": "telstar-rss",
+  "response-data": {
+    "response-fields": null,
+    "response-action": {
+      "exec": "",
+      "args": null,
+      "post-action-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      },
+      "post-cancel-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      }
+    }
+  },
+  "cursor": false,
+  "navmessage-select": "",
+  "navmessage-notfound": ""
+}

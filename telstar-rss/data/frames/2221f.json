@@ -1,0 +1,57 @@
+{
+  "_id": "000000000000000000000000",
+  "pid": {
+    "page-no": 2221,
+    "frame-id": "f"
+  },
+  "visible": true,
+  "header-text": "",
+  "cost": 0,
+  "disable-clear": false,
+  "frame-type": "information",
+  "redirect": {
+    "page-no": 0,
+    "frame-id": ""
+  },
+  "content": {
+    "data": "[W]Edinburgh Iain Campbell, a\r\n[W]researcher based at Edinburgh\r\n[W]University, has a special\r\n[W]perspective on bipolar depression.\r\n[W]He lives with the condition and has\r\n[W]lost family members who have taken\r\n[W]their own lives because of their\r\n[W]depression. It remains an\r\n[W]intractable, devastating health\r\n[W]problem, he says. More than a\r\n[W]million people in the UK have\r\n[W]bipolar depression, of whom a third\r\n[W]are likely to attempt suicide. Yet\r\n[W]the condition's roots remain unknown\r\nmore...",
+    "type": "markup"
+  },
+  "footer": {
+    "data": "",
+    "type": "",
+    "merge-data": null
+  },
+  "title": {
+    "data": "https://edit.tf/#0:QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECAvobotqBX__oECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIC_9AgQIEGv-gQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgL_0Cj4kQav6BAgQIECBAgQIECBAgQIECBAgQIECBAgQIECAuq64P6Dx__oECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECA",
+    "type": "edit.tf,5",
+    "merge-data": [
+      "[w[             Headlines]]"
+    ]
+  },
+  "routing-table": null,
+  "connection": {
+    "address": "",
+    "mode": "",
+    "port": 0
+  },
+  "author-id": "telstar-rss",
+  "response-data": {
+    "response-fields": null,
+    "response-action": {
+      "exec": "",
+      "args": null,
+      "post-action-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      },
+      "post-cancel-frame": {
+        "page-no": 0,
+        "frame-id": ""
+      }
+    }
+  },
+  "cursor": false,
+  "navmessage-select": "",
+  "navmessage-notfound": ""
+}
