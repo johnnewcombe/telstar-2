@@ -323,8 +323,8 @@ func renderContent(ctx context.Context, conn net.Conn, frame *types.Frame, sessi
 		renderBuffer(ctx, conn, []byte(data), settings, options)
 		return
 	case globals.CONTENT_TYPE_RAW, globals.CONTENT_TYPE_RAWV:
-		data = populatePlaceholders(data, settings, sessionId, options)
-		renderBuffer(ctx, conn, []byte(frame.Content.Data), settings, options)
+		data = populatePlaceholders(frame.Content.Data, settings, sessionId, options)
+		renderBuffer(ctx, conn, []byte(data), settings, options)
 		return
 	case "rawT":
 		if data, err = convert.RawTToRawV(frame.Content.Data, 0, 23, 0, 39, true); err != nil {

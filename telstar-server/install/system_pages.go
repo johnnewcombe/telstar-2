@@ -43,6 +43,9 @@ func CreateSystemPages(settings config.Config) error {
 	if err = create91e(settings); err != nil {
 		return err
 	}
+	if err = create94a(settings); err != nil {
+		return err
+	}
 	if err = create96a(settings); err != nil {
 		return err
 	}
@@ -271,7 +274,31 @@ func create91e(settings config.Config) error {
 		" be visible."
 
 	frame.Content.Type = globals.CONTENT_TYPE_RAW
-	frame.RoutingTable = []int{930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 9}
+	frame.RoutingTable = []int{910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 9}
+
+	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
+
+	return dal.InsertOrReplaceFrame(settings.Database.Connection, frame, primary)
+
+}
+
+func create94a(settings config.Config) error {
+
+	//TODO make this more attractive
+	var (
+		frame   types.Frame
+		primary bool
+	)
+	frame.PID.PageNumber = 94
+	frame.PID.FrameId = "a"
+	frame.Visible = true
+	frame.FrameType = globals.FRAME_TYPE_TEST
+	//                "0123456789012345678901234567890123456789"
+
+	frame.Content.Data = "[D]SYSTEM INFO\r\n\r\n[g][m.]\r\n\r\n[SYSINFO]"
+
+	frame.Content.Type = globals.CONTENT_TYPE_MARKUP
+	frame.RoutingTable = []int{940, 941, 942, 943, 944, 945, 946, 947, 948, 949, 9}
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 
