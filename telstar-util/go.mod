@@ -6,8 +6,8 @@ go 1.22
 replace github.com/johnnewcombe/telstar-library => ../telstar-library
 
 require (
-	github.com/johnnewcombe/telstar-library v0.0.0-20220314174241-c5c80a4acadb
 	github.com/go-git/go-git/v5 v5.12.0
+	github.com/johnnewcombe/telstar-library v0.0.0-20220314174241-c5c80a4acadb
 	github.com/spf13/cobra v1.8.1
 )
 
@@ -33,11 +33,11 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/wagslane/go-password-validator v0.3.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
-	go.mongodb.org/mongo-driver v1.16.0 // indirect
-	golang.org/x/crypto v0.22.0 // indirect
+	go.mongodb.org/mongo-driver v1.17.1 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.22.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
 	golang.org/x/tools v0.13.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
