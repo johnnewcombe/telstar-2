@@ -453,6 +453,11 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 		default:
 		}
 
+		// set EVEN parity if settings.General.Parity == true
+		if settings.General.Parity {
+			b = utils.SetEvenParity(b)
+		}
+
 		if _, err := conn.Write([]byte{b}); err != nil {
 			logger.LogError.Print(err)
 		}

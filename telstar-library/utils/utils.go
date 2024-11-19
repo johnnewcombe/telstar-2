@@ -394,3 +394,16 @@ func ToUpperCamelCase(word string) string {
 		return word
 	}
 }
+
+func SetEvenParity(b byte) byte {
+
+	v := b
+	v = (v & 0x55) + ((v >> 1) & 0x55)
+	v = (v & 0x33) + ((v >> 2) & 0x33)
+	bits := (v + (v >> 4)) & 0xF
+
+	if bits%2 > 0 {
+		b = b | 0x80
+	}
+	return b
+}

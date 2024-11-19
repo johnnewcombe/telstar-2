@@ -206,7 +206,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 		if inputByte != 0 {
 
 			if settings.General.Parity {
-				// remove parity
+				// added for 7E1 connections over TCP e.g. WiFi Modems connected to old 7E1 machines
 				inputByte = inputByte & 0x7f
 			}
 
