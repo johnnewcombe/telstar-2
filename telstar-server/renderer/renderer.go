@@ -27,14 +27,12 @@ type RenderOptions struct {
 
 type RenderResults []error
 
-// Render
 func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, frame *types.Frame, sessionId string, settings config.Config, options RenderOptions, chResult chan<- RenderResults) {
 
 	var (
 		err error
 	)
 
-	//chResult := make(chan RenderResults)
 	renderResults := make([]error, 0)
 
 	defer wg.Done()
@@ -55,11 +53,6 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 			renderResults = append(renderResults, err)
 		}
 
-		// have some errors so send them back to listener.go
-		if len(renderResults) > 0 {
-			chResult <- renderResults
-		}
-
 		if frame.FrameType != globals.FRAME_TYPE_TEST && frame.FrameType != globals.FRAME_TYPE_RESPONSE {
 			wg.Add(1)
 			go RenderSystemMessage(ctx, conn, wg, frame.NavMessage, settings, options)
@@ -72,17 +65,17 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 		}
 
 	} else {
-		// page missing so just Render navigation to display 'not found'
-		//renderNavigationMessage(ctx, conn, frame, settings, user, options)
-		logger.LogError.Print(errors.New("render requested for an invalid frame"))
-		//wg.Add(1)
-		//RenderTransientSystemMessage(ctx, conn, wg, settings.Strings.NavMessageNotFound, settings.Strings.NavMessageSelectPage, options)
+		renderResults = append(renderResults, errors.New("render requested for an invalid frame"))
+	}
+
+	// have some errors so send them back to listener.go
+	if len(renderResults) > 0 {
+		chResult <- renderResults
 	}
 
 	return
 }
 
-// RenderSystemMessage
 func RenderSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, message string, settings config.Config, options RenderOptions) error {
 	// FIXME With merged pages that are 960 char long, rendering this causes a scroll, this shouldn't happen if HOME/VTAB is used, should it?
 	var (
@@ -97,13 +90,11 @@ func RenderSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation
 
 	// position the cursor to the bottom row, column 0
 	if err = PositionCursor(conn, 0, globals.ROWS-1, !settings.Server.DisableVerticalRollOver); err != nil {
-		logger.LogError.Print(err)
 		return err
 	}
 
 	// convert the message markup and swap the pound signs
 	if message, err = convert.MarkupToRawV(message); err != nil {
-		logger.LogError.Print(err)
 		return err
 	}
 	message = strings.ReplaceAll(message, string(globals.POUND), string(globals.HASH))
@@ -141,16 +132,22 @@ func RenderSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation
 	return nil
 }
 
-// NOTE NOTE Cant return valuses from here as it is invoked directly as a go routine.
 // RenderTransientSystemMessage displays the specified message that is then replaced
 // a second later with the specified follow-on message
 func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, message string, followOnMessage string, settings config.Config, options RenderOptions) {
+
+	// TODO Cant return values from here as it is invoked directly as a go routine. Use same pattern as Render function
+	var (
+		err error
+	)
 
 	defer wg.Done()
 
 	if len(message) > 0 {
 		wg.Add(1)
-		RenderSystemMessage(ctx, conn, wg, message, settings, options)
+		if err = RenderSystemMessage(ctx, conn, wg, message, settings, options); err != nil {
+			logger.LogError.Print(err)
+		}
 	}
 
 	if len(followOnMessage) > 0 {
@@ -163,7 +160,9 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 		// all good so complete the system message
 		time.Sleep(1000 * time.Millisecond)
 		wg.Add(1)
-		RenderSystemMessage(ctx, conn, wg, followOnMessage, settings, options)
+		if err = RenderSystemMessage(ctx, conn, wg, followOnMessage, settings, options); err != nil {
+			logger.LogError.Print(err)
+		}
 	}
 }
 
@@ -199,12 +198,10 @@ func renderHeader(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 	//actual header text
 	if len(frame.HeaderText) > 0 {
 		if headerText, err = convert.MarkupToRawV(frame.HeaderText); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 	} else {
 		if headerText, err = convert.MarkupToRawV(settings.Server.Strings.DefaultHeaderText); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 	}
@@ -272,13 +269,11 @@ func renderTitle(ctx context.Context, conn net.Conn, frame *types.Frame, session
 	switch dataType {
 	case "markup":
 		if data, err = convert.MarkupToRawV(frame.Title.Data); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 		// apply any merge-data
 		if frame.Title.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Title.MergeData, rows); err != nil {
-				logger.LogError.Print(err)
 				return err
 			}
 		}
@@ -292,7 +287,7 @@ func renderTitle(ctx context.Context, conn net.Conn, frame *types.Frame, session
 		// apply any merge-data
 		if frame.Title.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Title.MergeData, rows); err != nil {
-				logger.LogError.Print(err)
+				return err
 			}
 		}
 		if err = renderBuffer(ctx, conn, []byte(data), settings, options); err != nil {
@@ -301,13 +296,12 @@ func renderTitle(ctx context.Context, conn net.Conn, frame *types.Frame, session
 
 	case globals.CONTENT_TYPE_RAWT:
 		if data, err = convert.RawTToRawV(frame.Title.Data, 0, 23, 0, 39, true); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 		// apply any merge-data
 		if frame.Title.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Title.MergeData, rows); err != nil {
-				logger.LogError.Print(err)
+				return err
 			}
 		}
 		if err = renderBuffer(ctx, conn, []byte(data), settings, options); err != nil {
@@ -323,13 +317,11 @@ func renderTitle(ctx context.Context, conn net.Conn, frame *types.Frame, session
 		}
 		// edit.tf mode for title only returns rows 1 to 4 inclusive from the edit.tf frame.
 		if data, err = convert.EdittfToRawV(frame.Title.Data, 1, rows, !settings.Server.Antiope); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 		// apply any merge-data
 		if frame.Title.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Title.MergeData, rows); err != nil {
-				logger.LogError.Print(err)
 				return err
 			}
 		}
@@ -354,7 +346,6 @@ func renderContent(ctx context.Context, conn net.Conn, frame *types.Frame, sessi
 	case "markup":
 		// if markup then convert to raw
 		if data, err = convert.MarkupToRawV(frame.Content.Data); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 		// swap placeholders
@@ -369,14 +360,12 @@ func renderContent(ctx context.Context, conn net.Conn, frame *types.Frame, sessi
 		}
 	case "rawT":
 		if data, err = convert.RawTToRawV(frame.Content.Data, 0, 23, 0, 39, true); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 		data = populatePlaceholders(data, settings, sessionId, options)
 		if err = renderBuffer(ctx, conn, []byte(data), settings, options); err != nil {
 			return err
 		}
-
 	case globals.CONTENT_TYPE_EDITTF, "edittf", globals.CONTENT_TYPE_ZXNET:
 		if frame.FrameType == globals.FRAME_TYPE_TEST {
 			rowEnd = 23
@@ -385,7 +374,6 @@ func renderContent(ctx context.Context, conn net.Conn, frame *types.Frame, sessi
 		}
 		// edit.tf is teletext, so get full teletext page
 		if data, err = convert.EdittfToRawV(frame.Content.Data, 1, rowEnd, !settings.Server.Antiope); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 		data = populatePlaceholders(data, settings, sessionId, options)
@@ -410,13 +398,12 @@ func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 	switch dataType {
 	case "markup":
 		if data, err = convert.MarkupToRawV(frame.Footer.Data); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 		// apply any merge-data
 		if frame.Footer.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Footer.MergeData, rows); err != nil {
-				logger.LogError.Print(err)
+				return err
 			}
 		}
 		if err = renderBuffer(ctx, conn, []byte(data), settings, options); err != nil {
@@ -430,7 +417,7 @@ func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 		// apply any merge-data
 		if frame.Footer.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Footer.MergeData, rows); err != nil {
-				logger.LogError.Print(err)
+				return err
 			}
 		}
 		if err = renderBuffer(ctx, conn, []byte(data), settings, options); err != nil {
@@ -439,13 +426,11 @@ func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 
 	case "rawT":
 		if data, err = convert.RawTToRawV(frame.Content.Data, 0, 23, 0, 39, true); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 		// apply any merge-data
 		if frame.Footer.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Footer.MergeData, rows); err != nil {
-				logger.LogError.Print(err)
 				return err
 			}
 		}
@@ -463,13 +448,11 @@ func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 		}
 		// edit.tf mode for title only returns rows 1 to 4 inclusive from the edit.tf frame.
 		if data, err = convert.EdittfToRawV(frame.Footer.Data, 1, rows, !settings.Server.Antiope); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 		// apply any merge-data
 		if frame.Footer.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Footer.MergeData, rows); err != nil {
-				logger.LogError.Print(err)
 				return err
 			}
 		}
@@ -489,7 +472,6 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 
 	if settings.Server.Antiope {
 		if buffer, err = convert.RawVToAntiope(buffer); err != nil {
-			logger.LogError.Print(err)
 			return err
 		}
 	}
@@ -521,51 +503,6 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 
 	return nil
 }
-
-/*
-func MergeRawVold(rawVData string, mergeData []string, rows int) (string, error) {
-
-	var (
-		err      error
-		data     string
-		layers   []string
-		rawTData string
-	)
-
-	// apply any merge-data
-	if mergeData != nil {
-
-		// convert main data field to RawT
-		if rawTData, err = convert.RawVToRawT(rawVData); err != nil {
-			return "", err
-		}
-		// do the same for each of the merge fields
-		for i := 0; i < len(mergeData); i++ {
-
-			// convert all the merge layers to rawT via rawV
-			if mergeData[i], err = convert.MarkupToRawV(mergeData[i]); err != nil {
-				return "", err
-			}
-			if mergeData[i], err = convert.RawVToRawT(mergeData[i]); err != nil {
-				return "", err
-			}
-		}
-
-		// combine all of the layers
-		layers = append(layers, rawTData)
-		layers = append(layers, mergeData...)
-
-		if data, err = convert.RawTMerge(layers...); err != nil {
-			return "", err
-		}
-		// convert main data field back to RawV
-		if data, err = convert.RawTToRawV(data, 0, rows-1, 0, 39, true); err != nil {
-			return "", err
-		}
-	}
-	return data, nil
-}
-*/
 
 func PositionCursor(conn net.Conn, x int, y int, useRollover bool) error {
 
