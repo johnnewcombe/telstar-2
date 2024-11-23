@@ -74,7 +74,9 @@ func handleConn(conn net.Conn, settings config.Config) {
 		sessionId         string
 		lastCharReceived  int64
 		now               int64
-		timeoutCount      int
+		carouselDelay     int
+		autoRefreshDelay  int
+		autoRefreshFrame  bool
 		networkError      *renderer.NetworkError
 	)
 
@@ -110,10 +112,6 @@ func handleConn(conn net.Conn, settings config.Config) {
 
 	logger.LogInfo.Printf("Session created with SessionId %s\r\n", sessionId)
 
-	// a simple flag to indicate that this is the first time through the loop
-	//initialPass = true
-	//deviceControlReceived = false
-
 	// create a new buffered reader
 	reader = bufio.NewReader(conn)
 
@@ -145,17 +143,12 @@ func handleConn(conn net.Conn, settings config.Config) {
 		}
 
 		if !ok {
-
 			if currentFrame.Carousel {
-				timeoutCount++
-				if timeoutCount == settings.Server.CarouselDelay*2 {
+				carouselDelay++
+				if carouselDelay == settings.Server.CarouselDelay*2 {
 					// display next page
-					timeoutCount = 0 // reset
+					carouselDelay = 0 // reset
 					inputByte = globals.HASH
-
-					// FIXME if a user disconnects we get a broken pipe error during rendering,
-					//   the connection needs to be closed otherwise a loop ing  carousel will
-					//   try and render each successive frame indefinitely
 				}
 			}
 
@@ -164,7 +157,22 @@ func handleConn(conn net.Conn, settings config.Config) {
 				// if we timeout waiting for a char but we have a current frame then
 				// wait 100ms and look for further input.
 				time.Sleep(100 * time.Millisecond)
-				continue
+
+				// if we are rendering or what ever e.g. wait group is > 0
+				// just keep reseting the timer, otherwise increment it
+				if wg.GetCount() > 0 {
+					autoRefreshDelay = 0
+				} else {
+					autoRefreshDelay++
+				}
+
+				// if we have reached auto refresh time, set the flag
+				if autoRefreshDelay == settings.Server.AutoRefreshDelay*2 {
+					autoRefreshFrame = true
+				} else {
+					// back to waiting for input
+					continue
+				}
 
 			} else {
 				// If the current frame is not set then this is an initial connection so
@@ -173,7 +181,12 @@ func handleConn(conn net.Conn, settings config.Config) {
 			}
 		}
 
-		logger.LogInfo.Printf("Character received: [%0x] %s (%d)", inputByte, BtoA(inputByte), inputByte)
+		// is this an auto refresh i.e. no inputByte
+		if autoRefreshFrame {
+			logger.LogInfo.Printf("Automatic Refresh of frame: %d%s", currentFrame.PID.PageNumber, currentFrame.PID.FrameId)
+		} else {
+			logger.LogInfo.Printf("Character received: [%0x] %s (%d)", inputByte, BtoA(inputByte), inputByte)
+		}
 
 		now = time.Now().UnixMilli() // nano seconds
 
@@ -239,7 +252,8 @@ func handleConn(conn net.Conn, settings config.Config) {
 		}
 
 		// ignore zero (NULL) as this is what the telnet parser returns if the character is part of a Telnet negotiation
-		if inputByte != 0 {
+		// however, if this is an auto refresh request inputByte will be 0 so can be ignored
+		if inputByte != 0 || autoRefreshFrame {
 
 			if settings.General.Parity {
 				// added for 7E1 connections over TCP e.g. WiFi Modems connected to old 7E1 machines
@@ -307,6 +321,11 @@ func handleConn(conn net.Conn, settings config.Config) {
 				} else {
 					routing.ForceRoute(settings.Server.Pages.StartPage, "a", &routingRequest, &routingResponse)
 				}
+			} else if autoRefreshFrame {
+				// auto refresh of frame
+				autoRefreshFrame = false
+				routing.ForceRoute(currentFrame.PID.PageNumber, currentFrame.PID.FrameId, &routingRequest, &routingResponse)
+
 			} else {
 
 				// current page exists so normal routing is required
