@@ -144,7 +144,15 @@ func handleConn(conn net.Conn, settings config.Config) {
 
 		if !ok {
 			if currentFrame.Carousel {
-				carouselDelay++
+
+				// if we are rendering or whatever e.g. wait group is > 0
+				// just keep resetting the counter, otherwise increment it
+				if wg.GetCount() > 0 {
+					carouselDelay = 0
+				} else {
+					carouselDelay++
+				}
+
 				if carouselDelay == settings.Server.CarouselDelay*2 {
 					// display next page
 					carouselDelay = 0 // reset
@@ -155,11 +163,11 @@ func handleConn(conn net.Conn, settings config.Config) {
 			if currentFrame.IsValid() && inputByte != globals.HASH {
 
 				// if we timeout waiting for a char but we have a current frame then
-				// wait 100ms and look for further input.
+				// wait 100ms and look for further input
 				time.Sleep(100 * time.Millisecond)
 
-				// if we are rendering or what ever e.g. wait group is > 0
-				// just keep reseting the timer, otherwise increment it
+				// if we are rendering or whatever e.g. wait group is > 0
+				// just keep resetting the counter, otherwise increment it
 				if wg.GetCount() > 0 {
 					autoRefreshDelay = 0
 				} else {

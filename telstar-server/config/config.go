@@ -23,7 +23,7 @@ type Config struct {
 		DisableVerticalRollOver bool   `yaml:"disable_vertical_rollover" env:"TELSTAR_DISABLE_VERTICAL_ROLLOVER" env-default:"TRUE"`
 		EditTfTitleRows         int    `yaml:"edittf_title_rows" env:"TELSTAR_EDITTF_TITLE_ROWS"  env-default:"4"`
 		CarouselDelay           int    `yaml:"carousel_delay" env:"TELSTAR_CAROUSEL_DELAY"  env-default:"16"`
-		AutoRefreshDelay        int    `yaml:"auto_refresh_delay" env:"TELSTAR_AUTO_REFRESH_DELAY"  env-default:"10"`
+		AutoRefreshDelay        int    `yaml:"auto_refresh_delay" env:"TELSTAR_AUTO_REFRESH_DELAY"  env-default:"300"`
 		Antiope                 bool   `yaml:"antiope" env:"TELSTAR_ANTIOPE" env-default:"FALSE"`
 		DLE                     byte   `yaml:"dle" env:"TELSTAR_SERVER_DLE" env-default:"0x10"`
 		Pages                   struct {
