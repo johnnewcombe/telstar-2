@@ -14,6 +14,7 @@ type Frame struct {
 	ID           primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
 	PID          Pid                `json:"pid" bson:"pid"`
 	Visible      bool               `json:"visible" bson:"visible"`
+	Carousel     bool               `json:"carousel" bson:"carousel"`
 	HeaderText   string             `json:"header-text" bson:"header-text"`
 	Cost         int                `json:"cost" bson:"cost"`
 	DisableClear bool               `json:"disable-clear" bson:"disable-clear"`

@@ -150,10 +150,11 @@ func create91a(settings config.Config) error {
 	frame.PID.PageNumber = 91
 	frame.PID.FrameId = "a"
 	frame.Visible = true
+	frame.Carousel = true
 	frame.FrameType = globals.FRAME_TYPE_TEST
 	frame.Content.Data = "https://edit.tf/#0:QIECBAgQIEEXdn07suXlp3Z0FTLz6IKGHPlQIECBAgQIECACAAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAYMS54fzJmix4-YCDToOLOjyZ0WLSkzo6AkcGHuZUcRHlB4dgyAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgGDP9__f_3_9__f_3_9__f_3_9__f_3_9__f_3_9__f_3_9_YNCho9zImSoAqBGoAp0FUy8-iChhz5UCA4MPEuZYwTAFzAFg1AgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgGDYCAAoACACeQHkBdYTJlixIkSKlSJEoUKIEBQABAAQAEABYN_3_9__f_3_9__f_3_9__f_3_9__f_3_9__f_3_9__f_39g4AgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgGDn9__f_3_9__f_3_9__f_3_9__f_3_9__f_3_9__f_3_9_YsAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgAIBix_f_3_9__f_3_9__f_3_9__f_3_9__f_3_9__f_3_9__f2LICAAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAYs_3_9__f_3_9__f_3_9__f_3_9__f_3_9__f_3_9__f_39i0AgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgAIACAAgGLX9__f_3_9__f_3_9__f_3_9__f_3_9__f_3_9__f_3_9_Ytq-jT0yg7OXZs39w0Pzh3Ao_LLl3BZuHPl3dMIGllyBIWzrlLmkKJGTSJUycsoUqlZJYtXLzLBiyZlWjVs3IuHLp2UePXz9AgQokaBIlTJ0ChSqVoFi1cvQMGLJmgaNWzdA4cunaB49fP0ECDChoIkWNHQSJMqWgmTZ09BQo0qaCpVrV0FizatoLl29fQYMOLGgyZc2dBo06taDZt3b0HDjy5oOnXt3QePPr2g-ff38pgw4sZHJlzZyujTq1ktm3dvNcOPLmW6de3cn48-vZf59_fwZiHv3Y8uHYIjbMPPQDVCxcLf4E0-mXDk8mI-_dlFCn5a9_QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECA"
 	frame.Content.Type = globals.CONTENT_TYPE_EDITTF
-	frame.RoutingTable = []int{910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 9}
+	frame.RoutingTable = []int{910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 91}
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 
@@ -170,10 +171,11 @@ func create91b(settings config.Config) error {
 	frame.PID.PageNumber = 91
 	frame.PID.FrameId = "b"
 	frame.Visible = true
+	frame.Carousel = true
 	frame.FrameType = globals.FRAME_TYPE_TEST
 	frame.Content.Data = "http://edit.tf/#0:QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQICn_OmTJkSJApUqVKlSpUlcHApiTJkyZEiRIkyZMmTIkSJFmKf3JX58____RBg-fPnzog__2iBBo-fNX9qgQcOHDh8-fGiAp_zFf______2v7_____7X___oEGr__Qa0ur_________QoCn9ywK__6D__a__7dH__tf___1QIv_9AiQIkaPX_bo0aMpiKf_-Yr__oP_9r__tUH_-1____9og__yjnz5cldX9qUc-fPkp__uSv_-g__2v_-1Qf_7X__aIv____KZv_dIV__2pTN___yn__mK___z__a____5__tf_9qgVf__8o5_vWJX__alHP___Kf_7kr____6dBr_____-h__2qBBr__ymbPnSFf69CUzf__8pnz5iq9ejRoECBWvXr0KBGjQYOHBHz4cECBAgwcCily7__yqDhw4ePnzogQeP7RAg0fPiBB___9X___QYPH___-sCmb__KoP________3B__tUCDV__tUH___1f36XB-_______KOf_8qgRo__9B__v9X___QINX___Qav__B8-NNX_-jR___8pm__ymYrq______h_odX9qg1f___7q__9X_-h1f_5TBgwYM37__KOSur-_Ro0Pr_8_f_qDV_b___r__1f_6D___lFKlSpUu__8pmK_v7VAgwf______tNX9r______V__oP__-gQaPnwpm__yqDB__tUCD__QIEG___1f2qL____9X_-g____z5-__ymb__KoNX_-lQKl6VAgQav6_V__oNf___1f2qBX_____9-hKOf_8qgVJ0JRw4cOPLkqiQoESNGgVL0aFEjQoECJGjRoymDNm__ymTJkzZv3_____-3bt27du3Thw8efPnz58-fPnz58-fP___QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECA"
 	frame.Content.Type = globals.CONTENT_TYPE_EDITTF
-	frame.RoutingTable = []int{920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 9}
+	frame.RoutingTable = []int{920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 91}
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 
@@ -192,6 +194,7 @@ func create91c(settings config.Config) error {
 	frame.PID.PageNumber = 91
 	frame.PID.FrameId = "c"
 	frame.Visible = true
+	frame.Carousel = true
 	frame.FrameType = globals.FRAME_TYPE_TEST
 	//                "0123456789012345678901234567890123456789"
 	sb.WriteString("0---------1---------2---------3-------00")
@@ -221,7 +224,7 @@ func create91c(settings config.Config) error {
 
 	frame.Content.Data = sb.String()
 	frame.Content.Type = globals.CONTENT_TYPE_RAW
-	frame.RoutingTable = []int{930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 9}
+	frame.RoutingTable = []int{930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 91}
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 
@@ -239,12 +242,13 @@ func create91d(settings config.Config) error {
 	frame.PID.PageNumber = 91
 	frame.PID.FrameId = "d"
 	frame.Visible = true
+	frame.Carousel = true
 	frame.FrameType = globals.FRAME_TYPE_TEST
 	//                "0123456789012345678901234567890123456789"
 
 	frame.Content.Data = "https://edit.tf/#0:QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgZOWGFAgQIECAodLmkCBAgQIECBAgQIECBAgQEkCDwk_f_n9KgQIECBAgQICh0uaatWqBAgQPWqBAgQIECBASQIkOr___t0CBAgQIECBAgKHS5pq1a92vNq1bte7VugQIEBJBqa6P___8-fGiBAgQIECAodLmuvVr1adWrVq16tGqBASQJMP_______9KgQIECBAgQIAh0OgQIECBAgQIECBAgQIECA0SQfNX______79AwQIECBAgKHQ1TLz6IN-ZBzy8MPLD0y5DRJAg______3QIECBAgQIECAodDZ-WHho04-aDvp6aECBAaJIFCR_______ogQIECBAgQICh0Ni2YefTpo5b-ufQgQIDRLgwQIkm______7BAgQIECBAgKHQ3TL46LkCBAgQIEBolg-bP____YIPn_____-qBAgQIECAodDIECBAgQIECBAgNF8HL2S3____6gTp1_____9ECBAgQICh0MgQIECBAgQIECA0XTNEBJEjx70KBAlVf_____-sECBAgKHQyBAgQIECBAgQIDRf8hQIECBA0JIECBBr______1QIECAodDIECBAgQIECBAgQGi-NqgQIEDUkg5-Pnr______9ggQICh0MgQIECBAgQIEBougwN0FKfJQNSSBDr_________9PxAgKHQyBAgQIECBAXGmnidCgwcHCxMSQIKstBXiwakiLSQIECAodLoECBAgQIECBAgwb0CDA4TI0KAkgwfP___________foCh0uaQIECBAgQIECBEjWLEaBAgQICSr_v__________71CgKHQ5pAgQIECBAgQIECBAgQEkCBAgQIECv3_______8-fECAodDGkCBAgQIECBAgQIECBASYIECBBo-f_________9ugQICh0MaQIECBAgQIECBAgQIECBAgJIOH____r16_GjRoUCBAgKHQxpAgQIECBAgQIECBAgQIECAlufr0adCgQIECBAgQIECAodQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQICh1AgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECA"
 	frame.Content.Type = globals.CONTENT_TYPE_EDITTF
-	frame.RoutingTable = []int{930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 9}
+	frame.RoutingTable = []int{930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 91}
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 
@@ -263,6 +267,7 @@ func create91e(settings config.Config) error {
 	frame.PID.PageNumber = 91
 	frame.PID.FrameId = "e"
 	frame.Visible = true
+	frame.Carousel = true
 	frame.FrameType = globals.FRAME_TYPE_TEST
 	//                "0123456789012345678901234567890123456789"
 
@@ -274,7 +279,7 @@ func create91e(settings config.Config) error {
 		" be visible."
 
 	frame.Content.Type = globals.CONTENT_TYPE_RAW
-	frame.RoutingTable = []int{910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 9}
+	frame.RoutingTable = []int{910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 91}
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 

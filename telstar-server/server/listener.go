@@ -3,6 +3,7 @@ package server
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"github.com/johnnewcombe/telstar-library/convert"
 	"github.com/johnnewcombe/telstar-library/globals"
@@ -73,6 +74,8 @@ func handleConn(conn net.Conn, settings config.Config) {
 		sessionId         string
 		lastCharReceived  int64
 		now               int64
+		timeoutCount      int
+		networkError      *renderer.NetworkError
 	)
 
 	defer closeConn(conn)
@@ -98,6 +101,8 @@ func handleConn(conn net.Conn, settings config.Config) {
 	session.CreateSession(sessionId, currentUser)
 	defer session.DeleteSession(sessionId)
 
+	var chResult = make(chan renderer.RenderResults)
+
 	// TODO Ensure that the session Id is displayed to the user somehow, perhaps on the session page?
 	//  all logging should include the session Id or a hash/CRC or something e.g.
 	//  sess id: 33efccb148144be49695e407239c4124
@@ -122,14 +127,45 @@ func handleConn(conn net.Conn, settings config.Config) {
 		conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500))
 		ok, inputByte = readByte(reader)
 
-		//} else
+		// process any errors from the renderer
+		select {
+		case results := <-chResult:
+			// channel has some data
+			for _, err = range results {
+
+				logger.LogError.Print(err)
+
+				// cancel for all errors for now
+				if errors.As(err, &networkError) {
+					cancel()
+					return
+				}
+			}
+		default:
+		}
+
 		if !ok {
 
-			// if we timeout waiting for a char but we have a current frame then
-			// wait 100ms and look for further input.
-			if len(currentFrame.PID.FrameId) > 0 {
+			if currentFrame.Carousel {
+				timeoutCount++
+				if timeoutCount == settings.Server.CarouselDelay*2 {
+					// display next page
+					timeoutCount = 0 // reset
+					inputByte = globals.HASH
+
+					// FIXME if a user disconnects we get a broken pipe error during rendering,
+					//   the connection needs to be closed otherwise a loop ing  carousel will
+					//   try and render each successive frame indefinitely
+				}
+			}
+
+			if currentFrame.IsValid() && inputByte != globals.HASH {
+
+				// if we timeout waiting for a char but we have a current frame then
+				// wait 100ms and look for further input.
 				time.Sleep(100 * time.Millisecond)
 				continue
+
 			} else {
 				// If the current frame is not set then this is an initial connection so
 				// carry on by setting the input byte to 0x5f
@@ -408,7 +444,8 @@ func handleConn(conn net.Conn, settings config.Config) {
 					// create a new context that can be used to allow rendering to be cancelled
 					ctx, cancel = context.WithCancel(context.Background())
 					wg.Add(1)
-					go renderer.Render(ctx, conn, &wg, &frame, sessionId, settings, renderOptions)
+
+					go renderer.Render(ctx, conn, &wg, &frame, sessionId, settings, renderOptions, chResult)
 
 					if frame.FrameType == "exit" {
 						cancel()
