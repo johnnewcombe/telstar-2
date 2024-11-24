@@ -30,10 +30,11 @@ type RenderResults []error
 func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, frame *types.Frame, sessionId string, settings config.Config, options RenderOptions, chResult chan<- RenderResults) {
 
 	var (
-		err error
+		err           error
+		renderResults []error
 	)
 
-	renderResults := make([]error, 0)
+	renderResults = make([]error, 0)
 
 	defer wg.Done()
 
@@ -54,13 +55,13 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 		}
 
 		if frame.FrameType != globals.FRAME_TYPE_TEST && frame.FrameType != globals.FRAME_TYPE_RESPONSE {
-			wg.Add(1)
-			go RenderSystemMessage(ctx, conn, wg, frame.NavMessage, settings, options)
+			//wg.Add(1)
+			renderSystemMessage(ctx, conn, frame.NavMessage, sessionId, settings, options)
 		}
 
 		if frame.FrameType == "response" && len(frame.ResponseData.Fields) > 0 {
 			if err = PositionCursor(conn, frame.ResponseData.Fields[0].HPos, frame.ResponseData.Fields[0].VPos, !settings.Server.DisableVerticalRollOver); err != nil {
-				logger.LogError.Print(err)
+				renderResults = append(renderResults, err)
 			}
 		}
 
@@ -76,7 +77,46 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 	return
 }
 
-func RenderSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, message string, settings config.Config, options RenderOptions) error {
+// RenderTransientSystemMessage displays the specified message that is then replaced
+// a second later with the specified follow-on message
+func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, message string, followOnMessage string, sessionId string, settings config.Config, options RenderOptions, chResult chan<- RenderResults) {
+
+	var (
+		err           error
+		renderResults []error
+	)
+	renderResults = make([]error, 0)
+
+	defer wg.Done()
+
+	if len(message) > 0 {
+		if err = renderSystemMessage(ctx, conn, message, sessionId, settings, options); err != nil {
+			renderResults = append(renderResults, err)
+		}
+	}
+
+	if len(followOnMessage) > 0 {
+		// if the renderSystemMessage call (above) was cancelled we will
+		// have a ctx.Err so make make a tidy exit
+		if ctx.Err() != nil {
+			return
+		}
+
+		// all good so complete the system message
+		time.Sleep(1000 * time.Millisecond)
+		wg.Add(1)
+		if err = renderSystemMessage(ctx, conn, followOnMessage, sessionId, settings, options); err != nil {
+			renderResults = append(renderResults, err)
+		}
+	}
+
+	// have some errors so send them back to listener.go
+	if len(renderResults) > 0 {
+		chResult <- renderResults
+	}
+}
+
+func renderSystemMessage(ctx context.Context, conn net.Conn, message string, sessionId string, settings config.Config, options RenderOptions) error {
 	// FIXME With merged pages that are 960 char long, rendering this causes a scroll, this shouldn't happen if HOME/VTAB is used, should it?
 	var (
 		err         error
@@ -85,8 +125,6 @@ func RenderSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation
 	)
 
 	logger.LogInfo.Printf("System Message: %s\r\n", message)
-
-	defer wg.Done()
 
 	// position the cursor to the bottom row, column 0
 	if err = PositionCursor(conn, 0, globals.ROWS-1, !settings.Server.DisableVerticalRollOver); err != nil {
@@ -130,40 +168,6 @@ func RenderSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation
 		return err
 	}
 	return nil
-}
-
-// RenderTransientSystemMessage displays the specified message that is then replaced
-// a second later with the specified follow-on message
-func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, message string, followOnMessage string, settings config.Config, options RenderOptions) {
-
-	// TODO Cant return values from here as it is invoked directly as a go routine. Use same pattern as Render function
-	var (
-		err error
-	)
-
-	defer wg.Done()
-
-	if len(message) > 0 {
-		wg.Add(1)
-		if err = RenderSystemMessage(ctx, conn, wg, message, settings, options); err != nil {
-			logger.LogError.Print(err)
-		}
-	}
-
-	if len(followOnMessage) > 0 {
-		// if the RenderSystemMessage call (above) was cancelled we will
-		// have a ctx.Err so make make a tidy exit
-		if ctx.Err() != nil {
-			return
-		}
-
-		// all good so complete the system message
-		time.Sleep(1000 * time.Millisecond)
-		wg.Add(1)
-		if err = RenderSystemMessage(ctx, conn, wg, followOnMessage, settings, options); err != nil {
-			logger.LogError.Print(err)
-		}
-	}
 }
 
 func renderHeader(ctx context.Context, conn net.Conn, frame *types.Frame, sessionId string, settings config.Config, options RenderOptions) error {

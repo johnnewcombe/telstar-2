@@ -162,9 +162,12 @@ func handleConn(conn net.Conn, settings config.Config) {
 
 			if currentFrame.IsValid() && inputByte != globals.HASH {
 
-				// if we timeout waiting for a char but we have a current frame then
-				// wait 100ms and look for further input
-				time.Sleep(100 * time.Millisecond)
+				// we have timed out waiting for a char but we have a
+				// current frame then check for auto refreshh and carousel
+				// or continue look for further input
+
+				// removed 24/11/2024
+				//time.Sleep(100 * time.Millisecond)
 
 				// if we are rendering or whatever e.g. wait group is > 0
 				// just keep resetting the counter, otherwise increment it
@@ -412,7 +415,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 
 					// this means that the frame cannot be found
 					// e.g. it does not exist, has visibility set to false or some other db error
-					logger.LogError.Print(err)
+					logger.LogWarn.Print(err)
 
 					// clear the buffer
 					routingResponse.RoutingBuffer = ""
@@ -425,7 +428,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 
 						ctx, cancel = context.WithCancel(context.Background())
 						wg.Add(1)
-						go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, settings, renderOptions)
+						go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, sessionId, settings, renderOptions, chResult)
 					}
 
 				} else {
@@ -492,7 +495,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 
 					ctx, cancel = context.WithCancel(context.Background())
 					wg.Add(1)
-					go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, settings, renderOptions)
+					go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, sessionId, settings, renderOptions, chResult)
 				}
 
 			case routing.InvalidCharacter:

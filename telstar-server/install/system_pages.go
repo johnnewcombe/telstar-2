@@ -58,9 +58,9 @@ func CreateSystemPages(settings config.Config) error {
 	if err = create99a(settings); err != nil {
 		return err
 	}
-	//if err = create990a(settings); err != nil {
-	//	return err
-	//}
+	if err = create990a(settings); err != nil {
+		return err
+	}
 
 	// error pages
 	if err = create9901Page(settings); err != nil {

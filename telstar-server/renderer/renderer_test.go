@@ -171,7 +171,7 @@ func Test_RenderSystemMessage(t *testing.T) {
 	   	}
 
 	   	for _, test := range tests {
-	   		RenderSystemMessage(ctx, &conn, &test.inputFrame, test.inputSettings, dal.User{}, test.inputOptions)//; !utils.AreEqualByteSlices(conn.buffer, test.output) ||
+	   		renderSystemMessage(ctx, &conn, &test.inputFrame, test.inputSettings, dal.User{}, test.inputOptions)//; !utils.AreEqualByteSlices(conn.buffer, test.output) ||
 	   //			err != nil {
 	   //			t.Errorf(TEST_ERROR_MESSAGE, test.description)
 	   //		}
