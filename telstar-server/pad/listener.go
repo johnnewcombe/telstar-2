@@ -101,7 +101,7 @@ func handleConn(conn net.Conn, settings config.Config, hosts map[string]string) 
 
 		// pass through the Minitel parser, this will absorb any negotiation and
 		// set minitelParser.minitelConnection to true if a Minitel negotiation was detected
-		inputByte, minitelResponse = minitelParser.ParseMinitel(inputByte)
+		inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte)
 
 		// Minitel parser may need to send a response to the client, this is done here
 		if len(minitelResponse) > 0 {
@@ -110,7 +110,7 @@ func handleConn(conn net.Conn, settings config.Config, hosts map[string]string) 
 			}
 		}
 
-		if minitelParser.MinitelConnection {
+		if minitelParser.MinitelState == server.MINITEL_connected {
 			logger.LogInfo.Print("Minitel terminal, configuring Antiope support.")
 			settings.Server.Antiope = true
 

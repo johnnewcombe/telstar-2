@@ -119,6 +119,9 @@ func handleConn(conn net.Conn, settings config.Config) {
 	// this also gives manual dial connections time to switch the modem online.
 	time.Sleep(time.Second * globals.CONNECT_DELAY_SECS)
 
+	// send the <PRO1>/7B (where <PRO1> is 1B/39) to the client
+	conn.Write([]byte(globals.MINITEL_ENQ_ROM))
+
 	// loop as each character is received
 	for {
 
@@ -143,6 +146,13 @@ func handleConn(conn net.Conn, settings config.Config) {
 		}
 
 		if !ok {
+
+			// if no character is received within the timeout and the current
+			// state is undefined then cant be a Minitel
+			if minitelParser.MinitelState == MINITEL_undefined {
+				minitelParser.MinitelState = MINITEL_not_connected
+			}
+
 			if currentFrame.Carousel {
 
 				// if we are rendering or whatever e.g. wait group is > 0
@@ -190,6 +200,17 @@ func handleConn(conn net.Conn, settings config.Config) {
 				// carry on by setting the input byte to 0x5f
 				inputByte = globals.HASH
 			}
+		} else {
+			// pass through the Minitel parser, this will absorb any negotiation and
+			// set minitelParser.MinitelState
+			inputByte, minitelResponse = minitelParser.ParseMinitelEnqRom(inputByte)
+
+			// Minitel parser may need to send a response to the client, this is done here
+			if len(minitelResponse) > 0 {
+				if _, err = conn.Write([]byte(minitelResponse)); err != nil {
+					logger.LogError.Print(err)
+				}
+			}
 		}
 
 		// is this an auto refresh i.e. no inputByte
@@ -218,16 +239,16 @@ func handleConn(conn net.Conn, settings config.Config) {
 
 		// pass through the Minitel parser, this will absorb any negotiation and
 		// set minitelParser.MinitelConnection to true if a Minitel negotiation was detected
-		inputByte, minitelResponse = minitelParser.ParseMinitel(inputByte)
+		//inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte)
 
 		// Minitel parser may need to send a response to the client, this is done here
-		if len(minitelResponse) > 0 {
-			if _, err = conn.Write([]byte(minitelResponse)); err != nil {
-				logger.LogError.Print(err)
-			}
-		}
+		//if len(minitelResponse) > 0 {
+		//	if _, err = conn.Write([]byte(minitelResponse)); err != nil {
+		//		logger.LogError.Print(err)
+		//	}
+		//}
 
-		if minitelParser.MinitelConnection {
+		if minitelParser.MinitelState == MINITEL_connected {
 			logger.LogInfo.Print("Minitel terminal, configuring Antiope support.")
 			settings.Server.Antiope = true
 

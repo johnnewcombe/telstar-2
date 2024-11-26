@@ -109,6 +109,8 @@ const (
 	RELEASE_MOSAIC = "\x1b\x5f"
 )
 
+const MINITEL_ENQ_ROM = "\x0c\x1e\x1e\x1e\x1b\x39\x7b"
+
 const (
 	FRAME_TYPE_INITIAL      = "initial"
 	FRAME_TYPE_MAININDEX    = "mainindex"
