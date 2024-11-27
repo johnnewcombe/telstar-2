@@ -54,19 +54,19 @@ func (parser *MinitelParser) ParseMinitelEnqRom(char byte) (byte, string) {
 
 	} else if parser.MinitelState == MINITEL_ENQ_ROM_start_found &&
 		char&0x7f >= 0x0 && char <= 0x7f {
-		logger.LogInfo.Print("Minitel ENQ_ROM vendor received")
+		logger.LogInfo.Printf("Minitel ENQ_ROM vendor %d received", char)
 		parser.MinitelState = MINITEL_vendor_found
 		parser.Vendor = char & 0x7f
 
 	} else if parser.MinitelState == MINITEL_vendor_found &&
 		char&0x7f >= 0x0 && char <= 0x7f {
-		logger.LogInfo.Print("Minitel ENQ_ROM model received")
+		logger.LogInfo.Printf("Minitel ENQ_ROM model %d received", char)
 		parser.MinitelState = MINITEL_model_found
 		parser.Model = char & 0x7f
 
 	} else if parser.MinitelState == MINITEL_model_found &&
 		char&0x7f >= 0x20 && char <= 0x7f {
-		logger.LogInfo.Print("Minitel ENQ_ROM revision received")
+		logger.LogInfo.Printf("Minitel ENQ_ROM revision %s received", string(char))
 		parser.MinitelState = MINITEL_revision_found
 		parser.Revision = char & 0x7f
 

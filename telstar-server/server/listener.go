@@ -201,14 +201,17 @@ func handleConn(conn net.Conn, settings config.Config) {
 				inputByte = globals.HASH
 			}
 		} else {
-			// pass through the Minitel parser, this will absorb any negotiation and
-			// set minitelParser.MinitelState
-			inputByte, minitelResponse = minitelParser.ParseMinitelEnqRom(inputByte)
 
-			// Minitel parser may need to send a response to the client, this is done here
-			if len(minitelResponse) > 0 {
-				if _, err = conn.Write([]byte(minitelResponse)); err != nil {
-					logger.LogError.Print(err)
+			if !settings.Server.DisableMinitelParser {
+				// pass through the Minitel parser, this will absorb any negotiation and
+				// set minitelParser.MinitelState
+				inputByte, minitelResponse = minitelParser.ParseMinitelEnqRom(inputByte)
+
+				// Minitel parser may need to send a response to the client, this is done here
+				if len(minitelResponse) > 0 {
+					if _, err = conn.Write([]byte(minitelResponse)); err != nil {
+						logger.LogError.Print(err)
+					}
 				}
 			}
 		}

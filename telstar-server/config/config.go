@@ -25,6 +25,7 @@ type Config struct {
 		CarouselDelay           int    `yaml:"carousel_delay" env:"TELSTAR_CAROUSEL_DELAY"  env-default:"16"`
 		AutoRefreshDelay        int    `yaml:"auto_refresh_delay" env:"TELSTAR_AUTO_REFRESH_DELAY"  env-default:"300"`
 		Antiope                 bool   `yaml:"antiope" env:"TELSTAR_ANTIOPE" env-default:"FALSE"`
+		DisableMinitelParser    bool   `yaml:"disable_minitel_parser" env:"TELSTAR_DISABLE_MINITEL_PARSER" env-default:"FALSE"`
 		DLE                     byte   `yaml:"dle" env:"TELSTAR_SERVER_DLE" env-default:"0x10"`
 		Pages                   struct {
 			StartPage         int `yaml:"start_page" env:"TELSTAR_START_PAGE"  env-default:"99"`
