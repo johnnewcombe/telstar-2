@@ -251,7 +251,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 		//	}
 		//}
 
-		if minitelParser.MinitelState == MINITEL_connected {
+		if minitelParser.MinitelState == MINITEL_connected && !settings.Server.Antiope {
 			logger.LogInfo.Print("Minitel terminal, configuring Antiope support.")
 			settings.Server.Antiope = true
 

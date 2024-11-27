@@ -85,10 +85,9 @@ func RawVToAntiope(rawV []byte) ([]byte, error) {
 		currentColour byte
 		nextCol       int
 		rowChange     bool
-		c             uint8
 	)
 
-	logger.LogInfo.Printf("Processing %d bytes of RawV data.", len(rawV))
+	//logger.LogInfo.Printf("Processing %d bytes of RawV data.", len(rawV))
 	currentColour = 0x47
 
 	for i := 0; i < len(rawV); i++ {
@@ -102,12 +101,13 @@ func RawVToAntiope(rawV []byte) ([]byte, error) {
 		}
 
 		// ******************** DEBUG ********************
-		if char < 0x20 {
-			c = 0x2e
-		} else {
-			c = char
-		}
-		logger.LogInfo.Printf("%d - Processing byte: 0x%x(%s), Next Column: %d, Row Change: %t ", i, char, string(c), nextCol, rowChange)
+		//var c             uint8
+		//if char < 0x20 {
+		//	c = 0x2e
+		//} else {
+		//	c = char
+		//}
+		//logger.LogInfo.Printf("%d - Processing byte: 0x%x(%s), Next Column: %d, Row Change: %t ", i, char, string(c), nextCol, rowChange)
 		// ******************** DEBUG ********************
 
 		//if previous was esc or New Background
