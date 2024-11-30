@@ -32,7 +32,7 @@ const (
 	// ignore it. This should help packet radio operation where someone presses a menu choice e.g. 2
 	// and hits Return (hash) as the TNC will send 2# in this scenario the hash needs to be ignored.
 	HASH_GUARD_TIME    = 200
-	CONNECT_DELAY_SECS = 1
+	CONNECT_DELAY_SECS = 2
 )
 
 const (

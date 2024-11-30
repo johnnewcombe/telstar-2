@@ -119,13 +119,21 @@ func handleConn(conn net.Conn, settings config.Config) {
 	// this also gives manual dial connections time to switch the modem online.
 	time.Sleep(time.Second * globals.CONNECT_DELAY_SECS)
 
+	// Removed in favour of DC parsing...
+	//   see inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte) below
 	// send the <PRO1>/7B (where <PRO1> is 1B/39) to the client
-	conn.Write([]byte(globals.MINITEL_ENQ_ROM))
+	//if _, err = conn.Write([]byte(globals.MINITEL_ENQ_ROM)); err != nil {
+	// logger.LogError.Print(err)
+	//	return
+	//}
 
 	// loop as each character is received
 	for {
-
-		conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500))
+		//conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500))
+		if err = conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500)); err != nil {
+			cancel()
+			return
+		}
 		ok, inputByte = readByte(reader)
 
 		// process any errors from the renderer
@@ -149,9 +157,9 @@ func handleConn(conn net.Conn, settings config.Config) {
 
 			// if no character is received within the timeout and the current
 			// state is undefined then cant be a Minitel
-			if minitelParser.MinitelState == MINITEL_undefined {
-				minitelParser.MinitelState = MINITEL_not_connected
-			}
+			//if minitelParser.MinitelState == MINITEL_undefined {
+			//	minitelParser.MinitelState = MINITEL_not_connected
+			//}
 
 			if currentFrame.Carousel {
 
@@ -200,19 +208,30 @@ func handleConn(conn net.Conn, settings config.Config) {
 				// carry on by setting the input byte to 0x5f
 				inputByte = globals.HASH
 			}
-		} else {
+		}
 
-			if !settings.Server.DisableMinitelParser {
-				// pass through the Minitel parser, this will absorb any negotiation and
-				// set minitelParser.MinitelState
-				inputByte, minitelResponse = minitelParser.ParseMinitelEnqRom(inputByte)
+		if !settings.Server.DisableMinitelParser {
+			// pass through the Minitel parser, this will absorb any negotiation and
+			// set minitelParser.MinitelState
+			logger.LogInfo.Print("Checking for Minitel Terminal.")
+			inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte)
 
-				// Minitel parser may need to send a response to the client, this is done here
-				if len(minitelResponse) > 0 {
-					if _, err = conn.Write([]byte(minitelResponse)); err != nil {
-						logger.LogError.Print(err)
-					}
+			// Minitel parser may need to send a response to the client, this is done here
+			if len(minitelResponse) > 0 {
+				if _, err = conn.Write([]byte(minitelResponse)); err != nil {
+					logger.LogError.Print(err)
 				}
+			}
+
+			if minitelParser.MinitelState == MINITEL_connected && !settings.Server.Antiope {
+				logger.LogInfo.Print("Minitel terminal, configuring Antiope support.")
+				settings.Server.Antiope = true
+
+				// If we subsequently make a connection to another service (gateway). we need to relay the contents of
+				//  minitelParser.Buffer to that service.
+				initBytes = minitelParser.Buffer
+			} else {
+				logger.LogInfo.Print("Minitel terminal not detected.")
 			}
 		}
 
@@ -250,15 +269,6 @@ func handleConn(conn net.Conn, settings config.Config) {
 		//		logger.LogError.Print(err)
 		//	}
 		//}
-
-		if minitelParser.MinitelState == MINITEL_connected && !settings.Server.Antiope {
-			logger.LogInfo.Print("Minitel terminal, configuring Antiope support.")
-			settings.Server.Antiope = true
-
-			// If we subsequently make a connection to another service (gateway). we need to relay the contents of
-			//  minitelParser.Buffer to that service.
-			initBytes = minitelParser.Buffer
-		}
 
 		// pass through the telnet parser, this will absorb any negotiation and
 		// set telnetParser.TelnetConnection to true if a telnet negotiation was detected
@@ -524,7 +534,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 
 			case routing.InvalidCharacter:
 				// 4 - log warning and wait for the next char
-				logger.LogWarn.Print("An invalid character was received from the connected client.")
+				logger.LogWarn.Printf("An invalid character was received from the connected client [%0x] %s (%d).", inputByte, BtoA(inputByte), inputByte)
 			}
 		}
 	}
@@ -539,13 +549,20 @@ func closeConn(conn net.Conn) {
 
 func readByteNew(conn net.Conn) (bool, byte) {
 
+	// FIXME: Why do we have this and it not be used? This uses Read not ReadByte
+	//   and includes a timeout
 	var (
 		inputByte byte
+		err       error
 	)
 
 	buf := make([]byte, 1)
-	conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500))
-	conn.Read(buf)
+	if err = conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500)); err != nil {
+		return false, 0
+	}
+	if _, err = conn.Read(buf); err != nil {
+		return false, 0
+	}
 
 	// we do not need buffered input as we are only expecting single char inputs
 	inputByte = buf[0]

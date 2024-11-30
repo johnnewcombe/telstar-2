@@ -111,6 +111,9 @@ func (parser *MinitelParser) ParseMinitelDc(char byte) (byte, string) {
 			logger.LogInfo.Print("Minitel terminal detected.")
 			parser.Buffer = append(parser.Buffer, char)
 			parser.MinitelState = MINITEL_connected
+		} else {
+			logger.LogInfo.Print("Minitel terminal not detected.")
+
 		}
 	}
 

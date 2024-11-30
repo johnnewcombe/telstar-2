@@ -497,6 +497,7 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 		}
 
 		if _, err = conn.Write([]byte{b}); err != nil {
+			logger.LogError.Print(err)
 			return &NetworkError{}
 		}
 
