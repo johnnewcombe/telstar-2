@@ -100,20 +100,14 @@ func (parser *MinitelParser) ParseMinitelDc(char byte) (byte, string) {
 	}
 
 	if parser.MinitelState == MINITEL_undefined && char == 0x13 { // DC
-
-		logger.LogInfo.Print("DC Found")
 		parser.MinitelState = MINITEL_DC_found
 		parser.Buffer = append(parser.Buffer, char)
 
 	} else if parser.MinitelState == MINITEL_DC_found && parser.lastByteReceived == 0x13 {
 
 		if char >= 0x40 && char <= 0x5f {
-			logger.LogInfo.Print("Minitel terminal detected.")
 			parser.Buffer = append(parser.Buffer, char)
 			parser.MinitelState = MINITEL_connected
-		} else {
-			logger.LogInfo.Print("Minitel terminal not detected.")
-
 		}
 	}
 
