@@ -196,7 +196,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 				}
 
 				// if we have reached auto refresh time, set the flag
-				if autoRefreshDelay == settings.Server.AutoRefreshDelay*2 {
+				if autoRefreshDelay >= settings.Server.AutoRefreshDelay*2 {
 					autoRefreshFrame = true
 				} else {
 					// back to waiting for input
@@ -480,9 +480,12 @@ func handleConn(conn net.Conn, settings config.Config) {
 						logger.LogInfo.Printf("The follow-on frame for frame %s, does not exist.", frame.GetPageId())
 					}
 
-					logger.LogInfo.Printf("Adding frame %s to history.", frame.GetPageId())
+					if currentFrame.Carousel {
+						logger.LogInfo.Printf("Frame %s is a Carousel frame.", frame.GetPageId())
+					}
 
 					if !routingResponse.HistoryPage {
+						logger.LogInfo.Printf("Adding frame %s to history.", frame.GetPageId())
 						session.PushHistory(sessionId, frame.GetPageId())
 					}
 
