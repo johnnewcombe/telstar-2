@@ -93,6 +93,10 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	// this is used to enable the rendering goroutine to be cancelled.
 	ctx, cancel := context.WithCancel(context.Background())
 
+	// get remote IP Address
+	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
+		remoteIp = addr.IP.String()
+	}
 	// anonymous function used to ensure order is correct
 	defer func() {
 		// send cancel to goroutines and wait for them to complete
@@ -100,18 +104,13 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		defer wg.Wait()
 
 		// close the connection
-		closeConn(conn)
+		closeConn(conn, connectionNumber, remoteIp)
 
 		session.DeleteSession(sessionId)
 
 		//indicate to the listener that we are done
 		listenerWg.Done()
 	}()
-
-	// get remote IP Address
-	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
-		remoteIp = addr.IP.String()
-	}
 
 	// get the corresponding user from the database,
 	// FIXME this causes error on DEV Database NOTE that this is about BASE PAGE not USER ID
@@ -563,12 +562,12 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	}
 }
 
-func closeConn(conn net.Conn) {
+func closeConn(conn net.Conn, connectionNumber int, ipAddress string) {
 
 	if err := conn.Close(); err != nil {
 		logger.LogError.Print(err)
 	}
-	logger.LogInfo.Print("Closing connection!")
+	logger.LogInfo.Printf("%d:%s: Closing connection!", connectionNumber, ipAddress)
 }
 
 /*
