@@ -1,7 +1,9 @@
 package server
 
 import (
+	"github.com/johnnewcombe/telstar-library/globals"
 	"github.com/johnnewcombe/telstar-library/logger"
+	"time"
 )
 
 const (
@@ -39,6 +41,10 @@ type TelnetParser struct {
 */
 
 func (parser *TelnetParser) ParseTelnet(char byte) (byte, string) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "ParseTelnet")
+	}
 
 	// The telnet negotiation starts with IAC (FF) followed by 2 bytes unless the 2nd byte is SB (FA) Sub-Negotiation
 	// in which case all subsequent chars can be ignored until the sequence SE (FF FO) Sub-Negotiation End

@@ -19,6 +19,7 @@ func action(sessionId string, frame *types.Frame, args []string, settings config
 		cmdOut        string
 		err           error
 	)
+
 	cmd = frame.ResponseData.Action.Exec
 	if len(cmd) > 0 {
 		switch cmd {
@@ -76,6 +77,7 @@ func execActionWithCtx(cmd string, args ...string) (string, error) {
 		out []byte
 		err error
 	)
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

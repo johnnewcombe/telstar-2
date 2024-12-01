@@ -2,6 +2,9 @@ package config
 
 import (
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"time"
 )
 
 type Config struct {
@@ -27,7 +30,9 @@ type Config struct {
 		Antiope                 bool   `yaml:"antiope" env:"TELSTAR_ANTIOPE" env-default:"FALSE"`
 		DisableMinitelParser    bool   `yaml:"disable_minitel_parser" env:"TELSTAR_DISABLE_MINITEL_PARSER" env-default:"FALSE"`
 		DLE                     byte   `yaml:"dle" env:"TELSTAR_SERVER_DLE" env-default:"0x10"`
-		Pages                   struct {
+		Debug                   bool   `yaml:"debug" env:"TELSTAR_DEBUG" env-default:"FALSE"`
+
+		Pages struct {
 			StartPage         int `yaml:"start_page" env:"TELSTAR_START_PAGE"  env-default:"99"`
 			LoginPage         int `yaml:"login_page" env:"TELSTAR_LOGIN_PAGE"  env-default:"990"`
 			MainIndexPage     int `yaml:"main_index_page" env:"TELSTAR_MAIN_INDEX_PAGE"  env-default:"0"`
@@ -65,6 +70,10 @@ func GetConfig(filename string) (Config, error) {
 		err error
 	)
 
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "GetConfig")
+	}
+
 	// get config from file if the filename is specified
 	// otherwise uses env vars
 	if len(filename) > 0 {
@@ -85,6 +94,7 @@ func GetConfig(filename string) (Config, error) {
 // readEnv just uses env for settings, no configuration file
 func readEnv() (Config, error) {
 	var cfg Config
+
 	err := cleanenv.ReadEnv(&cfg)
 	if err != nil {
 		return cfg, err
@@ -96,6 +106,7 @@ func readEnv() (Config, error) {
 // If no setting in config then the env var default is used.
 func readConfig(filename string) (Config, error) {
 	var cfg Config
+
 	err := cleanenv.ReadConfig(filename, &cfg)
 	if err != nil {
 		return cfg, err

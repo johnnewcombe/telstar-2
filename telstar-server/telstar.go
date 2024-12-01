@@ -111,6 +111,9 @@ func main() {
 		logger.LogError.Fatal(err)
 	}
 
+	// set global debug flag
+	globals.Debug = settings.Server.Debug
+
 	switch os.Args[1] {
 
 	case "server":

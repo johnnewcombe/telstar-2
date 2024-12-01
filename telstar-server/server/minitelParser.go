@@ -1,7 +1,9 @@
 package server
 
 import (
+	"github.com/johnnewcombe/telstar-library/globals"
 	"github.com/johnnewcombe/telstar-library/logger"
+	"time"
 )
 
 const (
@@ -25,6 +27,10 @@ type MinitelParser struct {
 }
 
 func (parser *MinitelParser) ParseMinitelEnqRom(char byte) (byte, string) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "ParseMinitelEnqRom")
+	}
 
 	// use the minitel parser later or wait here or move it to here
 	// result should be 01/XX/YY/ZZ/04 where :
@@ -90,6 +96,10 @@ func (parser *MinitelParser) ParseMinitelEnqRom(char byte) (byte, string) {
 
 func (parser *MinitelParser) ParseMinitelDc(char byte) (byte, string) {
 
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "ParseMinitelDc")
+	}
+
 	// The minitel negotiation starts with DC (0x13) followed by a char in the range 40h and 5Fh
 	// Mute echo until all of the negotiation is done
 	var response string
@@ -107,6 +117,7 @@ func (parser *MinitelParser) ParseMinitelDc(char byte) (byte, string) {
 
 		if char >= 0x40 && char <= 0x5f {
 			parser.Buffer = append(parser.Buffer, char)
+			logger.LogInfo.Print("Minitel terminal, configuring Antiope support.")
 			parser.MinitelState = MINITEL_connected
 		}
 	}

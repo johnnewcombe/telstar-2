@@ -26,31 +26,33 @@ import (
 
 func Start(port int, settings config.Config) error {
 
-	logger.LogInfo.Printf("Starting Videotex Server %s on port %d", settings.Server.DisplayName, port)
+	var (
+		connectionNumber int
+	)
 	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", settings.Server.Host, port))
-
 	if err != nil {
 		return err
 	}
 
 	for {
-		// blocks until an incomming connection is made
-		// when a connectioj is made it returns a net.Conn object
+		// blocks until an incoming connection is made
+		// when a connection is made it returns a net.Conn object
 		conn, err := listener.Accept()
 		if err != nil {
 			logger.LogError.Print(err)
 			continue
 		}
-		logger.LogInfo.Print("Incoming connection!")
+		connectionNumber++
+		logger.LogInfo.Printf("Incoming connection [%d]!", connectionNumber)
 
 		// handles one connection at a time
-		go handleConn(conn, settings)
+		go handleConn(conn, connectionNumber, settings)
 
 	}
 }
 
 // handleConn() handles one connection at a time
-func handleConn(conn net.Conn, settings config.Config) {
+func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 	var (
 		reader           *bufio.Reader
@@ -78,6 +80,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 		autoRefreshDelay  int
 		autoRefreshFrame  bool
 		networkError      *renderer.NetworkError
+		remoteIp          string
 	)
 
 	defer closeConn(conn)
@@ -90,13 +93,19 @@ func handleConn(conn net.Conn, settings config.Config) {
 	wg := synchronisation.WaitGroupWithCount{}
 	defer wg.Wait()
 
+	// get remote IP Address
+	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
+		remoteIp = addr.IP.String()
+	}
+
 	// get the corresponding user from the database,
 	// FIXME this causes error on DEV Database NOTE that this is about BASE PAGE not USER ID
 	//  ERROR:   2023/01/30 21:39:44 listener.go:90: finding user 7777777777: error decoding key base-page: cannot decode string into an integer type
 	if currentUser, err = dal.GetUser(settings.Database.Connection, globals.GUEST_USER); err != nil {
-		logger.LogError.Print(err)
+		logger.LogError.Printf("%s", err)
 	}
-	logger.LogInfo.Printf("Logged in as user: %s (%s)", currentUser.Name, currentUser.UserId)
+
+	logger.LogInfo.Printf("%s: Logged in as user: %s (%s)", remoteIp, currentUser.Name, currentUser.UserId)
 
 	// create the users session
 	sessionId = utils.CreateGuid()
@@ -213,6 +222,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 		if !settings.Server.DisableMinitelParser {
 			// pass through the Minitel parser, this will absorb any negotiation and
 			// set minitelParser.MinitelState
+
 			logger.LogInfo.Print("Checking for Minitel Terminal.")
 			inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte)
 
@@ -230,8 +240,6 @@ func handleConn(conn net.Conn, settings config.Config) {
 				// If we subsequently make a connection to another service (gateway). we need to relay the contents of
 				//  minitelParser.Buffer to that service.
 				initBytes = minitelParser.Buffer
-			} else {
-				logger.LogInfo.Print("Minitel terminal not detected.")
 			}
 		}
 
@@ -544,6 +552,7 @@ func handleConn(conn net.Conn, settings config.Config) {
 }
 
 func closeConn(conn net.Conn) {
+
 	if err := conn.Close(); err != nil {
 		logger.LogError.Print(err)
 	}
@@ -551,6 +560,10 @@ func closeConn(conn net.Conn) {
 }
 
 func readByteNew(conn net.Conn) (bool, byte) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "readByteNew")
+	}
 
 	// FIXME: Why do we have this and it not be used? This uses Read not ReadByte
 	//   and includes a timeout
@@ -618,6 +631,7 @@ func getFrame(sessionId string, pageId string, settings config.Config) (types.Fr
 		err        error
 		frame      types.Frame
 	)
+
 	if pageNumber, frameId, err = utils.ConvertPageIdToPID(pageId); err != nil {
 		return frame, err
 	}

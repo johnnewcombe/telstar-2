@@ -3,16 +3,24 @@ package install
 import (
 	"fmt"
 	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/logger"
 	"github.com/johnnewcombe/telstar-library/types"
 	"github.com/johnnewcombe/telstar/config"
 	"github.com/johnnewcombe/telstar/dal"
 	"strings"
+	"time"
 )
 
 func CreateErrorPages(settings config.Config) error {
+
 	var (
 		err error
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "CreateErrorPages")
+	}
+
 	if err = create9901Page(settings); err != nil {
 		return err
 	}

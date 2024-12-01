@@ -3,6 +3,7 @@ package netClient
 import (
 	"bufio"
 	"context"
+	"github.com/johnnewcombe/telstar-library/globals"
 	"net"
 	"sync"
 	"time"
@@ -11,6 +12,10 @@ import (
 )
 
 func Connect(conn net.Conn, url string, dataLinkEscape byte, baudRate int, initBytes []byte) bool {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "Connect")
+	}
 
 	// connect to remote host
 	remoteConn, err := net.Dial("tcp", url)
@@ -70,6 +75,10 @@ func xfer(ctx context.Context, waitgroup *sync.WaitGroup, src net.Conn, dst net.
 		initDisabled bool
 		reader       *bufio.Reader
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "xfer")
+	}
 
 	// the last thing we do is tell the waitgroup when we have completed
 	defer waitgroup.Done()
@@ -168,6 +177,10 @@ func xfer(ctx context.Context, waitgroup *sync.WaitGroup, src net.Conn, dst net.
 
 // TODO this same function is defined in PAD, SERVER and Net Client
 func readByte(reader *bufio.Reader) (bool, byte) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "readByte")
+	}
 
 	// get a byte
 	inputByte, err := reader.ReadByte()

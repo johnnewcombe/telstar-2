@@ -36,6 +36,11 @@ type ResponseData struct {
 
 func (r *ResponseData) IncreaseFieldIndex() bool {
 	if r.currentFieldIndex < len(r.FieldValues)-1 {
+
+		if globals.Debug {
+			defer logger.TimeTrack(time.Now(), "IncreaseFieldIndex")
+		}
+
 		r.currentFieldIndex++
 		return true
 	}
@@ -43,10 +48,20 @@ func (r *ResponseData) IncreaseFieldIndex() bool {
 }
 
 func (r *ResponseData) GetCurrentField() Field {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "GetCurrentField")
+	}
+
 	return r.FieldValues[r.currentFieldIndex]
 }
 
 func (r *ResponseData) Clear() {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "Clear")
+	}
+
 	r.FieldValues = []Field{}
 	r.Complete = false
 	r.currentFieldIndex = 0
@@ -63,6 +78,10 @@ func Process(sessionId string, conn net.Conn, inputByte byte, frame *types.Frame
 		fieldFull            bool
 		err                  error
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "Process")
+	}
 
 	fieldCount = len(frame.ResponseData.Fields)
 	if fieldCount == 0 {

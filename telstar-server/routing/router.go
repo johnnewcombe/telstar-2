@@ -7,6 +7,7 @@ import (
 	"github.com/johnnewcombe/telstar-library/utils"
 	"github.com/johnnewcombe/telstar/session"
 	"strings"
+	"time"
 
 	"github.com/johnnewcombe/telstar-library/logger"
 )
@@ -46,6 +47,10 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
 	var (
 		err error
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "ProcessRouting")
+	}
 
 	// main processing loop
 	// there are two basic states, immediate mode should navigate immediately to the page based
@@ -171,6 +176,10 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
 
 func ForceRoute(pageNumber int, frameId string, request *RouterRequest, response *RouterResponse) {
 
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "ForceRoute")
+	}
+
 	// FIXME change frameId to a rune
 	//  return err
 	//  check for valid pageId
@@ -205,6 +214,11 @@ func (response *RouterResponse) trimBuffer() {
 }
 
 func (response *RouterResponse) Clear() {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "Clear")
+	}
+
 	//response.currentPageId = ""
 	//response.followOnPageId = ""
 	response.HistoryPage = false
@@ -357,6 +371,7 @@ func selectFollowOnFrame(request *RouterRequest, response *RouterResponse) error
 		pageId string
 		err    error
 	)
+
 	// 'follow on frame' selected
 	if pageId, err = GetFollowOnPageId(request.CurrentPageId); err != nil {
 		return err
@@ -477,9 +492,11 @@ func processBufferMode(request *RouterRequest, response *RouterResponse) error {
 }
 
 func getHashPageId(request *RouterRequest) (string, error) {
+
 	var (
 		pageId string
 	)
+
 	pageId = fmt.Sprintf("%da", request.RoutingTable[10])
 	if utils.IsValidPageId(pageId) {
 		return pageId, nil
@@ -494,6 +511,10 @@ func GetFollowOnPageId(pageId string) (string, error) {
 		frameId    string
 		err        error
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "GetFollowOnPageId")
+	}
 
 	/*
 	   This function returns the frame that should be returned if the hash '#' (\x5f) key is pressed.

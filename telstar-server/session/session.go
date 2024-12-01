@@ -2,7 +2,10 @@ package session
 
 import (
 	"errors"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/logger"
 	"github.com/johnnewcombe/telstar-library/types"
+	"time"
 )
 
 // global session data, holds data for ALL connected users
@@ -19,6 +22,10 @@ type Session struct {
 
 func CreateSession(sessionId string, user types.User) {
 
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "CreateSession")
+	}
+
 	// create the session and add to global session data
 	s := Session{SessionId: sessionId}
 	s.FrameCache = make(map[string]types.Frame)
@@ -28,10 +35,19 @@ func CreateSession(sessionId string, user types.User) {
 }
 
 func DeleteSession(sessionId string) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "DeleteSession")
+	}
+
 	delete(sessions, sessionId)
 }
 
 func UpdateCurrentUser(sessionId string, user types.User) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "UpdateCurrentUser")
+	}
 
 	s := sessions[sessionId]
 	s.User = user
@@ -40,16 +56,30 @@ func UpdateCurrentUser(sessionId string, user types.User) {
 }
 
 func GetCurrentUser(sessionId string) types.User {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "GetCurrentUser")
+	}
+
 	return sessions[sessionId].User
 }
 
 func AddFrameToCache(sessionId string, frame types.Frame) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "AddFrameToCache")
+	}
+
 	s := sessions[sessionId]
 	s.FrameCache[frame.GetPageId()] = frame
 	sessions[sessionId] = s
 }
 
 func GetFrameFromCache(sessionId string, pageId string) (types.Frame, error) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "GetFrameFromCache")
+	}
 
 	frame := sessions[sessionId].FrameCache[pageId]
 	if len(frame.PID.FrameId) == 0 {
@@ -59,6 +89,11 @@ func GetFrameFromCache(sessionId string, pageId string) (types.Frame, error) {
 }
 
 func ClearCache(sessionId string) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "ClearCache")
+	}
+
 	s := sessions[sessionId]
 	s.FrameCache = make(map[string]types.Frame)
 	sessions[sessionId] = s
@@ -66,12 +101,21 @@ func ClearCache(sessionId string) {
 
 // IsHistoryEmpty check if stack is empty
 func IsHistoryEmpty(sessionId string) bool {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "IsHistoryEmpty")
+	}
+
 	s := sessions[sessionId]
 	return len(s.History) == 0
 }
 
 // PushHistory a new value onto the stack
 func PushHistory(sessionId string, pageId string) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "PushHistory")
+	}
 
 	// append the page and update the global data
 	s := sessions[sessionId]
@@ -85,6 +129,11 @@ func PopHistoryN(sessionId string, n int) (string, bool) {
 		pageId string
 		ok     bool
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "getFrame")
+	}
+
 	for p := 0; p < n; p++ {
 		pageId, ok = PopHistory(sessionId)
 	}
@@ -93,6 +142,11 @@ func PopHistoryN(sessionId string, n int) (string, bool) {
 
 // PopHistory removes and return top element of stack. Return false if stack is empty.
 func PopHistory(sessionId string) (string, bool) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "PopHistory")
+	}
+
 	s := sessions[sessionId]
 	if IsHistoryEmpty(sessionId) {
 		return "", false
@@ -109,6 +163,10 @@ func PopHistory(sessionId string) (string, bool) {
 
 // PeekHistory return top element of stack, without removing it. Return false if stack is empty.
 func PeekHistory(sessionId string) (string, bool) {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "PeekHistory")
+	}
 
 	s := sessions[sessionId]
 

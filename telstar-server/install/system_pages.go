@@ -3,10 +3,12 @@ package install
 import (
 	"github.com/johnnewcombe/telstar-library/convert"
 	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/logger"
 	"github.com/johnnewcombe/telstar-library/types"
 	"github.com/johnnewcombe/telstar/config"
 	"github.com/johnnewcombe/telstar/dal"
 	"strings"
+	"time"
 )
 
 const (
@@ -21,6 +23,10 @@ func CreateSystemPages(settings config.Config) error {
 	var (
 		err error
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "CreateSystemPages")
+	}
 
 	if err = create9a(settings); err != nil {
 		return err
@@ -80,6 +86,11 @@ func CreateSystemRedirectPages(settings config.Config) error {
 	var (
 		err error
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "CreateSystemRedirectPages")
+	}
+
 	if err = create0a(settings); err != nil {
 		return err
 	}
@@ -93,6 +104,7 @@ func create0a(settings config.Config) error {
 		frame   types.Frame
 		primary bool
 	)
+
 	frame.PID.PageNumber = 0
 	frame.PID.FrameId = "a"
 	frame.Redirect.PageNumber = 9
@@ -109,6 +121,7 @@ func create9a(settings config.Config) error {
 		frame   types.Frame
 		primary bool
 	)
+
 	frame.PID.PageNumber = 9
 	frame.PID.FrameId = "a"
 	frame.Visible = true
@@ -128,6 +141,7 @@ func create90a(settings config.Config) error {
 		frame   types.Frame
 		primary bool
 	)
+
 	frame.PID.PageNumber = 90
 	frame.PID.FrameId = "a"
 	frame.Visible = true
@@ -242,6 +256,10 @@ func create91d(settings config.Config) error {
 		primary bool
 	)
 
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create91d")
+	}
+
 	frame.PID.PageNumber = 91
 	frame.PID.FrameId = "d"
 	frame.Visible = true
@@ -266,6 +284,10 @@ func create91e(settings config.Config) error {
 		frame   types.Frame
 		primary bool
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create91e")
+	}
 
 	frame.PID.PageNumber = 91
 	frame.PID.FrameId = "e"
@@ -296,6 +318,10 @@ func create91f(settings config.Config) error {
 		primary bool
 	)
 
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create91f")
+	}
+
 	frame.PID.PageNumber = 91
 	frame.PID.FrameId = "f"
 	frame.Visible = true
@@ -317,6 +343,11 @@ func create94a(settings config.Config) error {
 		frame   types.Frame
 		primary bool
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create94a")
+	}
+
 	frame.PID.PageNumber = 94
 	frame.PID.FrameId = "a"
 	frame.Visible = true
@@ -335,6 +366,11 @@ func create94a(settings config.Config) error {
 }
 
 func create96a(settings config.Config) error {
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create96a")
+	}
+
 	return nil
 }
 
@@ -343,6 +379,10 @@ func create98a(settings config.Config) error {
 		frame   types.Frame
 		primary bool
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create98a")
+	}
 
 	frame.PID.PageNumber = 98
 	frame.PID.FrameId = "a"
@@ -365,6 +405,10 @@ func create99a(settings config.Config) error {
 		frame   types.Frame
 		primary bool
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create99a")
+	}
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 
@@ -406,6 +450,10 @@ func create990a(settings config.Config) error {
 		frame   types.Frame
 		primary bool
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create990a")
+	}
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 
@@ -467,6 +515,10 @@ func create101Page(settings config.Config) error {
 		frame      types.Frame
 		primary    bool
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create101Page")
+	}
 
 	// This page is used purely to test various page options and only on the secondary
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY

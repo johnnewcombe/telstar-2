@@ -34,6 +34,10 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 		renderResults []error
 	)
 
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "Render")
+	}
+
 	renderResults = make([]error, 0)
 
 	defer wg.Done()
@@ -85,6 +89,11 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 		err           error
 		renderResults []error
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "RenderTransientSystemMessage")
+	}
+
 	renderResults = make([]error, 0)
 
 	defer wg.Done()
@@ -181,6 +190,7 @@ func renderHeader(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 		cost       string
 		err        error
 	)
+
 	defer ctx.Done()
 
 	// test pages just send home/clear and make a quick exit
@@ -511,6 +521,10 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 
 func PositionCursor(conn net.Conn, x int, y int, useRollover bool) error {
 
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "PositionCursor")
+	}
+
 	if _, err := conn.Write([]byte{globals.HOME}); err != nil {
 		return err
 	}
@@ -594,6 +608,7 @@ func getSysInfo(settings config.Config, user types.User, options RenderOptions) 
 		sb   strings.Builder
 		baud string
 	)
+
 	ver, err := globals.GetVersion()
 	if err != nil {
 		logger.LogError.Printf("error loading version file %v", err)

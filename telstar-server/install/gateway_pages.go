@@ -2,16 +2,23 @@ package install
 
 import (
 	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/logger"
 	"github.com/johnnewcombe/telstar-library/types"
 	"github.com/johnnewcombe/telstar/config"
 	"github.com/johnnewcombe/telstar/dal"
 	"strings"
+	"time"
 )
 
 func CreateGatewayPages(settings config.Config) error {
 	var (
 		err error
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "CreateGatewayPages")
+	}
+
 	if err = create6Page(settings); err != nil {
 		return err
 	}
