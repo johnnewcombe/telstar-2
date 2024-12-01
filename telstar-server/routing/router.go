@@ -42,7 +42,7 @@ type RouterResponse struct {
 	ImmediateMode bool
 }
 
-func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
+func ProcessRouting(request *RouterRequest, response *RouterResponse, session session.Session) error {
 
 	var (
 		err error
@@ -61,7 +61,9 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
 		return fmt.Errorf("routing request was invalid/empty")
 	}
 	// check for large data request e.g. http etc. and truncate
-	truncateData(request, response)
+	if err = truncateData(response); err != nil {
+		logger.LogError.Printf("%d:%s: ", session.ConnectionNumber, session.IPAddress)
+	}
 
 	// check for asterisk, backspace etc. asterusk will switch to immediate mode
 	// this does not add the byte to the buffer, it only handles special chars
@@ -72,7 +74,7 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
 	}
 
 	// Start of routing process
-	logger.LogInfo.Printf("Routing Start. [Current Page: %s [Message Buffer: %s] [Character to Process: %c]\r\n", request.CurrentPageId, response.RoutingBuffer, request.InputByte)
+	logger.LogInfo.Printf("%d:%s: Routing Start. [Current Page: %s [Message Buffer: %s] [Character to Process: %c]", session.ConnectionNumber, session.IPAddress, request.CurrentPageId, response.RoutingBuffer, request.InputByte)
 
 	if response.ImmediateMode {
 
@@ -83,14 +85,14 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
 
 		if response.Status == ValidPageRequest {
 			// # has been received and the pageId is good
-			logger.LogInfo.Printf("Frame Id is valid. [PageId: %s]", response.NewPageId)
+			logger.LogInfo.Printf("%d:%s: Frame Id is valid. [PageId: %s]", session.ConnectionNumber, session.IPAddress, response.NewPageId)
 
 		} else {
 
 			// this only occurs if # has been entered and for some reason the pageId is invalid
 			// this could occur if a command is entered e.g. *VT52# or *WEATHER# etc.
 
-			logger.LogInfo.Printf("Frame Id is invalid. [PageId: %s]", response.NewPageId)
+			logger.LogInfo.Printf("%d:%s: Frame Id is invalid. [PageId: %s]", session.ConnectionNumber, session.IPAddress, response.NewPageId)
 
 		}
 
@@ -106,7 +108,7 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
 			if err = selectReloadFrame(request, response); err != nil {
 				return err
 			}
-			logger.LogInfo.Printf("Current page re-selected: [Page Id: %s]\r\n", response.NewPageId)
+			logger.LogInfo.Printf("%d:%s: Current page re-selected: [Page Id: %s]", session.ConnectionNumber, session.IPAddress, response.NewPageId)
 
 		}
 		// check some special command sequences
@@ -117,7 +119,7 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
 			if err = selectPreviousFrame(request, response); err != nil {
 				return err
 			}
-			logger.LogInfo.Printf("Previous frame selected (obtained from history): [Page Id: %s]", response.NewPageId)
+			logger.LogInfo.Printf("%d:%s: Previous frame selected (obtained from history): [Page Id: %s]", session.ConnectionNumber, session.IPAddress, response.NewPageId)
 
 		} else if strings.ToLower(response.RoutingBuffer) == "exit" { // means that '*EXIT#' has been enterd
 
@@ -125,7 +127,7 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
 			//
 			// e.g.
 			// selectMyCommand(&request, &response)
-			logger.LogInfo.Printf("Command Exit was invoked.")
+			logger.LogInfo.Printf("%d:%s: Command Exit was invoked.", session.ConnectionNumber, session.IPAddress)
 		}
 	}
 	// request to reload the current page
@@ -169,12 +171,12 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse) error {
 		}
 	*/
 	// routing complete
-	logger.LogInfo.Printf("Routing finished [Message Buffer: %s]", response.RoutingBuffer)
+	logger.LogInfo.Printf("%d:%s: Routing finished [Message Buffer: %s]", session.ConnectionNumber, session.IPAddress, response.RoutingBuffer)
 
 	return nil
 }
 
-func ForceRoute(pageNumber int, frameId string, request *RouterRequest, response *RouterResponse) {
+func ForceRoute(pageNumber int, frameId string, response *RouterResponse) {
 
 	if globals.Debug {
 		defer logger.TimeTrack(time.Now(), "ForceRoute")
@@ -251,12 +253,12 @@ func (request *RouterRequest) isValid() bool {
 
 }
 
-func truncateData(request *RouterRequest, response *RouterResponse) {
+func truncateData(response *RouterResponse) error {
 
 	// check for large data request e.g. http etc. and truncate
 	if len(response.RoutingBuffer) > 11 {
 
-		logger.LogInfo.Print("Message is too long, truncating.\r\n")
+		err := errors.New("message is too long, truncating")
 
 		// truncate the buffer
 		//if response.immediateMode {
@@ -264,8 +266,9 @@ func truncateData(request *RouterRequest, response *RouterResponse) {
 		//} else {
 		//	response.routingBuffer = "*" // asterisk is never placed in the buffer, so doesn't need to be here
 		//}
+		return err
 	}
-	return
+	return nil
 }
 
 func preProcessInputByte(request *RouterRequest, response *RouterResponse) {
@@ -399,11 +402,11 @@ func processImmediateMode(request *RouterRequest, response *RouterResponse) erro
 	)
 
 	if !response.ImmediateMode {
-		logger.LogError.Fatal("Calling processImmediateMode() when in Buffer Mode is invalid.")
+		return fmt.Errorf("calling processImmediateMode() when in Buffer Mode is invalid")
 	}
 
 	if !request.isValid() {
-		return fmt.Errorf("invalid routing request.")
+		return fmt.Errorf("invalid routing request")
 	}
 
 	if utils.IsNumeric(request.InputByte) {
@@ -441,7 +444,7 @@ func processImmediateMode(request *RouterRequest, response *RouterResponse) erro
 func processBufferMode(request *RouterRequest, response *RouterResponse) error {
 
 	if response.ImmediateMode {
-		logger.LogError.Fatal("Calling processBufferMode() when in Immediate mode is invalid.")
+		return fmt.Errorf("calling processImmediateMode() when in Buffer Mode is invalid")
 
 	}
 	if utils.IsAlphaNumeric(request.InputByte) {

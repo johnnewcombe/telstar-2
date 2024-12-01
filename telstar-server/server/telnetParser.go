@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/johnnewcombe/telstar-library/globals"
 	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar/session"
 	"time"
 )
 
@@ -40,7 +41,7 @@ type TelnetParser struct {
    either WILL or WONT.
 */
 
-func (parser *TelnetParser) ParseTelnet(char byte) (byte, string) {
+func (parser *TelnetParser) ParseTelnet(char byte, session session.Session) (byte, string) {
 
 	if globals.Debug {
 		defer logger.TimeTrack(time.Now(), "ParseTelnet")
@@ -59,31 +60,31 @@ func (parser *TelnetParser) ParseTelnet(char byte) (byte, string) {
 	// State machine to sort out telnet parsing
 	if parser.telnetState == TELNET_undefined && char == 0xff { // IAC
 
-		logger.LogInfo.Print("IAC Start")
+		logger.LogInfo.Printf("%d:%s: IAC Start", session.ConnectionNumber, session.IPAddress)
 		parser.telnetState = IAC_found
 
 	} else if parser.telnetState == IAC_found && char == 0xff && parser.lastByteReceived == 0xff {
 
-		logger.LogInfo.Print("IAC Cancelled for FF FF")
+		logger.LogInfo.Printf("%d:%s: IAC Cancelled for FF FF", session.ConnectionNumber, session.IPAddress)
 		parser.telnetState = TELNET_undefined
 		char = 0 // because we are setting to undefined, we need to explicitly set char to 0
 
 	} else if parser.telnetState == IAC_found && char == 0xfa { // SB. sub negotiation start
 
-		logger.LogInfo.Print("SB Started")
+		logger.LogInfo.Printf("%d:%s: SB Started", session.ConnectionNumber, session.IPAddress)
 		parser.telnetState = SB_found
 
 	} else if parser.telnetState == SB_found && char == 0xf0 { // SE, end of Sub-Negotiation
 
 		// end of the command (sub negotiation)
-		logger.LogInfo.Print("SB Ended")
+		logger.LogInfo.Printf("%d:%s: SB Ended", session.ConnectionNumber, session.IPAddress)
 		parser.telnetState = TELNET_undefined
 		char = 0 // because we are setting to undefined, we need to explicitly set char to 0
 
 	} else if parser.telnetState == IAC_found {
 
-		if char >= 240 && char <= 255 {
-			logger.LogInfo.Print("Telnet client detected.")
+		if char >= 240 {
+			logger.LogInfo.Printf("%d:%s: Telnet client detected.", session.ConnectionNumber, session.IPAddress)
 			parser.TelnetConnection = true
 		}
 
@@ -98,7 +99,7 @@ func (parser *TelnetParser) ParseTelnet(char byte) (byte, string) {
 			parser.telnetState = DONT_found
 		} else if char >= 240 && char <= 250 { // ignore these
 			// no options for these so telnet complete
-			logger.LogInfo.Printf("% x command ignored IAC End", char)
+			logger.LogInfo.Printf("%d:%s: % x command ignored IAC End", session.ConnectionNumber, session.IPAddress, char)
 			parser.telnetState = TELNET_undefined
 			char = 0 // because we are setting to undefined, we need to explicitly set char to 0
 		}
@@ -106,21 +107,21 @@ func (parser *TelnetParser) ParseTelnet(char byte) (byte, string) {
 	} else if parser.telnetState == WILL_found {
 
 		// anything arriving here is an option
-		logger.LogInfo.Print("WILL % x", char)
+		logger.LogInfo.Printf("%d:%s: WILL % x", session.ConnectionNumber, session.IPAddress, char)
 		parser.telnetState = TELNET_undefined
 		char = 0 // because we are setting to undefined, we need to explicitly set char to 0
 
 	} else if parser.telnetState == WONT_found {
 
 		// anything arriving here is an option
-		logger.LogInfo.Print("WONT % x", char)
+		logger.LogInfo.Printf("%d:%s: WONT % x", session.ConnectionNumber, session.IPAddress, char)
 		parser.telnetState = TELNET_undefined
 		char = 0 // because we are setting to undefined, we need to explicitly set char to 0
 
 	} else if parser.telnetState == DO_found {
 
 		// anything arriving here is an option
-		logger.LogInfo.Print("DO % x", char)
+		logger.LogInfo.Printf("%d:%s: DO % x", session.ConnectionNumber, session.IPAddress, char)
 
 		if char == 0x01 { // ECHO
 			// return WILL echo in response to receiving the DO
@@ -134,14 +135,14 @@ func (parser *TelnetParser) ParseTelnet(char byte) (byte, string) {
 			response = "\xff\xfc"
 		}
 
-		logger.LogInfo.Print("IAC End")
+		logger.LogInfo.Printf("%d:%s: IAC End", session.ConnectionNumber, session.IPAddress)
 		parser.telnetState = TELNET_undefined
 		char = 0 // because we are setting to undefined, we need to explicitly set char to 0
 
 	} else if parser.telnetState == DONT_found {
 
 		// anything arriving here is an option
-		logger.LogInfo.Print("DONT  % x", char)
+		logger.LogInfo.Printf("%d:%s: DONT  % x", session.ConnectionNumber, session.IPAddress, char)
 		parser.telnetState = TELNET_undefined
 		char = 0 // because we are setting to undefined, we need to explicitly set char to 0
 

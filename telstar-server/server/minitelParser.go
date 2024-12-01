@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/johnnewcombe/telstar-library/globals"
 	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar/session"
 	"time"
 )
 
@@ -26,7 +27,7 @@ type MinitelParser struct {
 	Revision         byte
 }
 
-func (parser *MinitelParser) ParseMinitelEnqRom(char byte) (byte, string) {
+func (parser *MinitelParser) ParseMinitelEnqRom(char byte, session session.Session) (byte, string) {
 
 	if globals.Debug {
 		defer logger.TimeTrack(time.Now(), "ParseMinitelEnqRom")
@@ -54,30 +55,30 @@ func (parser *MinitelParser) ParseMinitelEnqRom(char byte) (byte, string) {
 	}
 
 	if parser.MinitelState == MINITEL_undefined && char&0x7f == 0x01 { // SOH
-		logger.LogInfo.Print("Minitel ENQ_ROM start received")
+		logger.LogInfo.Printf("%d:%s: Minitel ENQ_ROM start received", session.ConnectionNumber, session.IPAddress)
 		parser.MinitelState = MINITEL_ENQ_ROM_start_found
 		parser.Buffer = append(parser.Buffer, char)
 
 	} else if parser.MinitelState == MINITEL_ENQ_ROM_start_found &&
 		char&0x7f >= 0x0 && char <= 0x7f {
-		logger.LogInfo.Printf("Minitel ENQ_ROM vendor %d received", char)
+		logger.LogInfo.Printf("%d:%s: Minitel ENQ_ROM vendor %d received", session.ConnectionNumber, session.IPAddress, char)
 		parser.MinitelState = MINITEL_vendor_found
 		parser.Vendor = char & 0x7f
 
 	} else if parser.MinitelState == MINITEL_vendor_found &&
 		char&0x7f >= 0x0 && char <= 0x7f {
-		logger.LogInfo.Printf("Minitel ENQ_ROM model %d received", char)
+		logger.LogInfo.Printf("%d:%s: Minitel ENQ_ROM model %d received", session.ConnectionNumber, session.IPAddress, char)
 		parser.MinitelState = MINITEL_model_found
 		parser.Model = char & 0x7f
 
 	} else if parser.MinitelState == MINITEL_model_found &&
 		char&0x7f >= 0x20 && char <= 0x7f {
-		logger.LogInfo.Printf("Minitel ENQ_ROM revision %s received", string(char))
+		logger.LogInfo.Printf("%d:%s: Minitel ENQ_ROM revision %s received", session.ConnectionNumber, session.IPAddress, string(char))
 		parser.MinitelState = MINITEL_revision_found
 		parser.Revision = char & 0x7f
 
 	} else if parser.MinitelState == MINITEL_revision_found && char&0x7f == 0x04 { //EOT
-		logger.LogInfo.Print("Minitel ENQ_ROM end received")
+		logger.LogInfo.Printf("%d:%s: Minitel ENQ_ROM end received", session.ConnectionNumber, session.IPAddress)
 		parser.MinitelState = MINITEL_connected
 
 	} else {

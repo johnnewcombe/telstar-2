@@ -54,7 +54,6 @@ func Start(port int, settings config.Config) error {
 
 	}
 
-	return nil
 }
 
 // handleConn() handles one connection at a time
@@ -103,6 +102,8 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		// close the connection
 		closeConn(conn)
 
+		session.DeleteSession(sessionId)
+
 		//indicate to the listener that we are done
 		listenerWg.Done()
 	}()
@@ -116,14 +117,14 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	// FIXME this causes error on DEV Database NOTE that this is about BASE PAGE not USER ID
 	//  ERROR:   2023/01/30 21:39:44 listener.go:90: finding user 7777777777: error decoding key base-page: cannot decode string into an integer type
 	if currentUser, err = dal.GetUser(settings.Database.Connection, globals.GUEST_USER); err != nil {
-		logger.LogError.Printf("%d:%s: %v", connectionNumber, remoteIp, err)
+		logger.LogError.Printf("%d:%s: %v, has the user been created?", connectionNumber, remoteIp, err)
 	}
 	logger.LogInfo.Printf("%d:%s: Logged in as user: %s (%s)", connectionNumber, remoteIp, currentUser.Name, currentUser.UserId)
 
 	// create the users session
 	sessionId = utils.CreateGuid()
-	session.CreateSession(sessionId, currentUser)
-	defer session.DeleteSession(sessionId)
+	currentSession := session.CreateSession(sessionId, currentUser, connectionNumber, remoteIp)
+
 	// TODO Ensure that the session Id is displayed to the user somehow, perhaps on the session page?
 	//  all logging should include the session Id or a hash/CRC or something e.g.
 	//  sess id: 33efccb148144be49695e407239c4124
@@ -293,7 +294,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		// pass through the telnet parser, this will absorb any negotiation and
 		// set telnetParser.TelnetConnection to true if a telnet negotiation was detected
 		// this will also absorb input bytes OD and 0A changing them to 0.
-		inputByte, telnetResponse = telnetParser.ParseTelnet(inputByte)
+		inputByte, telnetResponse = telnetParser.ParseTelnet(inputByte, currentSession)
 
 		// telnet parser may need to send a response to the client, this is done here
 		if len(telnetResponse) > 0 {
@@ -349,7 +350,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 				netClient.Connect(conn, currentFrame.Connection.GetUrl(), settings.Server.DLE, baudRate, initBytes)
 
 				// Gateway complete, so back to main index page
-				routing.ForceRoute(settings.Server.Pages.GatewayErrorPage, "a", &routingRequest, &routingResponse)
+				routing.ForceRoute(settings.Server.Pages.GatewayErrorPage, "a", &routingResponse)
 
 			} else if currentFrame.FrameType == "response" {
 
@@ -363,12 +364,12 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					logger.LogError.Printf("%d:%s: The Response Processsor failed with input byte: %02x. %v", connectionNumber, remoteIp, inputByte, err)
 
 					// force route to external exception error page 9902.
-					routing.ForceRoute(settings.Server.Pages.ResponseErrorPage, "a", &routingRequest, &routingResponse)
+					routing.ForceRoute(settings.Server.Pages.ResponseErrorPage, "a", &routingResponse)
 
 				} else if responseFrameData.Complete {
 					responseFrameData.Clear()
 					pid := currentFrame.ResponseData.Action.PostActionFrame
-					routing.ForceRoute(pid.PageNumber, pid.FrameId, &routingRequest, &routingResponse)
+					routing.ForceRoute(pid.PageNumber, pid.FrameId, &routingResponse)
 				} else {
 					// not complete so continue to capture the next input byte
 					continue
@@ -382,14 +383,14 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 				// this is the start page so insert this into the routing process
 				if settings.Server.Authentication.Required {
-					routing.ForceRoute(settings.Server.Pages.LoginPage, "a", &routingRequest, &routingResponse)
+					routing.ForceRoute(settings.Server.Pages.LoginPage, "a", &routingResponse)
 				} else {
-					routing.ForceRoute(settings.Server.Pages.StartPage, "a", &routingRequest, &routingResponse)
+					routing.ForceRoute(settings.Server.Pages.StartPage, "a", &routingResponse)
 				}
 			} else if autoRefreshFrame {
 				// auto refresh of frame
 				autoRefreshFrame = false
-				routing.ForceRoute(currentFrame.PID.PageNumber, currentFrame.PID.FrameId, &routingRequest, &routingResponse)
+				routing.ForceRoute(currentFrame.PID.PageNumber, currentFrame.PID.FrameId, &routingResponse)
 
 			} else {
 
@@ -407,8 +408,8 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 				routingRequest.SessionId = sessionId
 
 				// process routing
-				if err = routing.ProcessRouting(&routingRequest, &routingResponse); err != nil {
-					logger.LogError.Printf("%d:%s %v", connectionNumber, remoteIp, err)
+				if err = routing.ProcessRouting(&routingRequest, &routingResponse, currentSession); err != nil {
+					logger.LogError.Printf("%d:%s: %v", connectionNumber, remoteIp, err)
 				}
 			}
 
@@ -482,7 +483,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 						ctx, cancel = context.WithCancel(context.Background())
 						wg.Add(1)
-						go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, sessionId, settings, renderOptions, chResult)
+						go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, currentSession, settings, renderOptions, chResult)
 					}
 
 				} else {
@@ -531,7 +532,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					// create a new context that can be used to allow rendering to be cancelled
 					ctx, cancel = context.WithCancel(context.Background())
 					wg.Add(1)
-					go renderer.Render(ctx, conn, &wg, &frame, sessionId, settings, renderOptions, chResult)
+					go renderer.Render(ctx, conn, &wg, &frame, currentSession, settings, renderOptions, chResult)
 
 					if frame.FrameType == "exit" {
 						cancel()
@@ -551,12 +552,12 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 					ctx, cancel = context.WithCancel(context.Background())
 					wg.Add(1)
-					go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, sessionId, settings, renderOptions, chResult)
+					go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, currentSession, settings, renderOptions, chResult)
 				}
 
 			case routing.InvalidCharacter:
 				// 4 - log warning and wait for the next char
-				logger.LogWarn.Printf("%d:%s: An invalid character was received from the connected client [%0x] %s (%d).", inputByte, BtoA(inputByte), inputByte)
+				logger.LogWarn.Printf("%d:%s: An invalid character was received from the connected client [%0x] %s (%d).", connectionNumber, remoteIp, inputByte, BtoA(inputByte), inputByte)
 			}
 		}
 	}

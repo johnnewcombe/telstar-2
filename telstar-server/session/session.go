@@ -14,13 +14,15 @@ type sessionData map[string]Session
 var sessions = make(sessionData)
 
 type Session struct {
-	SessionId  string
-	History    []string
-	FrameCache map[string]types.Frame
-	User       types.User
+	SessionId        string
+	ConnectionNumber int    // number of the connection for current listener
+	IPAddress        string // remote IPAddress
+	History          []string
+	FrameCache       map[string]types.Frame
+	User             types.User
 }
 
-func CreateSession(sessionId string, user types.User) {
+func CreateSession(sessionId string, user types.User, connectionNumber int, ipAddress string) Session {
 
 	if globals.Debug {
 		defer logger.TimeTrack(time.Now(), "CreateSession")
@@ -28,9 +30,24 @@ func CreateSession(sessionId string, user types.User) {
 
 	// create the session and add to global session data
 	s := Session{SessionId: sessionId}
+
+	// frame cache
 	s.FrameCache = make(map[string]types.Frame)
+
+	// current user
 	s.User = user
+
+	// connection number of current listener run
+	s.ConnectionNumber = connectionNumber
+
+	// ip address of remote connection
+	s.IPAddress = ipAddress
+
+	// store session
 	sessions[sessionId] = s
+
+	// return session
+	return s
 
 }
 

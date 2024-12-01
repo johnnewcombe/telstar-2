@@ -1,5 +1,5 @@
 # Set this to the build version, no other version files need to be updated (see echo command below)
-version := 2.0.7
+version := 2.0.7-RC1
 
 # Remember to set the ENV REFRESHED_AT variable in the associated docker files.
 
