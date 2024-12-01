@@ -33,14 +33,13 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 		err           error
 		renderResults []error
 	)
+	defer wg.Done()
 
 	if globals.Debug {
 		defer logger.TimeTrack(time.Now(), "Render")
 	}
 
 	renderResults = make([]error, 0)
-
-	defer wg.Done()
 
 	if utils.IsValidPageId(frame.GetPageId()) {
 
@@ -59,7 +58,6 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 		}
 
 		if frame.FrameType != globals.FRAME_TYPE_TEST && frame.FrameType != globals.FRAME_TYPE_RESPONSE {
-			//wg.Add(1)
 			renderSystemMessage(ctx, conn, frame.NavMessage, sessionId, settings, options)
 		}
 
@@ -90,13 +88,13 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 		renderResults []error
 	)
 
+	defer wg.Done()
+
 	if globals.Debug {
 		defer logger.TimeTrack(time.Now(), "RenderTransientSystemMessage")
 	}
 
 	renderResults = make([]error, 0)
-
-	defer wg.Done()
 
 	if len(message) > 0 {
 		if err = renderSystemMessage(ctx, conn, message, sessionId, settings, options); err != nil {

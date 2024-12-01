@@ -149,6 +149,9 @@ func main() {
 		}
 		// log the server(s) starting
 		logger.LogError.Print(server.Start(serverPort, settings))
+		//s := server.CreateServer(serverPort, settings)
+		//s.Stop()
+		//return
 
 	case "pad":
 

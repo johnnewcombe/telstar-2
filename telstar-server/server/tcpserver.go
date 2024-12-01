@@ -1,27 +1,55 @@
 package server
 
 import (
-	"io"
+	"bufio"
+	"context"
+	"errors"
+	"fmt"
+	"github.com/johnnewcombe/telstar-library/convert"
+	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/logger"
+	"github.com/johnnewcombe/telstar-library/types"
+	"github.com/johnnewcombe/telstar-library/utils"
+	"github.com/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/dal"
+	"github.com/johnnewcombe/telstar/netClient"
+	"github.com/johnnewcombe/telstar/renderer"
+	"github.com/johnnewcombe/telstar/response"
+	"github.com/johnnewcombe/telstar/routing"
+	"github.com/johnnewcombe/telstar/session"
+	"github.com/johnnewcombe/telstar/synchronisation"
 	"log"
 	"net"
 	"sync"
+	"time"
 )
 
 type Server struct {
 	listener net.Listener
+	settings config.Config
 	quit     chan interface{}
 	wg       sync.WaitGroup
 }
 
-func NewServer(addr string) *Server {
+func CreateServer(port int, settings config.Config) *Server {
+
+	var (
+		err error
+	)
+
 	s := &Server{
 		quit: make(chan interface{}),
 	}
-	l, err := net.Listen("tcp", addr)
+
+	s.settings = settings
+
+	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", settings.Server.Host, port))
 	if err != nil {
 		log.Fatal(err)
 	}
-	s.listener = l
+
+	s.listener = listener
+	// removed as we don't want to wait on this, see stop!
 	s.wg.Add(1)
 	go s.serve()
 	return s
@@ -37,7 +65,7 @@ func (s *Server) serve() {
 			case <-s.quit:
 				return
 			default:
-				log.Println("accept error", err)
+				logger.LogError.Print(err)
 			}
 		} else {
 			s.wg.Add(1)
@@ -50,28 +78,523 @@ func (s *Server) serve() {
 }
 
 func (s *Server) Stop() {
+
 	close(s.quit)
-	s.listener.Close()
+	//logger.LogInfo.Print("Closing the listener.")
+	//s.listener.Close()
+
+	// wait for all connections to end
 	s.wg.Wait()
+
+	logger.LogInfo.Print("Closing the listener.")
+	s.listener.Close()
+
+	log.Println("All done!")
 }
 
 func (s *Server) handleConection(conn net.Conn) {
 	defer conn.Close()
-	buf := make([]byte, 2048)
+
+	var (
+		reader           *bufio.Reader
+		ok               bool
+		telnetParser     TelnetParser
+		minitelParser    MinitelParser
+		routingRequest   routing.RouterRequest
+		routingResponse  routing.RouterResponse
+		telnetResponse   string
+		minitelResponse  string
+		initBytes        []byte
+		currentFrame     types.Frame
+		err              error
+		frame            types.Frame
+		hasFollowOnFrame bool
+		baudRate         int
+		inputByte        byte
+		//deviceControlReceived bool
+		currentUser       types.User
+		responseFrameData response.ResponseData
+		sessionId         string
+		lastCharReceived  int64
+		now               int64
+		carouselDelay     int
+		autoRefreshDelay  int
+		autoRefreshFrame  bool
+		networkError      *renderer.NetworkError
+		remoteIp          string
+	)
+
+	defer closeConn(conn)
+
+	settings := s.settings
+
+	// this is used to enable the rendering goroutine to be cancelled.
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	//wg = sync.WaitGroup{}
+	wg := synchronisation.WaitGroupWithCount{}
+	defer wg.Wait()
+
+	// get remote IP Address
+	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
+		remoteIp = addr.IP.String()
+	}
+
+	// get the corresponding user from the database,
+	// FIXME this causes error on DEV Database NOTE that this is about BASE PAGE not USER ID
+	//  ERROR:   2023/01/30 21:39:44 listener.go:90: finding user 7777777777: error decoding key base-page: cannot decode string into an integer type
+	if currentUser, err = dal.GetUser(settings.Database.Connection, globals.GUEST_USER); err != nil {
+		logger.LogError.Printf("%s", err)
+	}
+
+	logger.LogInfo.Printf("%s: Logged in as user: %s (%s)", remoteIp, currentUser.Name, currentUser.UserId)
+
+	// create the users session
+	sessionId = utils.CreateGuid()
+	session.CreateSession(sessionId, currentUser)
+	defer session.DeleteSession(sessionId)
+
+	var chResult = make(chan renderer.RenderResults)
+
+	// TODO Ensure that the session Id is displayed to the user somehow, perhaps on the session page?
+	//  all logging should include the session Id or a hash/CRC or something e.g.
+	//  sess id: 33efccb148144be49695e407239c4124
+	//  it doesn't need to be perfect so could use 33ef-4124 i.e. first 4 and last 4 chars ??
+
+	logger.LogInfo.Printf("Session created with SessionId %s\r\n", sessionId)
+
+	// create a new buffered reader
+	reader = bufio.NewReader(conn)
+
+	// wait for a second or three to allow the line to settle before continuing
+	// this also gives manual dial connections time to switch the modem online.
+	time.Sleep(time.Second * globals.CONNECT_DELAY_SECS)
+
+	// Removed in favour of DC parsing...
+	//   see inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte) below
+	// send the <PRO1>/7B (where <PRO1> is 1B/39) to the client
+	//if _, err = conn.Write([]byte(globals.MINITEL_ENQ_ROM)); err != nil {
+	// logger.LogError.Print(err)
+	//	return
+	//}
+
+	// loop as each character is received
 	for {
-		n, err := conn.Read(buf)
-		if err != nil && err != io.EOF {
-			log.Println("read error", err)
+		//conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500))
+		if err = conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500)); err != nil {
+			cancel()
 			return
 		}
-		if n == 0 {
-			return
+		ok, inputByte = readByte(reader)
+
+		// process any errors from the renderer
+		select {
+		case results := <-chResult:
+			// channel has some data
+			for _, err = range results {
+
+				logger.LogError.Print(err)
+
+				// cancel for all errors for now
+				if errors.As(err, &networkError) {
+					cancel()
+					return
+				}
+			}
+		default:
 		}
-		log.Printf("received from %v: %s", conn.RemoteAddr(), string(buf[:n]))
+
+		if !ok {
+
+			// if no character is received within the timeout and the current
+			// state is undefined then cant be a Minitel
+			//if minitelParser.MinitelState == MINITEL_undefined {
+			//	minitelParser.MinitelState = MINITEL_not_connected
+			//}
+
+			if currentFrame.Carousel {
+
+				// if we are rendering or whatever e.g. wait group is > 0
+				// just keep resetting the counter, otherwise increment it
+				if wg.GetCount() > 0 {
+					carouselDelay = 0
+				} else {
+					carouselDelay++
+				}
+
+				if carouselDelay == settings.Server.CarouselDelay*2 {
+					// display next page
+					carouselDelay = 0 // reset
+					inputByte = globals.HASH
+				}
+			}
+
+			if currentFrame.IsValid() && inputByte != globals.HASH {
+
+				// we have timed out waiting for a char but we have a
+				// current frame then check for auto refreshh and carousel
+				// or continue look for further input
+
+				// removed 24/11/2024
+				//time.Sleep(100 * time.Millisecond)
+
+				// if we are rendering or whatever e.g. wait group is > 0
+				// just keep resetting the counter, otherwise increment it
+				if wg.GetCount() > 0 {
+					autoRefreshDelay = 0
+				} else {
+					autoRefreshDelay++
+				}
+
+				// if we have reached auto refresh time, set the flag
+				if autoRefreshDelay >= settings.Server.AutoRefreshDelay*2 {
+					autoRefreshFrame = true
+				} else {
+					// back to waiting for input
+					continue
+				}
+
+			} else {
+				// If the current frame is not set then this is an initial connection so
+				// carry on by setting the input byte to 0x5f
+				inputByte = globals.HASH
+			}
+		}
+
+		if !settings.Server.DisableMinitelParser {
+			// pass through the Minitel parser, this will absorb any negotiation and
+			// set minitelParser.MinitelState
+
+			logger.LogInfo.Print("Checking for Minitel Terminal.")
+			inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte)
+
+			// Minitel parser may need to send a response to the client, this is done here
+			if len(minitelResponse) > 0 {
+				if _, err = conn.Write([]byte(minitelResponse)); err != nil {
+					logger.LogError.Print(err)
+				}
+			}
+
+			if minitelParser.MinitelState == MINITEL_connected && !settings.Server.Antiope {
+				logger.LogInfo.Print("Minitel terminal, configuring Antiope support.")
+				settings.Server.Antiope = true
+
+				// If we subsequently make a connection to another service (gateway). we need to relay the contents of
+				//  minitelParser.Buffer to that service.
+				initBytes = minitelParser.Buffer
+			}
+		}
+
+		// is this an auto refresh i.e. no inputByte
+		if autoRefreshFrame {
+			logger.LogInfo.Printf("Automatic Refresh of frame: %d%s", currentFrame.PID.PageNumber, currentFrame.PID.FrameId)
+		} else {
+			logger.LogInfo.Printf("Character received: [%0x] %s (%d)", inputByte, BtoA(inputByte), inputByte)
+		}
+
+		now = time.Now().UnixMilli() // nano seconds
+
+		// TODO What does this actually do, are we talking about the user using a Viewdata client
+		//  with a TNC? how would that work with CR being needed and the TNC in Line mode
+		// if a hash is received within 100ms of the previous character and we are in immediate mode
+		// ignore it. This should help packet radio operation where someone presses a menu choice e.g. 2
+		// and hits Return (hash) as the TNC will send 2# in this scenario the hash needs to be ignored.
+		if inputByte == globals.HASH && routingResponse.ImmediateMode {
+
+			if lastCharReceived >= now-globals.HASH_GUARD_TIME {
+				logger.LogInfo.Printf("Character received: [%0x] %s (%d) was received within %dms of previous character whilst in immediate mode.", inputByte, BtoA(inputByte), inputByte, globals.HASH_GUARD_TIME)
+				continue
+			}
+		}
+
+		lastCharReceived = time.Now().UnixMilli()
+
+		// pass through the Minitel parser, this will absorb any negotiation and
+		// set minitelParser.MinitelConnection to true if a Minitel negotiation was detected
+		//inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte)
+
+		// Minitel parser may need to send a response to the client, this is done here
+		//if len(minitelResponse) > 0 {
+		//	if _, err = conn.Write([]byte(minitelResponse)); err != nil {
+		//		logger.LogError.Print(err)
+		//	}
+		//}
+
+		// pass through the telnet parser, this will absorb any negotiation and
+		// set telnetParser.TelnetConnection to true if a telnet negotiation was detected
+		// this will also absorb input bytes OD and 0A changing them to 0.
+		inputByte, telnetResponse = telnetParser.ParseTelnet(inputByte)
+
+		// telnet parser may need to send a response to the client, this is done here
+		if len(telnetResponse) > 0 {
+			if _, err = conn.Write([]byte(telnetResponse)); err != nil {
+				logger.LogError.Print(err)
+			}
+		}
+
+		// set the baud rate depending upon the connection type
+		if telnetParser.TelnetConnection {
+			logger.LogInfo.Print("Telnet client, Baud rate is maximum value.")
+			baudRate = globals.BAUD_MAX
+		} else {
+			logger.LogInfo.Print("Baud rate is 2400 baud.")
+			// slow down the baud rate if not a telnet connection.
+			baudRate = globals.BAUD_RATE
+		}
+
+		if settings.Server.Antiope {
+			inputByte = convert.AntiopeInputTranslation(inputByte)
+		}
+
+		// ignore zero (NULL) as this is what the telnet parser returns if the character is part of a Telnet negotiation
+		// however, if this is an auto refresh request inputByte will be 0 so can be ignored
+		if inputByte != 0 || autoRefreshFrame {
+
+			if settings.General.Parity {
+				// added for 7E1 connections over TCP e.g. WiFi Modems connected to old 7E1 machines
+				inputByte = inputByte & 0x7f
+			}
+
+			// cancel any rendering by calling the cancel method of the context
+			if inputByte >= 0x30 && inputByte <= 0x39 || inputByte == globals.HASH || inputByte == globals.ASTERISK {
+				cancel()
+			}
+
+			if currentFrame.FrameType == "gateway" {
+
+				logger.LogInfo.Print("Current frame is type Gateway.")
+
+				// to get here we must have navigated to a gateway page i.e. a page with the
+				// frame type of gateway from this we can get the connection details
+				// validate the address etc.
+				if currentFrame.Connection.IsValid() {
+					logger.LogError.Print("Gateway connection details are invalid.")
+				}
+
+				// send a CLS back to the client as we can't guarantee that a service will
+				if _, err := conn.Write([]byte{globals.CLS}); err != nil {
+					logger.LogError.Println(err)
+				}
+
+				netClient.Connect(conn, currentFrame.Connection.GetUrl(), settings.Server.DLE, baudRate, initBytes)
+
+				// Gateway complete, so back to main index page
+				routing.ForceRoute(settings.Server.Pages.GatewayErrorPage, "a", &routingRequest, &routingResponse)
+
+			} else if currentFrame.FrameType == "response" {
+
+				// at this point we have rendered the frame, the currentFrame is set to the response frame
+				// and we are waiting for data entry characters to complete the repsponse frame field(s) etc.
+				logger.LogInfo.Print("Current frame is type Response, passing input byte to the Response Processor.")
+
+				if err = response.Process(sessionId, conn, inputByte, &currentFrame, &responseFrameData, baudRate, settings); err != nil {
+
+					// error with plugin
+					logger.LogError.Printf("The Response Processsor failed with input byte: %02x. %v", inputByte, err)
+
+					// force route to external exception error page 9902.
+					routing.ForceRoute(settings.Server.Pages.ResponseErrorPage, "a", &routingRequest, &routingResponse)
+
+				} else if responseFrameData.Complete {
+					responseFrameData.Clear()
+					pid := currentFrame.ResponseData.Action.PostActionFrame
+					routing.ForceRoute(pid.PageNumber, pid.FrameId, &routingRequest, &routingResponse)
+				} else {
+					// not complete so continue to capture the next input byte
+					continue
+				}
+
+			} else if !utils.IsValidPageId(currentFrame.GetPageId()) {
+
+				// this would only typically be the case when the handler first starts and
+				// there is no current frame
+				logger.LogInfo.Print("No current frame set, using start page.")
+
+				// this is the start page so insert this into the routing process
+				if settings.Server.Authentication.Required {
+					routing.ForceRoute(settings.Server.Pages.LoginPage, "a", &routingRequest, &routingResponse)
+				} else {
+					routing.ForceRoute(settings.Server.Pages.StartPage, "a", &routingRequest, &routingResponse)
+				}
+			} else if autoRefreshFrame {
+				// auto refresh of frame
+				autoRefreshFrame = false
+				routing.ForceRoute(currentFrame.PID.PageNumber, currentFrame.PID.FrameId, &routingRequest, &routingResponse)
+
+			} else {
+
+				// current page exists so normal routing is required
+				logger.LogInfo.Printf("Current frame is set (%d%s), invoking the routing process with char [%x] %s (%d).",
+					currentFrame.PID.PageNumber, currentFrame.PID.FrameId, inputByte, BtoA(inputByte), inputByte)
+
+				// update the routingRequest with the byte received
+				routingRequest.InputByte = inputByte
+
+				// populate the routing request
+				routingRequest.CurrentPageId = currentFrame.GetPageId()
+				routingRequest.RoutingTable = currentFrame.RoutingTable
+				routingRequest.HasFollowOnFrame = hasFollowOnFrame
+				routingRequest.SessionId = sessionId
+
+				// process routing
+				if err = routing.ProcessRouting(&routingRequest, &routingResponse); err != nil {
+					logger.LogError.Print(err)
+				}
+			}
+
+			/* at this point the response.status is one of the following:
+
+			UNDEFINED               = iota // 0 not actually used
+			ROUTING_MESSAGE_UPDATED        // 1 - do nothing and wait for the next char
+			VALID_PAGE_REQUEST             // 2 - get the page if it exists or rended PNF nav message
+			INVALID_PAGE_REQUEST           // 3 - rended PNF nav message
+			INVALID_CHARACTER              // 4 - log error and wait for the next char
+			*/
+
+			switch routingResponse.Status {
+			case routing.Undefined:
+				// 0 log error and wait for the next char
+				logger.LogError.Print("routingResponse.status was set to UNDEFINED, this is an unexpected error")
+
+			case routing.RouteMessageUpdated:
+				//1 - echo char and wait for the next char
+				logger.LogInfo.Printf("Routing buffer updated with char [%x] %s (%d)", inputByte, BtoA(inputByte), inputByte)
+
+				// echo the char if the char is valid AND the waitgroup count is zero
+				// i.e. nothing is being rendered
+				if wg.GetCount() > 0 {
+					// something is being rendered so put cursor at the bottom row
+					// this bypasses the
+					if err := renderer.PositionCursor(conn, 0, globals.ROWS-1, !settings.Server.DisableVerticalRollOver); err != nil {
+						logger.LogError.Println(err)
+					}
+				}
+				if inputByte > 0x20 && inputByte < 0x7f {
+					// echo the command
+					// FIXME How is the cursor handled (if there is one?
+					//  perhaps it should be left to the client!
+					if currentFrame.FrameType != globals.FRAME_TYPE_TEST {
+						if _, err := conn.Write([]byte{inputByte}); err != nil {
+							logger.LogError.Println(err)
+						}
+					}
+				}
+
+			case routing.BufferCharacterDeleted:
+
+				// send BS, SPC and BS
+				if _, err := conn.Write([]byte{0x08, 0x20, 0x08}); err != nil {
+					logger.LogError.Println(err)
+				}
+
+			case routing.ValidPageRequest:
+
+				// 2 - get the page if it exists or rended PNF nav message
+				// get the page
+
+				// get the frame from db or cache
+
+				if frame, err = getFrame(sessionId, routingResponse.NewPageId, settings); err != nil ||
+					!utils.IsValidPageId(frame.GetPageId()) {
+
+					// this means that the frame cannot be found
+					// e.g. it does not exist, has visibility set to false or some other db error
+					logger.LogWarn.Print(err)
+
+					// clear the buffer
+					routingResponse.RoutingBuffer = ""
+
+					if currentFrame.FrameType != globals.FRAME_TYPE_TEST {
+						// Render PNF nav message
+						var renderOptions = renderer.RenderOptions{
+							BaudRate: baudRate,
+						}
+
+						ctx, cancel = context.WithCancel(context.Background())
+						wg.Add(1)
+						go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, sessionId, settings, renderOptions, chResult)
+					}
+
+				} else {
+					// page id is valid, meaning that the frame was retrieved
+					logger.LogInfo.Printf("Frame retrieved: %d%s", frame.PID.PageNumber, frame.PID.FrameId)
+
+					// We need to determine if we have a Follow on frame
+					if hasFollowOnFrame, err = existsFollowOnFrame(sessionId, frame.GetPageId(), settings); err != nil {
+						logger.LogInfo.Print(err) // info as non-exist errors are expected
+					}
+
+					if hasFollowOnFrame {
+						logger.LogInfo.Printf("A follow-on frame for frame %s, exists.", frame.GetPageId())
+					} else {
+						logger.LogInfo.Printf("The follow-on frame for frame %s, does not exist.", frame.GetPageId())
+					}
+
+					if currentFrame.Carousel {
+						logger.LogInfo.Printf("Frame %s is a Carousel frame.", frame.GetPageId())
+					}
+
+					if !routingResponse.HistoryPage {
+						logger.LogInfo.Printf("Adding frame %s to history.", frame.GetPageId())
+						session.PushHistory(sessionId, frame.GetPageId())
+					}
+
+					routingResponse.Clear()
+
+					logger.LogInfo.Printf("Rendering frame %s.", frame.GetPageId())
+
+					// Render the frame
+					var renderOptions = renderer.RenderOptions{
+						HasFollowOnFrame: hasFollowOnFrame,
+						//ClearScreen:      true,
+						BaudRate: baudRate,
+					}
+
+					// make sure we have some nav messages.
+					if len(frame.NavMessageNotFound) == 0 {
+						frame.NavMessageNotFound = settings.Server.Strings.DefaultPageNotFoundMessage
+					}
+					if len(frame.NavMessage) == 0 {
+						frame.NavMessage = settings.Server.Strings.DefaultNavMessage
+					}
+
+					// create a new context that can be used to allow rendering to be cancelled
+					ctx, cancel = context.WithCancel(context.Background())
+					wg.Add(1)
+
+					go renderer.Render(ctx, conn, &wg, &frame, sessionId, settings, renderOptions, chResult)
+
+					if frame.FrameType == "exit" {
+						cancel()
+						return
+					}
+					currentFrame = frame
+
+				}
+
+			case routing.InvalidPageRequest:
+
+				if currentFrame.FrameType != globals.FRAME_TYPE_TEST {
+
+					var renderOptions = renderer.RenderOptions{
+						BaudRate: baudRate,
+					}
+
+					ctx, cancel = context.WithCancel(context.Background())
+					wg.Add(1)
+					go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, sessionId, settings, renderOptions, chResult)
+				}
+
+			case routing.InvalidCharacter:
+				// 4 - log warning and wait for the next char
+				logger.LogWarn.Printf("An invalid character was received from the connected client [%0x] %s (%d).", inputByte, BtoA(inputByte), inputByte)
+			}
+		}
 	}
 }
 
-/*
+/* Example that allows a forced close
 func (s *Server) handleConection(conn net.Conn) {
 	defer conn.Close()
 	buf := make([]byte, 2048)

@@ -23,11 +23,11 @@ const (
 	//BAUD_4800 = 0.002083 // seconds
 	//BAUD_2400 = 0.004167 // seconds
 	//BAUD_1200 = 0.008333 // seconds
-	BAUD_4800 = 2083000 // nanoseconds
-	BAUD_2400 = 4167000 // nanoseconds
-	BAUD_1200 = 8333000 // nanoseconds
-	BAUD_RATE = BAUD_1200
-
+	BAUD_4800    = 2083000 // nanoseconds
+	BAUD_2400    = 4167000 // nanoseconds
+	BAUD_1200    = 8333000 // nanoseconds
+	BAUD_RATE    = BAUD_1200
+	BAUD_DISPLAY = "1200 Baud"
 	// HASH_GUARD_TIME if a hash is received within n ms of the previous character and we are in immediate mode
 	// ignore it. This should help packet radio operation where someone presses a menu choice e.g. 2
 	// and hits Return (hash) as the TNC will send 2# in this scenario the hash needs to be ignored.
