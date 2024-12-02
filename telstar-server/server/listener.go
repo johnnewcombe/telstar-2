@@ -612,7 +612,6 @@ func readByte(reader *bufio.Reader) (bool, byte) {
 	if err != nil {
 		return false, inputByte
 	}
-	logger.LogInfo.Println("character read:", inputByte)
 	return true, inputByte
 }
 

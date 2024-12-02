@@ -15,7 +15,7 @@ build:
 #   Uncomment this line when fyne-cross is fixed
 #	make -C ./telstar-client
 
-docker: #build
+docker: build
 	# Build the architectures
 	# this adds the latest tag to this release
 	docker build -f Dockerfile.amd64 --platform linux/amd64 --rm --no-cache --tag johnnewcombe/telstar:latest --tag johnnewcombe/telstar:amd64-$(version) .
