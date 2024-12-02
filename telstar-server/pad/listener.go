@@ -213,7 +213,10 @@ func executeCommand(ctx context.Context, conn net.Conn, cmd Command, settings co
 			if !ok {
 				url = cmd.arg1
 			}
-			netClient.Connect(conn, url, settings.Pad.DLE, baudRate, initBytes)
+
+			// returns a bool
+			_ = netClient.Connect(conn, url, settings.Pad.DLE, baudRate, initBytes)
+
 		case "HELP":
 			go render(ctx, conn, HELP, baudRate)
 		case "HELPPARS":

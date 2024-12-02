@@ -97,11 +97,12 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
 		remoteIp = addr.IP.String()
 	}
+
 	// anonymous function used to ensure order is correct
 	defer func() {
 		// send cancel to goroutines and wait for them to complete
 		cancel()
-		defer wg.Wait()
+		wg.Wait()
 
 		// close the connection
 		closeConn(conn, connectionNumber, remoteIp)
@@ -337,7 +338,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 				// to get here we must have navigated to a gateway page i.e. a page with the
 				// frame type of gateway from this we can get the connection details
 				// validate the address etc.
-				if currentFrame.Connection.IsValid() {
+				if !currentFrame.Connection.IsValid() {
 					logger.LogError.Printf("%d:%s: Gateway connection details are invalid.", connectionNumber, remoteIp)
 				}
 
@@ -346,7 +347,8 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					logger.LogError.Printf("%d:%s: %v", connectionNumber, remoteIp, err)
 				}
 
-				netClient.Connect(conn, currentFrame.Connection.GetUrl(), settings.Server.DLE, baudRate, initBytes)
+				// returns a bool
+				_ = netClient.Connect(conn, currentFrame.Connection.GetUrl(), settings.Server.DLE, baudRate, initBytes)
 
 				// Gateway complete, so back to main index page
 				routing.ForceRoute(settings.Server.Pages.GatewayErrorPage, "a", &routingResponse)
