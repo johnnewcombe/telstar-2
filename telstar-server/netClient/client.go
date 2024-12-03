@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar/config"
 	"github.com/johnnewcombe/telstar/synchronisation"
 	"net"
 	"time"
@@ -22,16 +23,23 @@ each xfer go routine. If either go routine sees a DLE it is signalled on the cha
 to this routine so that cancel can be set on the context. This should stop all go routines
 */
 
-func Connect(conn net.Conn, url string, dataLinkEscape byte, baudRate int, initBytes []byte) bool {
+func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, initBytes []byte, settings config.Config) bool {
 
 	// connect to remote host
+	var (
+		userIp string
+	)
 	remoteConn, err := net.Dial("tcp", url)
 	if err != nil {
-		logger.LogError.Printf("TCP connection to %s, failed. Error: %s", url, err)
+		logger.LogError.Printf("%d:%s: TCP connection to %s, failed. Error: %s", connectionNumber, userIp, url, err)
 		return false
 	}
 
-	logger.LogInfo.Printf("TCP connection made to %s.", url)
+	// get remote IP Address
+	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
+		userIp = addr.IP.String()
+	}
+	logger.LogInfo.Printf("%d:%s: TCP connection made to %s.", connectionNumber, userIp, url)
 
 	// signal channel, this is used to allow the xfer goroutine(s) to signal that a DLE
 	// Data Link Escape has been detected (typically Ctrl P, see settings)
@@ -51,7 +59,7 @@ func Connect(conn net.Conn, url string, dataLinkEscape byte, baudRate int, initB
 		cancel()
 		waitGroup.Wait()
 
-		logger.LogInfo.Printf("Closing TCP connection to %s.", url)
+		logger.LogInfo.Printf("%d:%s: Closing TCP connection to %s.", connectionNumber, userIp, url)
 
 		if err = remoteConn.Close(); err != nil {
 			logger.LogError.Printf("%v", err)
@@ -66,19 +74,19 @@ func Connect(conn net.Conn, url string, dataLinkEscape byte, baudRate int, initB
 	// transfer from remote to connected user, note that we add 1 to the wait group and pass a pointer to the wait group
 	// to the goroutine. The go routine will signal to the wait group when it has been completed
 	waitGroup.Add(1)
-	go xfer(ctx, &waitGroup, conn, remoteConn, dataLinkEscape, baudRate, initBytes, dleSignal)
+	go xfer(ctx, &waitGroup, conn, remoteConn, connectionNumber, baudRate, initBytes, settings, dleSignal)
 
 	// transfer from connected user to remote, note that we add 1 to the wait group and pass a pointer to the wait group
 	// to the goroutine. The goroutine will signal to the wait group when it has been completed
 	waitGroup.Add(1)
-	go xfer(ctx, &waitGroup, remoteConn, conn, dataLinkEscape, baudRate, initBytes, dleSignal)
+	go xfer(ctx, &waitGroup, remoteConn, conn, connectionNumber, baudRate, initBytes, settings, dleSignal)
 
 	// this will block until one of the xfer functions sends a DLE detected message
 	select {
 	case dle := <-dleSignal:
 		if dle {
 			// we have the dle  from one of the xfer routines so tell them both to stop
-			logger.LogInfo.Println("DLE Received, cancelling gateway activity.")
+			logger.LogInfo.Printf("%d:%s: DLE Received, cancelling gateway activity.", connectionNumber, userIp)
 			// this routine will complete at the return below and the deferred function
 			// will issue cancel and wait functions
 		}
@@ -89,20 +97,21 @@ func Connect(conn net.Conn, url string, dataLinkEscape byte, baudRate int, initB
 
 }
 
-func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, src net.Conn, dst net.Conn, dataLinkEscape byte, baudRate int, initBytes []byte, dleSignal chan bool) {
+func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, src net.Conn, dst net.Conn, connectionNumber int, baudRate int, initBytes []byte, settings config.Config, dleSignal chan bool) {
 
 	var (
 		initDisabled   bool
 		reader         *bufio.Reader
 		err            error
 		timeoutCounter int
+		sourceIp       string
 	)
 
 	// the last thing we do is tell the wait group when we have completed
 	defer func() {
 
 		if err = src.SetReadDeadline(time.Time{}); err != nil {
-			logger.LogError.Print(err)
+			logger.LogError.Printf("%d:%s: %v", connectionNumber, sourceIp, err)
 		}
 
 		print()
@@ -113,6 +122,11 @@ func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, sr
 		}
 
 	}()
+
+	// get remote IP Address
+	if addr, ok := src.RemoteAddr().(*net.TCPAddr); ok {
+		sourceIp = addr.IP.String()
+	}
 
 	// create a new buffered reader
 	reader = bufio.NewReader(src)
@@ -130,7 +144,8 @@ func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, sr
 		case <-ctx.Done():
 			// ctx is telling us to stop, probably because we have sent it a DLE signal on the
 			// dleSignal channel (see below).
-			logger.LogInfo.Printf("Transfer cancelled [%s to %s].",
+			logger.LogInfo.Printf("%d:%s: Transfer cancelled [%s to %s].",
+				connectionNumber, sourceIp,
 				src.RemoteAddr().String(),
 				dst.RemoteAddr().String())
 
@@ -148,7 +163,7 @@ func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, sr
 		// this allows the go routine to check the cancellation channel every 500ms or so.
 		// this will be put back once the gateway go routines have completed
 		if err = src.SetReadDeadline(time.Now().Add(time.Millisecond * 500)); err != nil {
-			logger.LogError.Print(err)
+			logger.LogError.Printf("%d:%s: %v", connectionNumber, sourceIp, err)
 			dleSignal <- true
 		}
 
@@ -159,9 +174,9 @@ func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, sr
 			// this will run every 500ms if there is no activity
 			// could time-ou connection after 5 mins
 			timeoutCounter++
-			if timeoutCounter > globals.GATEWAY_INACTIVITY_TIMEOUT_SECS*2 { // TODO Add gateway timeout counter
+			if timeoutCounter > settings.Server.GatewayTimeout*2 { // TODO Add gateway timeout counter
 
-				logger.LogInfo.Print("Inactivity timeout exceeded.")
+				logger.LogInfo.Printf("%d:%s: Inactivity timeout exceeded.", connectionNumber, sourceIp)
 
 				// no activity on the  src connection so report a DLE
 				// so that this goroutine and the goroutine handling the other direction
@@ -172,7 +187,7 @@ func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, sr
 			// check for EOF
 			if inputByte == 0xFF {
 
-				logger.LogError.Print("EOF detected, simulating DLE.")
+				logger.LogError.Printf("%d:%s: EOF detected, simulating DLE.", connectionNumber, sourceIp)
 
 				// this means the src connection is closed so report a DLE
 				// so that this goroutine and the goroutine handling the other direction
@@ -189,12 +204,12 @@ func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, sr
 		timeoutCounter = 0
 
 		if globals.Debug {
-			logger.LogInfo.Printf("Byte '%02x' received from %s.", inputByte, src.RemoteAddr().String())
+			logger.LogInfo.Printf("%d:%s: Byte '%02x' received from %s.", connectionNumber, sourceIp, inputByte, src.RemoteAddr().String())
 		}
 
 		write := func(data []byte) {
 			if _, err := dst.Write(data); err != nil {
-				logger.LogError.Printf("WRITE: %s", err)
+				logger.LogError.Printf("%d:%s: WRITE: %s", connectionNumber, sourceIp, err)
 
 				// indicate on the dleSignal channel to the parent to send a cancel to this goroutine
 				// stopping it here directly would violate the channel closing rules
@@ -202,11 +217,11 @@ func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, sr
 				dleSignal <- true
 
 			} else if globals.Debug {
-				logger.LogInfo.Printf("Byte Sent to %s.", dst.RemoteAddr().String())
+				logger.LogInfo.Printf("%d:%s: Byte Sent to %s.", connectionNumber, sourceIp, dst.RemoteAddr().String())
 			}
 		}
 
-		if inputByte == dataLinkEscape {
+		if inputByte == settings.Server.DLE {
 
 			// indicate on the dleSignal channel to the parent to send a cancel to this goroutine
 			// stopping it here directly would violate the channel closing rules
@@ -233,43 +248,10 @@ func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, sr
 // TODO this same function is defined in PAD, SERVER and Net Client
 func readByte(reader *bufio.Reader) (bool, byte) {
 
-	if globals.Debug {
-		defer logger.TimeTrack(time.Now(), "readByte")
-	}
-
 	// get a byte
 	inputByte, err := reader.ReadByte()
 	if err != nil {
 		return false, inputByte
 	}
-	//logger.LogInfo.Println("character read:", inputByte)
 	return true, inputByte
 }
-
-/*
-func readByte(conn net.Conn) (bool, byte) {
-
-	result := true
-	inputByte := make([]byte, 1, 1)
-
-	count, err := conn.Read(inputByte)
-
-	if err != nil {
-		if err != io.EOF {
-			logger.LogWarn.Println("read error:", err)
-			return false, 0
-		} else {
-			return false, 255 // EOF
-		}
-		result = false
-	}
-	//logger.LogInfo.Println("ReadByte Done")
-
-	if count > 0 {
-		return result, inputByte[0]
-	} else {
-		return false, 0
-	}
-}
-
-*/

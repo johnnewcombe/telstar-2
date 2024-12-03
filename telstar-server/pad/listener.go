@@ -26,6 +26,10 @@ const (
 
 func Start(port int, settings config.Config, hosts map[string]string) error {
 
+	var (
+		connectionNumber int
+	)
+
 	logger.LogInfo.Printf("Starting PAD Server on port %d", port)
 	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", settings.Pad.Host, port))
 
@@ -41,15 +45,16 @@ func Start(port int, settings config.Config, hosts map[string]string) error {
 			logger.LogError.Print(err)
 			continue
 		}
+		connectionNumber++
 		logger.LogInfo.Print("Incoming connection!")
 
 		// handles one connection at a time
-		go handleConn(conn, settings, hosts)
+		go handleConn(conn, connectionNumber, settings, hosts)
 
 	}
 }
 
-func handleConn(conn net.Conn, settings config.Config, hosts map[string]string) {
+func handleConn(conn net.Conn, connectionNumber int, settings config.Config, hosts map[string]string) {
 
 	// handles one connection at a time
 	var (
@@ -58,9 +63,19 @@ func handleConn(conn net.Conn, settings config.Config, hosts map[string]string) 
 		minitelParser   server.MinitelParser
 		err             error
 		initBytes       []byte
+		userIp          string
 	)
 
 	defer closeConn(conn)
+
+	// get remote IP Address
+	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
+		userIp = addr.IP.String()
+	}
+
+	// FIXME add connection number and IP to logging
+	print(connectionNumber)
+	print(userIp)
 
 	// set current profile
 	// TODO sort out case and constant
@@ -126,7 +141,7 @@ func handleConn(conn net.Conn, settings config.Config, hosts map[string]string) 
 
 			// ctx is only needed so that executeCommand can pass it to render()
 			ctx, cancel = context.WithCancel(context.Background())
-			executeCommand(ctx, conn, cmd, settings, hosts, baudRate, initBytes)
+			executeCommand(ctx, conn, connectionNumber, cmd, settings, hosts, baudRate, initBytes)
 
 		} else {
 
@@ -202,7 +217,7 @@ func isAlphaNumeric(char byte) bool {
 
 }
 
-func executeCommand(ctx context.Context, conn net.Conn, cmd Command, settings config.Config, hosts map[string]string, baudRate int, initBytes []byte) {
+func executeCommand(ctx context.Context, conn net.Conn, connectionNumber int, cmd Command, settings config.Config, hosts map[string]string, baudRate int, initBytes []byte) {
 
 	if cmd.isValid {
 
@@ -215,7 +230,7 @@ func executeCommand(ctx context.Context, conn net.Conn, cmd Command, settings co
 			}
 
 			// returns a bool
-			_ = netClient.Connect(conn, url, settings.Pad.DLE, baudRate, initBytes)
+			_ = netClient.Connect(conn, url, connectionNumber, baudRate, initBytes, settings)
 
 		case "HELP":
 			go render(ctx, conn, HELP, baudRate)
