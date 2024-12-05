@@ -51,7 +51,7 @@ func Start(port int, settings config.Config) error {
 		// handles one connection at a time
 		listenerWg.Add(1)
 		go handleConn(conn, connectionNumber, settings)
-		logger.LogInfo.Printf("Current Sessions: %3d", listenerWg.GetCount())
+		logger.LogInfo.Printf("Current Session count: %3d.", listenerWg.GetCount())
 
 	}
 
@@ -102,7 +102,9 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	// anonymous function used to ensure order is correct
 	defer func() {
 		// send cancel to goroutines and wait for them to complete
+
 		cancel()
+
 		wg.Wait()
 
 		// close the connection
@@ -120,13 +122,13 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	if currentUser, err = dal.GetUser(settings.Database.Connection, globals.GUEST_USER); err != nil {
 		logger.LogError.Printf("%d:%s: %v, has the user been created?", connectionNumber, userIp, err)
 	}
-	logger.LogInfo.Printf("%d:%s: Logged in as user: %s (%s)", connectionNumber, userIp, currentUser.Name, currentUser.UserId)
+	logger.LogInfo.Printf("%d:%s: Logged in as user: %s (%s).", connectionNumber, userIp, currentUser.Name, currentUser.UserId)
 
 	// create the users session
 	sessionId = utils.CreateGuid()
 	currentSession := session.CreateSession(sessionId, currentUser, connectionNumber, userIp)
 
-	logger.LogInfo.Printf("%d:%s: Session created with SessionId %s\r\n", connectionNumber, userIp, sessionId)
+	logger.LogInfo.Printf("%d:%s: Session created with SessionId %s.", connectionNumber, userIp, sessionId)
 
 	var chResult = make(chan renderer.RenderResults)
 
@@ -149,9 +151,11 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	for {
 		//conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500))
 		if err = conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500)); err != nil {
-			cancel()
-			return
+			//cancel() // TODO is this needed as it is called in the defer function
+			return // via defer() function
 		}
+
+		start := time.Now()
 		ok, inputByte = readByte(reader)
 
 		// process any errors from the renderer
@@ -164,14 +168,25 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 				// cancel for all errors for now
 				if errors.As(err, &networkError) {
-					cancel()
-					return
+					//cancel() // TODO is this needed as it is called in the defer function
+					return // via defer() function
 				}
 			}
 		default:
 		}
 
 		if !ok {
+
+			// each !ok read should be 500ms since the last, anything shorter means that
+			// the connection has been broken
+			if time.Since(start).Milliseconds() < 50 {
+
+				//error, the connection has clearly been broken
+				logger.LogInfo.Printf("%d:%s: Client has disconnected.", connectionNumber, userIp)
+				//cancel()
+				return // cancel is handled by the defer() function
+
+			}
 
 			// if no character is received within the timeout and the current
 			// state is undefined then cant be a Minitel
@@ -228,6 +243,10 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 			}
 		}
 
+		if inputByte == 0 {
+			continue
+		}
+
 		if !settings.Server.DisableMinitelParser {
 			// pass through the Minitel parser, this will absorb any negotiation and
 			// set minitelParser.MinitelState
@@ -254,9 +273,9 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 		// is this an auto refresh i.e. no inputByte
 		if autoRefreshFrame {
-			logger.LogInfo.Printf("%d:%s: Automatic Refresh of frame: %d%s", connectionNumber, userIp, currentFrame.PID.PageNumber, currentFrame.PID.FrameId)
+			logger.LogInfo.Printf("%d:%s: Automatic Refresh of frame: %d%s.", connectionNumber, userIp, currentFrame.PID.PageNumber, currentFrame.PID.FrameId)
 		} else {
-			logger.LogInfo.Printf("%d:%s: Character received: [%0x] %s (%d)", connectionNumber, userIp, inputByte, BtoA(inputByte), inputByte)
+			logger.LogInfo.Printf("%d:%s: Character received: [%0x] %s (%d).", connectionNumber, userIp, inputByte, BtoA(inputByte), inputByte)
 		}
 
 		now = time.Now().UnixMilli() // nano seconds
@@ -426,7 +445,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 			case routing.RouteMessageUpdated:
 				//1 - echo char and wait for the next char
-				logger.LogInfo.Printf("%d:%s: Routing buffer updated with char [%x] %s (%d)", connectionNumber, userIp, inputByte, BtoA(inputByte), inputByte)
+				logger.LogInfo.Printf("%d:%s: Routing buffer updated with char [%x] %s (%d).", connectionNumber, userIp, inputByte, BtoA(inputByte), inputByte)
 
 				// echo the char if the char is valid AND the waitgroup count is zero
 				// i.e. nothing is being rendered
@@ -485,11 +504,11 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 				} else {
 					// page id is valid, meaning that the frame was retrieved
-					logger.LogInfo.Printf("%d:%s: Frame retrieved: %d%s", connectionNumber, userIp, frame.PID.PageNumber, frame.PID.FrameId)
+					logger.LogInfo.Printf("%d:%s: Frame retrieved: %d%s.", connectionNumber, userIp, frame.PID.PageNumber, frame.PID.FrameId)
 
 					// We need to determine if we have a Follow on frame
 					if hasFollowOnFrame, err = existsFollowOnFrame(sessionId, frame.GetPageId(), settings); err != nil {
-						logger.LogInfo.Printf("%d:%s: %v", connectionNumber, userIp, err) // info as non-exist errors are expected
+						logger.LogError.Print(err) // info as non-exist errors are expected
 					}
 
 					if hasFollowOnFrame {
@@ -532,7 +551,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					go renderer.Render(ctx, conn, &wg, &frame, currentSession, settings, renderOptions, chResult)
 
 					if frame.FrameType == "exit" {
-						cancel()
+						cancel() // TODO is this needed as it is called in the defer function
 						return
 					}
 					currentFrame = frame
@@ -624,7 +643,7 @@ func existsFollowOnFrame(sessionId, pageId string, settings config.Config) (bool
 	} else {
 		// frame has a follow on frame id so tray and get that frame
 		if followOnFrame, err = getFrame(sessionId, followOnFrameId, settings); err != nil {
-			return false, err
+			return false, nil
 		} else if !utils.IsValidPageId(followOnFrame.GetPageId()) {
 			return false, nil
 		} else {

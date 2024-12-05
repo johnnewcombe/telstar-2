@@ -157,6 +157,8 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 				// the connection has been broken
 				if time.Since(start).Milliseconds() < 50 {
 
+					logger.LogInfo.Println("Client has disconnected.")
+
 					//error, the connection has clearly been broken
 					cancel()
 					// we just go round again to check the done channel
