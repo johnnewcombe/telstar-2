@@ -32,33 +32,74 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 	var (
 		err           error
 		renderResults []error
+		cancelled     bool
+		networkError  *NetworkError
 	)
-	defer wg.Done()
 
-	if globals.Debug {
-		defer logger.TimeTrack(time.Now(), "Render")
-	}
+	defer func() {
+
+		wg.Done()
+
+		if globals.Debug {
+			logger.TimeTrack(time.Now(), "Render")
+		}
+	}()
 
 	renderResults = make([]error, 0)
 
 	if utils.IsValidPageId(frame.GetPageId()) {
 
-		if err = renderHeader(ctx, conn, frame, session, settings, options); err != nil {
+		if cancelled, err = renderHeader(ctx, conn, frame, session, settings, options); cancelled {
+			return
+		}
+		if err != nil {
+			if errors.As(err, &networkError) {
+				return // via defer() function
+			}
 			renderResults = append(renderResults, err)
 		}
 
-		if err = renderTitle(ctx, conn, frame, session, settings, options); err != nil {
+		if cancelled, err = renderTitle(ctx, conn, frame, session, settings, options); cancelled {
+			if errors.As(err, &networkError) {
+				return // via defer() function
+			}
+			return
+		}
+		if err != nil {
+			if errors.As(err, &networkError) {
+				return // via defer() function
+			}
 			renderResults = append(renderResults, err)
 		}
-		if err = renderContent(ctx, conn, frame, session, settings, options); err != nil {
+
+		if cancelled, err = renderContent(ctx, conn, frame, session, settings, options); cancelled {
+			return
+		}
+		if err != nil {
+			if errors.As(err, &networkError) {
+				return // via defer() function
+			}
 			renderResults = append(renderResults, err)
 		}
-		if err = renderFooter(ctx, conn, frame, session, settings, options); err != nil {
+
+		if cancelled, err = renderFooter(ctx, conn, frame, session, settings, options); cancelled {
+			return
+		}
+		if err != nil {
+			if errors.As(err, &networkError) {
+				return // via defer() function
+			}
 			renderResults = append(renderResults, err)
 		}
 
 		if frame.FrameType != globals.FRAME_TYPE_TEST && frame.FrameType != globals.FRAME_TYPE_RESPONSE {
-			if err = renderSystemMessage(ctx, conn, frame.NavMessage, session, settings, options); err != nil {
+			if cancelled, err = renderSystemMessage(ctx, conn, frame.NavMessage, session, settings, options); cancelled {
+				return
+			}
+			if err != nil {
+				if errors.As(err, &networkError) {
+					return // via defer() function
+				}
 				renderResults = append(renderResults, err)
 			}
 		}
@@ -66,6 +107,9 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 		if frame.FrameType == "response" && len(frame.ResponseData.Fields) > 0 {
 			if err = PositionCursor(conn, frame.ResponseData.Fields[0].HPos, frame.ResponseData.Fields[0].VPos, !settings.Server.DisableVerticalRollOver); err != nil {
 				renderResults = append(renderResults, err)
+				if errors.As(err, &networkError) {
+					return // via defer() function
+				}
 			}
 		}
 
@@ -88,6 +132,7 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 	var (
 		err           error
 		renderResults []error
+		cancelled     bool
 	)
 
 	defer wg.Done()
@@ -99,7 +144,11 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 	renderResults = make([]error, 0)
 
 	if len(message) > 0 {
-		if err = renderSystemMessage(ctx, conn, message, session, settings, options); err != nil {
+		cancelled, err = renderSystemMessage(ctx, conn, message, session, settings, options)
+		if cancelled {
+			return
+		}
+		if err != nil {
 			renderResults = append(renderResults, err)
 		}
 	}
@@ -114,7 +163,11 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 		// all good so complete the system message
 		time.Sleep(1000 * time.Millisecond)
 		wg.Add(1)
-		if err = renderSystemMessage(ctx, conn, followOnMessage, session, settings, options); err != nil {
+		cancelled, err = renderSystemMessage(ctx, conn, followOnMessage, session, settings, options)
+		if cancelled {
+			return
+		}
+		if err != nil {
 			renderResults = append(renderResults, err)
 		}
 	}
@@ -125,24 +178,25 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 	}
 }
 
-func renderSystemMessage(ctx context.Context, conn net.Conn, message string, session session.Session, settings config.Config, options RenderOptions) error {
+func renderSystemMessage(ctx context.Context, conn net.Conn, message string, session session.Session, settings config.Config, options RenderOptions) (bool, error) {
 	// FIXME With merged pages that are 960 char long, rendering this causes a scroll, this shouldn't happen if HOME/VTAB is used, should it?
 	var (
 		err         error
 		cursorChars strings.Builder
 		lastChar    string
+		cancelled   bool
 	)
 
 	logger.LogInfo.Printf("%d:%s: System Message: %s\r\n", session.ConnectionNumber, session.IPAddress, message)
 
 	// position the cursor to the bottom row, column 0
 	if err = PositionCursor(conn, 0, globals.ROWS-1, !settings.Server.DisableVerticalRollOver); err != nil {
-		return err
+		return false, err
 	}
 
 	// convert the message markup and swap the pound signs
 	if message, err = convert.MarkupToRawV(message); err != nil {
-		return err
+		return false, err
 	}
 	message = strings.ReplaceAll(message, string(globals.POUND), string(globals.HASH))
 	cursorPos := text.GetDisplayLen(message)
@@ -173,13 +227,13 @@ func renderSystemMessage(ctx context.Context, conn net.Conn, message string, ses
 
 	// put back the cursor on if it was set.
 	cursorChars.WriteString(lastChar)
-	if err = renderBuffer(ctx, conn, []byte(cursorChars.String()), settings, session, options); err != nil {
-		return err
+	if cancelled, err = renderBuffer(ctx, conn, []byte(cursorChars.String()), settings, session, options); err != nil {
+		return cancelled, err
 	}
-	return nil
+	return cancelled, nil
 }
 
-func renderHeader(ctx context.Context, conn net.Conn, frame *types.Frame, session session.Session, settings config.Config, options RenderOptions) error {
+func renderHeader(ctx context.Context, conn net.Conn, frame *types.Frame, session session.Session, settings config.Config, options RenderOptions) (bool, error) {
 
 	var (
 		header     string
@@ -189,6 +243,7 @@ func renderHeader(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 		pageId     string
 		cost       string
 		err        error
+		cancelled  bool
 	)
 
 	defer ctx.Done()
@@ -203,20 +258,20 @@ func renderHeader(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 		}
 
 		buffer := []byte(cls)
-		if err = renderBuffer(ctx, conn, buffer, settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, buffer, settings, session, options); err != nil {
+			return cancelled, err
 		}
-		return nil
+		return cancelled, nil
 	}
 
 	//actual header text
 	if len(frame.HeaderText) > 0 {
 		if headerText, err = convert.MarkupToRawV(frame.HeaderText); err != nil {
-			return err
+			return false, err
 		}
 	} else {
 		if headerText, err = convert.MarkupToRawV(settings.Server.Strings.DefaultHeaderText); err != nil {
-			return err
+			return false, err
 		}
 	}
 
@@ -258,22 +313,23 @@ func renderHeader(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 	buffer := []byte(header)
 	//fmt.Printf("%v\r\n", buffer)
 
-	if err = renderBuffer(ctx, conn, buffer, settings, session, options); err != nil {
-		return err
+	if cancelled, err = renderBuffer(ctx, conn, buffer, settings, session, options); err != nil {
+		return cancelled, err
 	}
-	return nil
+	return cancelled, nil
 }
 
-func renderTitle(ctx context.Context, conn net.Conn, frame *types.Frame, session session.Session, settings config.Config, options RenderOptions) error {
+func renderTitle(ctx context.Context, conn net.Conn, frame *types.Frame, session session.Session, settings config.Config, options RenderOptions) (bool, error) {
 
 	var (
-		data string
-		err  error
+		data      string
+		err       error
+		cancelled bool
 	)
 
 	// no titles for test pages
 	if frame.FrameType == globals.FRAME_TYPE_TEST {
-		return nil
+		return false, nil
 	}
 
 	// split the type as this allows for comma separated params.
@@ -283,16 +339,16 @@ func renderTitle(ctx context.Context, conn net.Conn, frame *types.Frame, session
 	switch dataType {
 	case "markup":
 		if data, err = convert.MarkupToRawV(frame.Title.Data); err != nil {
-			return err
+			return false, err
 		}
 		// apply any merge-data
 		if frame.Title.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Title.MergeData, rows); err != nil {
-				return err
+				return false, err
 			}
 		}
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 	case globals.CONTENT_TYPE_RAW, globals.CONTENT_TYPE_RAWV:
 
@@ -301,25 +357,25 @@ func renderTitle(ctx context.Context, conn net.Conn, frame *types.Frame, session
 		// apply any merge-data
 		if frame.Title.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Title.MergeData, rows); err != nil {
-				return err
+				return false, err
 			}
 		}
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 
 	case globals.CONTENT_TYPE_RAWT:
 		if data, err = convert.RawTToRawV(frame.Title.Data, 0, 23, 0, 39, true); err != nil {
-			return err
+			return false, err
 		}
 		// apply any merge-data
 		if frame.Title.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Title.MergeData, rows); err != nil {
-				return err
+				return false, err
 			}
 		}
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 
 	case globals.CONTENT_TYPE_EDITTF, "edittf", globals.CONTENT_TYPE_ZXNET:
@@ -331,28 +387,29 @@ func renderTitle(ctx context.Context, conn net.Conn, frame *types.Frame, session
 		}
 		// edit.tf mode for title only returns rows 1 to 4 inclusive from the edit.tf frame.
 		if data, err = convert.EdittfToRawV(frame.Title.Data, 1, rows, !settings.Server.Antiope); err != nil {
-			return err
+			return false, err
 		}
 		// apply any merge-data
 		if frame.Title.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Title.MergeData, rows); err != nil {
-				return err
+				return false, err
 			}
 		}
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 	}
 
-	return nil
+	return cancelled, nil
 }
 
-func renderContent(ctx context.Context, conn net.Conn, frame *types.Frame, session session.Session, settings config.Config, options RenderOptions) error {
+func renderContent(ctx context.Context, conn net.Conn, frame *types.Frame, session session.Session, settings config.Config, options RenderOptions) (bool, error) {
 
 	var (
-		data   string
-		rowEnd int
-		err    error
+		data      string
+		rowEnd    int
+		err       error
+		cancelled bool
 	)
 
 	// Render the content
@@ -360,25 +417,25 @@ func renderContent(ctx context.Context, conn net.Conn, frame *types.Frame, sessi
 	case "markup":
 		// if markup then convert to raw
 		if data, err = convert.MarkupToRawV(frame.Content.Data); err != nil {
-			return err
+			return false, err
 		}
 		// swap placeholders
 		data = populatePlaceholders(data, settings, session, options)
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 	case globals.CONTENT_TYPE_RAW, globals.CONTENT_TYPE_RAWV:
 		data = populatePlaceholders(frame.Content.Data, settings, session, options)
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 	case "rawT":
 		if data, err = convert.RawTToRawV(frame.Content.Data, 0, 23, 0, 39, true); err != nil {
-			return err
+			return false, err
 		}
 		data = populatePlaceholders(data, settings, session, options)
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 	case globals.CONTENT_TYPE_EDITTF, "edittf", globals.CONTENT_TYPE_ZXNET:
 		if frame.FrameType == globals.FRAME_TYPE_TEST {
@@ -388,21 +445,22 @@ func renderContent(ctx context.Context, conn net.Conn, frame *types.Frame, sessi
 		}
 		// edit.tf is teletext, so get full teletext page
 		if data, err = convert.EdittfToRawV(frame.Content.Data, 1, rowEnd, !settings.Server.Antiope); err != nil {
-			return err
+			return false, err
 		}
 		data = populatePlaceholders(data, settings, session, options)
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 	}
-	return nil
+	return cancelled, nil
 }
 
-func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, session session.Session, settings config.Config, options RenderOptions) error {
+func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, session session.Session, settings config.Config, options RenderOptions) (bool, error) {
 
 	var (
-		data string
-		err  error
+		data      string
+		err       error
+		cancelled bool
 	)
 
 	// split the type as this allows for comma separated params.
@@ -412,16 +470,16 @@ func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 	switch dataType {
 	case "markup":
 		if data, err = convert.MarkupToRawV(frame.Footer.Data); err != nil {
-			return err
+			return cancelled, err
 		}
 		// apply any merge-data
 		if frame.Footer.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Footer.MergeData, rows); err != nil {
-				return err
+				return cancelled, err
 			}
 		}
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 
 	case globals.CONTENT_TYPE_RAW, globals.CONTENT_TYPE_RAWV:
@@ -431,25 +489,25 @@ func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 		// apply any merge-data
 		if frame.Footer.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Footer.MergeData, rows); err != nil {
-				return err
+				return false, err
 			}
 		}
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 
 	case "rawT":
 		if data, err = convert.RawTToRawV(frame.Content.Data, 0, 23, 0, 39, true); err != nil {
-			return err
+			return false, err
 		}
 		// apply any merge-data
 		if frame.Footer.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Footer.MergeData, rows); err != nil {
-				return err
+				return false, err
 			}
 		}
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 
 	case globals.CONTENT_TYPE_EDITTF, "edittf", globals.CONTENT_TYPE_ZXNET:
@@ -462,23 +520,23 @@ func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 		}
 		// edit.tf mode for title only returns rows 1 to 4 inclusive from the edit.tf frame.
 		if data, err = convert.EdittfToRawV(frame.Footer.Data, 1, rows, !settings.Server.Antiope); err != nil {
-			return err
+			return false, err
 		}
 		// apply any merge-data
 		if frame.Footer.MergeData != nil {
 			if data, err = convert.RawVMerge(data, frame.Footer.MergeData, rows); err != nil {
-				return err
+				return false, err
 			}
 		}
-		if err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
-			return err
+		if cancelled, err = renderBuffer(ctx, conn, []byte(data), settings, session, options); err != nil {
+			return cancelled, err
 		}
 	}
 
-	return nil
+	return cancelled, nil
 }
 
-func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings config.Config, session session.Session, options RenderOptions) error {
+func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings config.Config, session session.Session, options RenderOptions) (bool, error) {
 
 	var (
 		err error
@@ -486,7 +544,7 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 
 	if settings.Server.Antiope {
 		if buffer, err = convert.RawVToAntiope(buffer); err != nil {
-			return err
+			return false, err
 		}
 	}
 
@@ -497,7 +555,7 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 		case <-ctx.Done():
 			// channel has a true, so cancel
 			logger.LogInfo.Printf("%d:%s: Rendering cancelled.", session.ConnectionNumber, session.IPAddress)
-			return nil // channel closed so cancel
+			return true, nil // channel closed so cancel
 		default:
 		}
 
@@ -508,7 +566,7 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 
 		if _, err = conn.Write([]byte{b}); err != nil {
 			logger.LogError.Printf("%d:%s: %v", session.ConnectionNumber, session.IPAddress, err)
-			return &NetworkError{}
+			return false, &NetworkError{}
 		}
 
 		// slow down to match the baud rate
@@ -516,7 +574,7 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 
 	}
 
-	return nil
+	return false, nil
 }
 
 func PositionCursor(conn net.Conn, x int, y int, useRollover bool) error {
@@ -529,6 +587,7 @@ func PositionCursor(conn net.Conn, x int, y int, useRollover bool) error {
 		return err
 	}
 
+	// TODO: make better use of the Home character.
 	if useRollover {
 		// TODO: Add rollover support based on the useRollover parameter
 		// do some rolover calcs etc
@@ -601,7 +660,7 @@ func getMetaData(t time.Time) string {
 	return t.Format("20060102T1504Z")
 }
 
-func getSysInfo(settings config.Config, session session.Session, options RenderOptions) string {
+func getSysInfo(settings config.Config, sessionData session.Session, options RenderOptions) string {
 
 	var (
 		sb   strings.Builder
@@ -610,7 +669,7 @@ func getSysInfo(settings config.Config, session session.Session, options RenderO
 
 	ver, err := globals.GetVersion()
 	if err != nil {
-		logger.LogError.Printf("%d:%s: error loading version file %v", session.ConnectionNumber, session.IPAddress, err)
+		logger.LogError.Printf("%d:%s: error loading version file %v", sessionData.ConnectionNumber, sessionData.IPAddress, err)
 		ver = ""
 	}
 
@@ -626,10 +685,11 @@ func getSysInfo(settings config.Config, session session.Session, options RenderO
 
 	sb.WriteString(fmt.Sprintf("        Version : %s-%s\r\n", runtime.GOARCH, ver))
 	sb.WriteString(fmt.Sprintf("         Server : %s\r\n", settings.Server.DisplayName))
+	sb.WriteString(fmt.Sprintf("       Sessions : %d\r\n", session.GetSessionCount()))
 	sb.WriteString(fmt.Sprintf("      Baud Rate : %s\r\n", baud))
-	sb.WriteString(fmt.Sprintf("        User ID : %s\r\n", session.User.UserId))
-	sb.WriteString(fmt.Sprintf("      User Name : %s\r\n", session.User.Name))
-	sb.WriteString(fmt.Sprintf("      Base Page : %d\r\n", session.User.BasePage))
+	sb.WriteString(fmt.Sprintf("        User ID : %s\r\n", sessionData.User.UserId))
+	sb.WriteString(fmt.Sprintf("      User Name : %s\r\n", sessionData.User.Name))
+	sb.WriteString(fmt.Sprintf("      Base Page : %d\r\n", sessionData.User.BasePage))
 	sb.WriteString(fmt.Sprintf("       Database : %s\r\n", strings.ToUpper(settings.Database.Collection)))
 
 	//return fmt.Sprintf("CPU Usage: %f%%\r\n   Busy: %f\r\n   Total: %f\n", cpuUsage, totalTicks-idleTicks, totalTicks)

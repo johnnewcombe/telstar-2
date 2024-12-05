@@ -22,6 +22,10 @@ type Session struct {
 	User             types.User
 }
 
+func GetSessionCount() int {
+	return len(sessions)
+}
+
 func CreateSession(sessionId string, user types.User, connectionNumber int, ipAddress string) Session {
 
 	if globals.Debug {

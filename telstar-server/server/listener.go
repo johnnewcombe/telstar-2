@@ -30,6 +30,7 @@ func Start(port int, settings config.Config) error {
 
 	var (
 		connectionNumber int
+		conn             net.Conn
 	)
 
 	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", settings.Server.Host, port))
@@ -40,7 +41,7 @@ func Start(port int, settings config.Config) error {
 	for {
 		// blocks until an incoming connection is made
 		// when a connection is made it returns a net.Conn object
-		conn, err := listener.Accept()
+		conn, err = listener.Accept()
 		if err != nil {
 			logger.LogError.Print(err)
 			continue
@@ -85,8 +86,8 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		carouselDelay     int
 		autoRefreshDelay  int
 		autoRefreshFrame  bool
-		networkError      *renderer.NetworkError
 		userIp            string
+		networkError      *renderer.NetworkError
 	)
 
 	wg := synchronisation.WaitGroupWithCount{}
@@ -108,7 +109,10 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		wg.Wait()
 
 		// close the connection
-		closeConn(conn, connectionNumber, userIp)
+		if err = conn.Close(); err != nil {
+			logger.LogError.Print(err)
+		}
+		logger.LogInfo.Printf("%d:%s: Closing connection!", connectionNumber, userIp)
 
 		session.DeleteSession(sessionId)
 
@@ -166,9 +170,10 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 				logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
 
-				// cancel for all errors for now
+				// cancel for network error
 				if errors.As(err, &networkError) {
-					//cancel() // TODO is this needed as it is called in the defer function
+					// need to wait a moment as gateway connections will be shutting down.
+					//time.Sleep(time.Millisecond * 500)
 					return // via defer() function
 				}
 			}
@@ -187,12 +192,6 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 				return // cancel is handled by the defer() function
 
 			}
-
-			// if no character is received within the timeout and the current
-			// state is undefined then cant be a Minitel
-			//if minitelParser.MinitelState == MINITEL_undefined {
-			//	minitelParser.MinitelState = MINITEL_not_connected
-			//}
 
 			if currentFrame.Carousel {
 
@@ -551,7 +550,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					go renderer.Render(ctx, conn, &wg, &frame, currentSession, settings, renderOptions, chResult)
 
 					if frame.FrameType == "exit" {
-						cancel() // TODO is this needed as it is called in the defer function
+						//cancel() // TODO is this needed as it is called in the defer function
 						return
 					}
 					currentFrame = frame
