@@ -14,13 +14,12 @@ import (
 
 /*
 The process is to start to create a common context with a cancel function before starting
-two xfer go routines. Each is added to a common wait group. The context is passed to each of
-these routines. The wait group is also passed to each transfer routine so that the function
-can indicate when it has completed.
+two xfer go routines. Each is added to a common wait group.
 
-This routine then waits indefinitely for a DLE on the dleSignal channel which is shared by
-each xfer go routine. If either go routine sees a DLE it is signalled on the channel back
-to this routine so that cancel can be set on the context. This should stop all go routines
+This routine then waits indefinitely within the defer() function for both go routines to end
+
+If either go routine sees a DLE or detects a network error then a cancel is issued
+this will stop both go routines.
 */
 
 func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, initBytes []byte, settings config.Config) bool {
@@ -43,7 +42,7 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 
 	// signal channel, this is used to allow the xfer goroutine(s) to signal that a DLE
 	// Data Link Escape has been detected (typically Ctrl P, see settings)
-	var dleSignal = make(chan bool)
+	//var dleSignal = make(chan bool)
 
 	// wait group to wait for goroutines to complete before exiting this function
 	waitGroup := synchronisation.WaitGroupWithCount{}
@@ -56,7 +55,6 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 
 	defer func() {
 
-		cancel()
 		waitGroup.Wait()
 
 		logger.LogInfo.Printf("%d:%s: Closing TCP connection to %s.", connectionNumber, userIp, url)
@@ -71,178 +69,183 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 		}
 	}()
 
-	// transfer from remote to connected user, note that we add 1 to the wait group and pass a pointer to the wait group
-	// to the goroutine. The go routine will signal to the wait group when it has been completed
-	waitGroup.Add(1)
-	go xfer(ctx, &waitGroup, conn, remoteConn, connectionNumber, baudRate, initBytes, settings, dleSignal)
+	///////////////////////////////////////////////////
+	// Transfer Go Routine Definition
+	///////////////////////////////////////////////////
+	transfer := func(src net.Conn, dst net.Conn) {
+		var (
+			initDisabled   bool
+			reader         *bufio.Reader
+			timeoutCounter int
+			sourceIp       string
+		)
 
-	// transfer from connected user to remote, note that we add 1 to the wait group and pass a pointer to the wait group
-	// to the goroutine. The goroutine will signal to the wait group when it has been completed
-	waitGroup.Add(1)
-	go xfer(ctx, &waitGroup, remoteConn, conn, connectionNumber, baudRate, initBytes, settings, dleSignal)
+		// the last thing we do is tell the wait group when we have completed
+		defer func() {
 
-	// this will block until one of the xfer functions sends a DLE detected message
-	select {
-	case dle := <-dleSignal:
-		if dle {
-			// we have the dle  from one of the xfer routines so tell them both to stop
-			logger.LogInfo.Printf("%d:%s: DLE Received, cancelling gateway activity.", connectionNumber, userIp)
-			// this routine will complete at the return below and the deferred function
-			// will issue cancel and wait functions
-		}
-	}
+			if err = src.SetReadDeadline(time.Time{}); err != nil {
+				logger.LogError.Printf("%d:%s: %v", connectionNumber, sourceIp, err)
+			}
 
-	// return OK
-	return true
-
-}
-
-func xfer(ctx context.Context, waitgroup *synchronisation.WaitGroupWithCount, src net.Conn, dst net.Conn, connectionNumber int, baudRate int, initBytes []byte, settings config.Config, dleSignal chan bool) {
-
-	var (
-		initDisabled   bool
-		reader         *bufio.Reader
-		err            error
-		timeoutCounter int
-		sourceIp       string
-	)
-
-	// the last thing we do is tell the wait group when we have completed
-	defer func() {
-
-		if err = src.SetReadDeadline(time.Time{}); err != nil {
-			logger.LogError.Printf("%d:%s: %v", connectionNumber, sourceIp, err)
-		}
-
-		print()
-		waitgroup.Done()
-
-		if globals.Debug {
-			logger.TimeTrack(time.Now(), "xfer")
-		}
-
-	}()
-
-	// get remote IP Address
-	if addr, ok := src.RemoteAddr().(*net.TCPAddr); ok {
-		sourceIp = addr.IP.String()
-	}
-
-	// create a new buffered reader
-	reader = bufio.NewReader(src)
-
-	// this function reads from the remote host and passes data to the PAD user
-	// conn is the connection to the pad,
-	// remoteConn is the connection to the gateway host
-
-	for {
-
-		// process any requested cancellation by checking the Done channel of the context
-		// the Done channel is set in the parent function in response to this function
-		// indicating a DLE (Data Link Escape) on the dleSignal channel. See below
-		select {
-		case <-ctx.Done():
-			// ctx is telling us to stop, probably because we have sent it a DLE signal on the
-			// dleSignal channel (see below).
-			logger.LogInfo.Printf("%d:%s: Transfer cancelled [%s to %s].",
+			waitGroup.Done()
+			logger.LogInfo.Printf("%d:%s: Transfer routine exiting [%s to %s].",
 				connectionNumber, sourceIp,
 				src.RemoteAddr().String(),
 				dst.RemoteAddr().String())
 
-			// reset the read timeout that was added. The timeout meant that the read from conn would
-			// only wait 100ms before spinning round to try again
-			// this allowed the go routine to check the cancellation channel every 100ms or so.
-			// now that the go routines have both finished, this can be put back to zero (blocking)
-			//src.SetReadDeadline(time.Time{})
-			return
-
-		default:
-		}
-
-		// this means that the read from conn will only wait 500ms before spinning round to try again
-		// this allows the go routine to check the cancellation channel every 500ms or so.
-		// this will be put back once the gateway go routines have completed
-		if err = src.SetReadDeadline(time.Now().Add(time.Millisecond * 500)); err != nil {
-			logger.LogError.Printf("%d:%s: %v", connectionNumber, sourceIp, err)
-			dleSignal <- true
-		}
-
-		ok, inputByte := readByte(reader)
-
-		if !ok {
-
-			// this will run every 500ms if there is no activity
-			// could time-ou connection after 5 mins
-			timeoutCounter++
-			if timeoutCounter > settings.Server.GatewayTimeout*2 { // TODO Add gateway timeout counter
-
-				logger.LogInfo.Printf("%d:%s: Inactivity timeout exceeded.", connectionNumber, sourceIp)
-
-				// no activity on the  src connection so report a DLE
-				// so that this goroutine and the goroutine handling the other direction
-				// gets closed
-				dleSignal <- true
+			if globals.Debug {
+				logger.TimeTrack(time.Now(), "xfer")
 			}
 
-			// check for EOF
-			if inputByte == 0xFF {
+		}()
 
-				logger.LogError.Printf("%d:%s: EOF detected, simulating DLE.", connectionNumber, sourceIp)
+		// get remote IP Address
+		if addr, ok := src.RemoteAddr().(*net.TCPAddr); ok {
+			sourceIp = addr.IP.String()
+		}
 
-				// this means the src connection is closed so report a DLE
-				// so that this goroutine and the goroutine handling the other direction
-				// gets closed
-				dleSignal <- true
+		// create a new buffered reader
+		reader = bufio.NewReader(src)
+
+		// this function reads from the remote host and passes data to the PAD user
+		// conn is the connection to the pad,
+		// remoteConn is the connection to the gateway host
+
+		for {
+
+			// process any requested cancellation by checking the Done channel of the context
+			// the Done channel is set in the parent function in response to this function
+			// indicating a DLE (Data Link Escape) on the dleSignal channel. See below
+			select {
+			case <-ctx.Done():
+				// ctx is telling us to stop, probably because we have sent it a DLE signal on the
+				// dleSignal channel (see below).
+				logger.LogInfo.Printf("%d:%s: Transfer cancelled [%s to %s].",
+					connectionNumber, sourceIp,
+					src.RemoteAddr().String(),
+					dst.RemoteAddr().String())
+
+				// reset the read timeout that was added. The timeout meant that the read from conn would
+				// only wait 100ms before spinning round to try again
+				// this allowed the go routine to check the cancellation channel every 100ms or so.
+				// now that the go routines have both finished, this can be put back to zero (blocking)
+				//src.SetReadDeadline(time.Time{})
+				return
+
+			default:
 			}
-			// Input byte error detected, ignoring.
-			time.Sleep(100 * time.Millisecond)
-			continue
 
-		}
+			// this means that the read from conn will only wait 500ms before spinning round to try again
+			// this allows the go routine to check the cancellation channel every 500ms or so.
+			// this will be put back once the gateway go routines have completed
+			if err = src.SetReadDeadline(time.Now().Add(time.Millisecond * 500)); err != nil {
+				logger.LogError.Printf("%d:%s: %v", connectionNumber, sourceIp, err)
 
-		// char received so reset timeout counter
-		timeoutCounter = 0
+				// cancelling here may violate the channel closing rules but in practice this was far
+				// more reliable than signalling to the parent via another channel to issue the cancel()
+				cancel()
 
-		if globals.Debug {
-			logger.LogInfo.Printf("%d:%s: Byte '%02x' received from %s.", connectionNumber, sourceIp, inputByte, src.RemoteAddr().String())
-		}
-
-		write := func(data []byte) {
-			if _, err := dst.Write(data); err != nil {
-				logger.LogError.Printf("%d:%s: WRITE: %s", connectionNumber, sourceIp, err)
-
-				// indicate on the dleSignal channel to the parent to send a cancel to this goroutine
-				// stopping it here directly would violate the channel closing rules
-				// signal DLE to sender so that sender can close using context.WithCancel()
-				dleSignal <- true
-
-			} else if globals.Debug {
-				logger.LogInfo.Printf("%d:%s: Byte Sent to %s.", connectionNumber, sourceIp, dst.RemoteAddr().String())
+				// we just go round again to check the done channel
+				continue
 			}
-		}
 
-		if inputByte == settings.Server.DLE {
+			start := time.Now()
+			ok, inputByte := readByte(reader)
 
-			// indicate on the dleSignal channel to the parent to send a cancel to this goroutine
-			// stopping it here directly would violate the channel closing rules
-			// signal DLE to sender so that sender can close using context.WithCancel()
-			dleSignal <- true
+			if !ok {
+				// each !ok read should be 500ms since the last, anything shorter means that
+				// the connection has been broken
+				if time.Since(start).Milliseconds() < 50 {
 
-		} else {
-			//
-			if len(initBytes) > 0 && !initDisabled {
-				// if we have init bytes e.g. from the minitel parser, send them
-				write(initBytes)
-				// we only do this once
-				initDisabled = true
+					//error, the connection has clearly been broken
+					cancel()
+					// we just go round again to check the done channel
+					continue
+				}
+
+				// this will run every 500ms if there is no activity
+				// could time-ou connection after 5 mins
+				timeoutCounter++
+				if timeoutCounter > settings.Server.GatewayTimeout*2 { // TODO Add gateway timeout counter
+
+					logger.LogInfo.Printf("%d:%s: Inactivity timeout exceeded.", connectionNumber, sourceIp)
+
+					// no activity on the  src connection so report a DLE
+					// so that this goroutine and the goroutine handling the other direction
+					// gets closed
+					//dleSignal <- true
+					cancel()
+
+					// we just go round again to check the done channel
+					continue
+				}
+
+				// check for EOF
+				if inputByte == 0xFF {
+
+					logger.LogError.Printf("%d:%s: EOF detected, simulating DLE.", connectionNumber, sourceIp)
+
+					// this means the src connection is closed so report a DLE
+					// so that this goroutine and the goroutine handling the other direction
+					// gets closed
+					//dleSignal <- true
+					cancel()
+					continue
+				}
+				// Input byte error detected, ignoring.
+				time.Sleep(100 * time.Millisecond)
+				continue
+
 			}
-			write([]byte{inputByte})
 
+			// char received so reset timeout counter
+			timeoutCounter = 0
+
+			if globals.Debug {
+				logger.LogInfo.Printf("%d:%s: Byte '%02x' received from %s.", connectionNumber, sourceIp, inputByte, src.RemoteAddr().String())
+			}
+
+			write := func(data []byte) {
+				if _, err := dst.Write(data); err != nil {
+					logger.LogError.Printf("%d:%s: WRITE: %s", connectionNumber, sourceIp, err)
+
+					cancel()
+
+				} else if globals.Debug {
+					logger.LogInfo.Printf("%d:%s: Byte Sent to %s.", connectionNumber, sourceIp, dst.RemoteAddr().String())
+				}
+			}
+
+			if inputByte == settings.Server.DLE {
+
+				cancel()
+
+			} else {
+				//
+				if len(initBytes) > 0 && !initDisabled {
+					// if we have init bytes e.g. from the minitel parser, send them
+					write(initBytes)
+					// we only do this once
+					initDisabled = true
+				}
+				write([]byte{inputByte})
+
+			}
+
+			// baud rate simulation
+			time.Sleep(time.Duration(baudRate))
 		}
 
-		// baud rate simulation
-		time.Sleep(time.Duration(baudRate))
 	}
+
+	// transfer from remote to connected user and visa versa
+	// The go routine will signal to the wait group when it has been completed
+	waitGroup.Add(2)
+	go transfer(conn, remoteConn)
+	go transfer(remoteConn, conn)
+
+	// return OK after waiting for all go routines to end see defer() function
+	return true
 }
 
 // TODO this same function is defined in PAD, SERVER and Net Client
