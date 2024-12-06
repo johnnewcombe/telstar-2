@@ -94,6 +94,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 	// this is used to enable the rendering goroutine to be cancelled.
 	ctx, cancel := context.WithCancel(context.Background())
+	chResult := make(chan renderer.RenderResults)
 
 	// get remote IP Address
 	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
@@ -104,17 +105,36 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	defer func() {
 		// send cancel to goroutines and wait for them to complete
 
+		// cancel any renderers
 		cancel()
 
-		wg.Wait()
+		// remove any data in the rendering result channel otherwise the renderer
+		// could get blocked meaning it would never see the cancel message this
+		// would mean that the following wg.Wait() call would never complete, the
+		// client connection would not get closed and a session would stay alive.
+		select {
+		case results := <-chResult:
+			// channel has some data
+			for _, err = range results {
+				logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+			}
+		default:
+		}
+
+		// wait for go routines to complete
+		wg.Wait() //
+
+		// close channels
+		close(chResult)
 
 		// close the connection
+		logger.LogInfo.Printf("%d:%s: Closing connection.", connectionNumber, userIp)
 		if err = conn.Close(); err != nil {
 			logger.LogError.Print(err)
 		}
-		logger.LogInfo.Printf("%d:%s: Closing connection!", connectionNumber, userIp)
 
 		session.DeleteSession(sessionId)
+		logger.LogInfo.Printf("%d:%s: Session Deleted.", connectionNumber, userIp)
 
 		//indicate to the listener that we are done
 		listenerWg.Done()
@@ -133,8 +153,6 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	currentSession := session.CreateSession(sessionId, currentUser, connectionNumber, userIp)
 
 	logger.LogInfo.Printf("%d:%s: Session created with SessionId %s.", connectionNumber, userIp, sessionId)
-
-	var chResult = make(chan renderer.RenderResults)
 
 	// create a new buffered reader
 	reader = bufio.NewReader(conn)

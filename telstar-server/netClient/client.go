@@ -55,6 +55,8 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 
 	defer func() {
 
+		// no channels to close as only the don channel is used, this gets closed by cancel()
+		// wait for transfer go routines to end
 		waitGroup.Wait()
 
 		logger.LogInfo.Printf("%d:%s: Closing TCP connection to %s.", connectionNumber, userIp, url)
