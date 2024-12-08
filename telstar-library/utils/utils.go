@@ -415,7 +415,7 @@ func FormatLogPreAmble(sessionCount int, connectionNumber int, ipAddress string)
 		ipAddress = "0.0.0.0"
 	}
 
-	return fmt.Sprintf("%d:%d:%s: ", sessionCount, connectionNumber, ipAddress)
+	return fmt.Sprintf("SC:%d,CN:%d,IP:%s - ", sessionCount, connectionNumber, ipAddress)
 }
 
 func GetIpAddress(conn net.Conn) string {

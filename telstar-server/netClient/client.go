@@ -108,6 +108,10 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 		// this function reads from the remote host and passes data to the PAD user
 		// conn is the connection to the pad,
 		// remoteConn is the connection to the gateway host
+		logger.LogInfo.Printf("%sTransfer routine starting [%s to %s].",
+			logPreAmble,
+			src.RemoteAddr().String(),
+			dst.RemoteAddr().String())
 
 		for {
 

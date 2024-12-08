@@ -128,6 +128,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		}
 
 		session.DeleteSession(sessionId)
+		logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), connectionNumber, utils.GetIpAddress(conn))
 		logger.LogInfo.Printf("%sSession deleted.", logPreAmble)
 
 		//indicate to the listener that we are done
