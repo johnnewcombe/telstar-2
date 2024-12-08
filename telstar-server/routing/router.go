@@ -42,15 +42,18 @@ type RouterResponse struct {
 	ImmediateMode bool
 }
 
-func ProcessRouting(request *RouterRequest, response *RouterResponse, session session.Session) error {
+func ProcessRouting(request *RouterRequest, response *RouterResponse, currentSession session.Session) error {
 
 	var (
-		err error
+		err         error
+		logPreAmble string
 	)
 
 	if globals.Debug {
 		defer logger.TimeTrack(time.Now(), "ProcessRouting")
 	}
+
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), currentSession.ConnectionNumber, currentSession.IPAddress)
 
 	// main processing loop
 	// there are two basic states, immediate mode should navigate immediately to the page based
@@ -58,11 +61,11 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse, session se
 	// specific frame with e.g. *270#
 
 	if !request.isValid() {
-		return fmt.Errorf("routing request was invalid/empty")
+		return fmt.Errorf("%srouting request was invalid/empty", logPreAmble)
 	}
 	// check for large data request e.g. http etc. and truncate
 	if err = truncateData(response); err != nil {
-		logger.LogError.Printf("%d:%s: ", session.ConnectionNumber, session.IPAddress)
+		logger.LogError.Printf("%s", logPreAmble)
 	}
 
 	// check for asterisk, backspace etc. asterusk will switch to immediate mode
@@ -74,7 +77,8 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse, session se
 	}
 
 	// Start of routing process
-	logger.LogInfo.Printf("%d:%s: Routing Start. [Current Page: %s [Message Buffer: %s] [Character to Process: %c]", session.ConnectionNumber, session.IPAddress, request.CurrentPageId, response.RoutingBuffer, request.InputByte)
+	logger.LogInfo.Printf("%sRouting Start. [Current Page: %s [Message Buffer: %s] [Character to Process: %c]",
+		logPreAmble, request.CurrentPageId, response.RoutingBuffer, request.InputByte)
 
 	if response.ImmediateMode {
 
@@ -85,14 +89,14 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse, session se
 
 		if response.Status == ValidPageRequest {
 			// # has been received and the pageId is good
-			logger.LogInfo.Printf("%d:%s: Frame Id is valid. [PageId: %s]", session.ConnectionNumber, session.IPAddress, response.NewPageId)
+			logger.LogInfo.Printf("%sFrame Id is valid. [PageId: %s]", logPreAmble, response.NewPageId)
 
 		} else {
 
 			// this only occurs if # has been entered and for some reason the pageId is invalid
 			// this could occur if a command is entered e.g. *VT52# or *WEATHER# etc.
 
-			logger.LogInfo.Printf("%d:%s: Frame Id is invalid. [PageId: %s]", session.ConnectionNumber, session.IPAddress, response.NewPageId)
+			logger.LogInfo.Printf("%sFrame Id is invalid. [PageId: %s]", logPreAmble, response.NewPageId)
 
 		}
 
@@ -108,7 +112,7 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse, session se
 			if err = selectReloadFrame(request, response); err != nil {
 				return err
 			}
-			logger.LogInfo.Printf("%d:%s: Current page re-selected: [Page Id: %s]", session.ConnectionNumber, session.IPAddress, response.NewPageId)
+			logger.LogInfo.Printf("%sCurrent page re-selected: [Page Id: %s]", logPreAmble, response.NewPageId)
 
 		}
 		// check some special command sequences
@@ -119,7 +123,8 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse, session se
 			if err = selectPreviousFrame(request, response); err != nil {
 				return err
 			}
-			logger.LogInfo.Printf("%d:%s: Previous frame selected (obtained from history): [Page Id: %s]", session.ConnectionNumber, session.IPAddress, response.NewPageId)
+			logger.LogInfo.Printf("%sPrevious frame selected (obtained from history): [Page Id: %s]",
+				logPreAmble, response.NewPageId)
 
 		} else if strings.ToLower(response.RoutingBuffer) == "exit" { // means that '*EXIT#' has been enterd
 
@@ -127,7 +132,7 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse, session se
 			//
 			// e.g.
 			// selectMyCommand(&request, &response)
-			logger.LogInfo.Printf("%d:%s: Command Exit was invoked.", session.ConnectionNumber, session.IPAddress)
+			logger.LogInfo.Printf("%sCommand Exit was invoked.", logPreAmble)
 		}
 	}
 	// request to reload the current page
@@ -171,7 +176,7 @@ func ProcessRouting(request *RouterRequest, response *RouterResponse, session se
 		}
 	*/
 	// routing complete
-	logger.LogInfo.Printf("%d:%s: Routing finished [Message Buffer: %s]", session.ConnectionNumber, session.IPAddress, response.RoutingBuffer)
+	logger.LogInfo.Printf("%sRouting finished [Message Buffer: %s]", logPreAmble, response.RoutingBuffer)
 
 	return nil
 }

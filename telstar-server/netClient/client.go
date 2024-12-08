@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"context"
 	"github.com/johnnewcombe/telstar-library/globals"
+	"github.com/johnnewcombe/telstar-library/utils"
 	"github.com/johnnewcombe/telstar/config"
+	"github.com/johnnewcombe/telstar/session"
 	"github.com/johnnewcombe/telstar/synchronisation"
 	"net"
 	"time"
@@ -26,19 +28,19 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 
 	// connect to remote host
 	var (
-		userIp string
+		logPreAmble string
 	)
 	remoteConn, err := net.Dial("tcp", url)
+
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), connectionNumber, "")
+
 	if err != nil {
-		logger.LogError.Printf("%d:%s: TCP connection to %s, failed. Error: %s", connectionNumber, userIp, url, err)
+		logger.LogError.Printf("%sTCP connection to %s, failed. Error: %s", logPreAmble, url, err)
 		return false
 	}
 
-	// get remote IP Address
-	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
-		userIp = addr.IP.String()
-	}
-	logger.LogInfo.Printf("%d:%s: TCP connection made to %s.", connectionNumber, userIp, url)
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), connectionNumber, utils.GetIpAddress(conn))
+	logger.LogInfo.Printf("%sTCP connection made to %s.", logPreAmble, url)
 
 	// signal channel, this is used to allow the xfer goroutine(s) to signal that a DLE
 	// Data Link Escape has been detected (typically Ctrl P, see settings)
@@ -59,7 +61,7 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 		// wait for transfer go routines to end
 		waitGroup.Wait()
 
-		logger.LogInfo.Printf("%d:%s: Closing TCP connection to %s.", connectionNumber, userIp, url)
+		logger.LogInfo.Printf("%sClosing TCP connection to %s.", logPreAmble, url)
 
 		if err = remoteConn.Close(); err != nil {
 			logger.LogError.Printf("%v", err)
@@ -79,19 +81,18 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 			initDisabled   bool
 			reader         *bufio.Reader
 			timeoutCounter int
-			sourceIp       string
 		)
 
 		// the last thing we do is tell the wait group when we have completed
 		defer func() {
 
 			if err = src.SetReadDeadline(time.Time{}); err != nil {
-				logger.LogError.Printf("%d:%s: %v", connectionNumber, sourceIp, err)
+				logger.LogError.Printf("%s%v", logPreAmble, err)
 			}
 
 			waitGroup.Done()
-			logger.LogInfo.Printf("%d:%s: Transfer routine exiting [%s to %s].",
-				connectionNumber, sourceIp,
+			logger.LogInfo.Printf("%sTransfer routine exiting [%s to %s].",
+				logPreAmble,
 				src.RemoteAddr().String(),
 				dst.RemoteAddr().String())
 
@@ -100,11 +101,6 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 			}
 
 		}()
-
-		// get remote IP Address
-		if addr, ok := src.RemoteAddr().(*net.TCPAddr); ok {
-			sourceIp = addr.IP.String()
-		}
 
 		// create a new buffered reader
 		reader = bufio.NewReader(src)
@@ -122,10 +118,10 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 			case <-ctx.Done():
 				// ctx is telling us to stop, probably because we have sent it a DLE signal on the
 				// dleSignal channel (see below).
-				logger.LogInfo.Printf("%d:%s: Transfer cancelled [%s to %s].",
-					connectionNumber, sourceIp,
-					src.RemoteAddr().String(),
-					dst.RemoteAddr().String())
+				logger.LogInfo.Printf("%sTransfer cancelled [%s to %s].",
+					logPreAmble,
+					utils.GetIpAddress(src),
+					utils.GetIpAddress(dst))
 
 				// reset the read timeout that was added. The timeout meant that the read from conn would
 				// only wait 100ms before spinning round to try again
@@ -141,7 +137,7 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 			// this allows the go routine to check the cancellation channel every 500ms or so.
 			// this will be put back once the gateway go routines have completed
 			if err = src.SetReadDeadline(time.Now().Add(time.Millisecond * 500)); err != nil {
-				logger.LogError.Printf("%d:%s: %v", connectionNumber, sourceIp, err)
+				logger.LogError.Printf("%s%v", logPreAmble, err)
 
 				// cancelling here may violate the channel closing rules but in practice this was far
 				// more reliable than signalling to the parent via another channel to issue the cancel()
@@ -159,7 +155,7 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 				// the connection has been broken
 				if time.Since(start).Milliseconds() < 50 {
 
-					logger.LogInfo.Println("Client has disconnected.")
+					logger.LogInfo.Printf("%sClient has disconnected.", logPreAmble)
 
 					//error, the connection has clearly been broken
 					cancel()
@@ -172,7 +168,7 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 				timeoutCounter++
 				if timeoutCounter > settings.Server.GatewayTimeout*2 { // TODO Add gateway timeout counter
 
-					logger.LogInfo.Printf("%d:%s: Inactivity timeout exceeded.", connectionNumber, sourceIp)
+					logger.LogInfo.Printf("%sInactivity timeout exceeded.", logPreAmble)
 
 					// no activity on the  src connection so report a DLE
 					// so that this goroutine and the goroutine handling the other direction
@@ -187,7 +183,7 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 				// check for EOF
 				if inputByte == 0xFF {
 
-					logger.LogError.Printf("%d:%s: EOF detected, simulating DLE.", connectionNumber, sourceIp)
+					logger.LogError.Printf("%sEOF detected, simulating DLE.", logPreAmble)
 
 					// this means the src connection is closed so report a DLE
 					// so that this goroutine and the goroutine handling the other direction
@@ -206,17 +202,17 @@ func Connect(conn net.Conn, url string, connectionNumber int, baudRate int, init
 			timeoutCounter = 0
 
 			if globals.Debug {
-				logger.LogInfo.Printf("%d:%s: Byte '%02x' received from %s.", connectionNumber, sourceIp, inputByte, src.RemoteAddr().String())
+				logger.LogInfo.Printf("%sByte '%02x' received from %s.", logPreAmble, inputByte, src.RemoteAddr().String())
 			}
 
 			write := func(data []byte) {
 				if _, err := dst.Write(data); err != nil {
-					logger.LogError.Printf("%d:%s: WRITE: %s", connectionNumber, sourceIp, err)
+					logger.LogError.Printf("%sWRITE: %s", logPreAmble, err)
 
 					cancel()
 
 				} else if globals.Debug {
-					logger.LogInfo.Printf("%d:%s: Byte Sent to %s.", connectionNumber, sourceIp, dst.RemoteAddr().String())
+					logger.LogInfo.Printf("%sByte Sent to %s.", dst.RemoteAddr().String())
 				}
 			}
 

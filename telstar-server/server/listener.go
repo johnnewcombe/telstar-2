@@ -86,8 +86,8 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		carouselDelay     int
 		autoRefreshDelay  int
 		autoRefreshFrame  bool
-		userIp            string
 		networkError      *renderer.NetworkError
+		logPreAmble       string
 	)
 
 	wg := synchronisation.WaitGroupWithCount{}
@@ -96,27 +96,21 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	ctx, cancel := context.WithCancel(context.Background())
 	chResult := make(chan renderer.RenderResults)
 
-	// get remote IP Address
-	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
-		userIp = addr.IP.String()
-	}
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), connectionNumber, utils.GetIpAddress(conn))
 
 	// anonymous function used to ensure order is correct
 	defer func() {
-		// send cancel to goroutines and wait for them to complete
-
-		// cancel any renderers
-		cancel()
 
 		// remove any data in the rendering result channel otherwise the renderer
 		// could get blocked meaning it would never see the cancel message this
 		// would mean that the following wg.Wait() call would never complete, the
 		// client connection would not get closed and a session would stay alive.
+		// TODO: could we use a buffered channel for results to avoid the need for this?
 		select {
 		case results := <-chResult:
 			// channel has some data
 			for _, err = range results {
-				logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+				logger.LogError.Printf("%s %v", logPreAmble, err)
 			}
 		default:
 		}
@@ -128,13 +122,13 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		close(chResult)
 
 		// close the connection
-		logger.LogInfo.Printf("%d:%s: Closing connection.", connectionNumber, userIp)
+		logger.LogInfo.Printf("%sClosing connection.", logPreAmble)
 		if err = conn.Close(); err != nil {
 			logger.LogError.Print(err)
 		}
 
 		session.DeleteSession(sessionId)
-		logger.LogInfo.Printf("%d:%s: Session Deleted.", connectionNumber, userIp)
+		logger.LogInfo.Printf("%sSession deleted.", logPreAmble)
 
 		//indicate to the listener that we are done
 		listenerWg.Done()
@@ -144,15 +138,17 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	// FIXME this causes error on DEV Database NOTE that this is about BASE PAGE not USER ID
 	//  ERROR:   2023/01/30 21:39:44 listener.go:90: finding user 7777777777: error decoding key base-page: cannot decode string into an integer type
 	if currentUser, err = dal.GetUser(settings.Database.Connection, globals.GUEST_USER); err != nil {
-		logger.LogError.Printf("%d:%s: %v, has the user been created?", connectionNumber, userIp, err)
+		logger.LogError.Printf("%s: %v, has the user been created?", logPreAmble, err)
 	}
-	logger.LogInfo.Printf("%d:%s: Logged in as user: %s (%s).", connectionNumber, userIp, currentUser.Name, currentUser.UserId)
 
 	// create the users session
 	sessionId = utils.CreateGuid()
-	currentSession := session.CreateSession(sessionId, currentUser, connectionNumber, userIp)
+	currentSession := session.CreateSession(sessionId, currentUser, connectionNumber, utils.GetIpAddress(conn))
 
-	logger.LogInfo.Printf("%d:%s: Session created with SessionId %s.", connectionNumber, userIp, sessionId)
+	// update the preamble
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), connectionNumber, utils.GetIpAddress(conn))
+	logger.LogInfo.Printf("%sSession created with SessionId %s.", logPreAmble, sessionId)
+	logger.LogInfo.Printf("%sLogged in as user: %s (%s).", logPreAmble, currentUser.Name, currentUser.UserId)
 
 	// create a new buffered reader
 	reader = bufio.NewReader(conn)
@@ -173,7 +169,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	for {
 		//conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500))
 		if err = conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500)); err != nil {
-			//cancel() // TODO is this needed as it is called in the defer function
+			cancel()
 			return // via defer() function
 		}
 
@@ -186,12 +182,13 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 			// channel has some data
 			for _, err = range results {
 
-				logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+				logger.LogError.Printf("%s%v", logPreAmble, err)
 
 				// cancel for network error
 				if errors.As(err, &networkError) {
 					// need to wait a moment as gateway connections will be shutting down.
 					//time.Sleep(time.Millisecond * 500)
+					cancel()
 					return // via defer() function
 				}
 			}
@@ -205,9 +202,9 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 			if time.Since(start).Milliseconds() < 50 {
 
 				//error, the connection has clearly been broken
-				logger.LogInfo.Printf("%d:%s: Client has disconnected.", connectionNumber, userIp)
-				//cancel()
-				return // cancel is handled by the defer() function
+				logger.LogInfo.Printf("%sClient has disconnected.", logPreAmble)
+				cancel()
+				return // TODO: should we go around again to read any results that there might have been see defer()
 
 			}
 
@@ -268,18 +265,18 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 			// pass through the Minitel parser, this will absorb any negotiation and
 			// set minitelParser.MinitelState
 
-			logger.LogInfo.Printf("%d:%s: Checking for Minitel Terminal.", connectionNumber, userIp)
+			logger.LogInfo.Printf("%sChecking for Minitel Terminal.", logPreAmble)
 			inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte)
 
 			// Minitel parser may need to send a response to the client, this is done here
 			if len(minitelResponse) > 0 {
 				if _, err = conn.Write([]byte(minitelResponse)); err != nil {
-					logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+					logger.LogError.Printf("%s%v", logPreAmble, err)
 				}
 			}
 
 			if minitelParser.MinitelState == MINITEL_connected && !settings.Server.Antiope {
-				logger.LogInfo.Printf("%d:%s: Minitel terminal, configuring Antiope support.", connectionNumber, userIp)
+				logger.LogInfo.Printf("%sMinitel terminal, configuring Antiope support.", logPreAmble)
 				settings.Server.Antiope = true
 
 				// If we subsequently make a connection to another service (gateway). we need to relay the contents of
@@ -290,9 +287,9 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 		// is this an auto refresh i.e. no inputByte
 		if autoRefreshFrame {
-			logger.LogInfo.Printf("%d:%s: Automatic Refresh of frame: %d%s.", connectionNumber, userIp, currentFrame.PID.PageNumber, currentFrame.PID.FrameId)
+			logger.LogInfo.Printf("%sAutomatic Refresh of frame: %d%s.", logPreAmble, currentFrame.PID.PageNumber, currentFrame.PID.FrameId)
 		} else {
-			logger.LogInfo.Printf("%d:%s: Character received: [%0x] %s (%d).", connectionNumber, userIp, inputByte, BtoA(inputByte), inputByte)
+			logger.LogInfo.Printf("%sCharacter received: [%0x] %s (%d).", logPreAmble, inputByte, BtoA(inputByte), inputByte)
 		}
 
 		now = time.Now().UnixMilli() // nano seconds
@@ -305,23 +302,12 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		if inputByte == globals.HASH && routingResponse.ImmediateMode {
 
 			if lastCharReceived >= now-globals.HASH_GUARD_TIME {
-				logger.LogInfo.Printf("%d:%s: Character received: [%0x] %s (%d) was received within %dms of previous character whilst in immediate mode.", connectionNumber, userIp, inputByte, BtoA(inputByte), inputByte, globals.HASH_GUARD_TIME)
+				logger.LogInfo.Printf("%sCharacter received: [%0x] %s (%d) was received within %dms of previous character whilst in immediate mode.", logPreAmble, inputByte, BtoA(inputByte), inputByte, globals.HASH_GUARD_TIME)
 				continue
 			}
 		}
 
 		lastCharReceived = time.Now().UnixMilli()
-
-		// pass through the Minitel parser, this will absorb any negotiation and
-		// set minitelParser.MinitelConnection to true if a Minitel negotiation was detected
-		//inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte)
-
-		// Minitel parser may need to send a response to the client, this is done here
-		//if len(minitelResponse) > 0 {
-		//	if _, err = conn.Write([]byte(minitelResponse)); err != nil {
-		//		logger.LogError.Printf("%d:%s:" err)
-		//	}
-		//}
 
 		// pass through the telnet parser, this will absorb any negotiation and
 		// set telnetParser.TelnetConnection to true if a telnet negotiation was detected
@@ -331,16 +317,16 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		// telnet parser may need to send a response to the client, this is done here
 		if len(telnetResponse) > 0 {
 			if _, err = conn.Write([]byte(telnetResponse)); err != nil {
-				logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+				logger.LogError.Printf("%s%v", logPreAmble, err)
 			}
 		}
 
 		// set the baud rate depending upon the connection type
 		if telnetParser.TelnetConnection {
-			logger.LogInfo.Printf("%d:%s: Telnet client, Baud rate is maximum value.", connectionNumber, userIp)
+			logger.LogInfo.Printf("%sTelnet client, Baud rate is maximum value.", logPreAmble)
 			baudRate = globals.BAUD_MAX
 		} else {
-			logger.LogInfo.Printf("%d:%s: Baud rate is %s.", connectionNumber, userIp, globals.BAUD_DISPLAY)
+			logger.LogInfo.Printf("%sBaud rate is %s.", logPreAmble, globals.BAUD_DISPLAY)
 			// slow down the baud rate if not a telnet connection.
 			baudRate = globals.BAUD_RATE
 		}
@@ -365,18 +351,18 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 			if currentFrame.FrameType == "gateway" {
 
-				logger.LogInfo.Printf("%d:%s: Current frame is type Gateway.", connectionNumber, userIp)
+				logger.LogInfo.Printf("%sCurrent frame is type Gateway.", logPreAmble)
 
 				// to get here we must have navigated to a gateway page i.e. a page with the
 				// frame type of gateway from this we can get the connection details
 				// validate the address etc.
 				if !currentFrame.Connection.IsValid() {
-					logger.LogError.Printf("%d:%s: Gateway connection details are invalid.", connectionNumber, userIp)
+					logger.LogError.Printf("%sGateway connection details are invalid.", logPreAmble)
 				}
 
 				// send a CLS back to the client as we can't guarantee that a service will
 				if _, err = conn.Write([]byte{globals.CLS}); err != nil {
-					logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+					logger.LogError.Printf("%s%v", logPreAmble, err)
 				}
 
 				// returns a bool
@@ -389,12 +375,12 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 				// at this point we have rendered the frame, the currentFrame is set to the response frame
 				// and we are waiting for data entry characters to complete the repsponse frame field(s) etc.
-				logger.LogInfo.Printf("%d:%s: Current frame is type Response, passing input byte to the Response Processor.", connectionNumber, userIp)
+				logger.LogInfo.Printf("%sCurrent frame is type Response, passing input byte to the Response Processor.", logPreAmble)
 
 				if err = response.Process(sessionId, conn, inputByte, &currentFrame, &responseFrameData, baudRate, settings); err != nil {
 
 					// error with plugin
-					logger.LogError.Printf("%d:%s: The Response Processsor failed with input byte: %02x. %v", connectionNumber, userIp, inputByte, err)
+					logger.LogError.Printf("%sThe Response Processsor failed with input byte: %02x. %v", logPreAmble, inputByte, err)
 
 					// force route to external exception error page 9902.
 					routing.ForceRoute(settings.Server.Pages.ResponseErrorPage, "a", &routingResponse)
@@ -412,7 +398,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 				// this would only typically be the case when the handler first starts and
 				// there is no current frame
-				logger.LogInfo.Printf("%d:%s: No current frame set, using start page.", connectionNumber, userIp)
+				logger.LogInfo.Printf("%sNo current frame set, using start page.", logPreAmble)
 
 				// this is the start page so insert this into the routing process
 				if settings.Server.Authentication.Required {
@@ -428,8 +414,8 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 			} else {
 
 				// current page exists so normal routing is required
-				logger.LogInfo.Printf("%d:%s: Current frame is set (%d%s), invoking the routing process with char [%x] %s (%d).",
-					connectionNumber, userIp, currentFrame.PID.PageNumber, currentFrame.PID.FrameId, inputByte, BtoA(inputByte), inputByte)
+				logger.LogInfo.Printf("%sCurrent frame is set (%d%s), invoking the routing process with char [%x] %s (%d).",
+					logPreAmble, currentFrame.PID.PageNumber, currentFrame.PID.FrameId, inputByte, BtoA(inputByte), inputByte)
 
 				// update the routingRequest with the byte received
 				routingRequest.InputByte = inputByte
@@ -442,7 +428,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 				// process routing
 				if err = routing.ProcessRouting(&routingRequest, &routingResponse, currentSession); err != nil {
-					logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+					logger.LogError.Printf("%s%v", logPreAmble, err)
 				}
 			}
 
@@ -458,11 +444,11 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 			switch routingResponse.Status {
 			case routing.Undefined:
 				// 0 log error and wait for the next char
-				logger.LogError.Printf("%d:%s: routingResponse.status was set to UNDEFINED, this is an unexpected error", connectionNumber, userIp)
+				logger.LogError.Printf("%sroutingResponse.status was set to UNDEFINED, this is an unexpected error", logPreAmble)
 
 			case routing.RouteMessageUpdated:
 				//1 - echo char and wait for the next char
-				logger.LogInfo.Printf("%d:%s: Routing buffer updated with char [%x] %s (%d).", connectionNumber, userIp, inputByte, BtoA(inputByte), inputByte)
+				logger.LogInfo.Printf("%sRouting buffer updated with char [%x] %s (%d).", logPreAmble, inputByte, BtoA(inputByte), inputByte)
 
 				// echo the char if the char is valid AND the waitgroup count is zero
 				// i.e. nothing is being rendered
@@ -470,7 +456,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					// something is being rendered so put cursor at the bottom row
 					// this bypasses the
 					if err = renderer.PositionCursor(conn, 0, globals.ROWS-1, !settings.Server.DisableVerticalRollOver); err != nil {
-						logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+						logger.LogError.Printf("%s%v", logPreAmble, err)
 					}
 				}
 				if inputByte > 0x20 && inputByte < 0x7f {
@@ -479,7 +465,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					//  perhaps it should be left to the client!
 					if currentFrame.FrameType != globals.FRAME_TYPE_TEST {
 						if _, err = conn.Write([]byte{inputByte}); err != nil {
-							logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+							logger.LogError.Printf("%s%v", logPreAmble, err)
 						}
 					}
 				}
@@ -488,7 +474,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 				// send BS, SPC and BS
 				if _, err = conn.Write([]byte{0x08, 0x20, 0x08}); err != nil {
-					logger.LogError.Printf("%d:%s: %v", connectionNumber, userIp, err)
+					logger.LogError.Printf("%s%v", logPreAmble, err)
 				}
 
 			case routing.ValidPageRequest:
@@ -503,7 +489,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 					// this means that the frame cannot be found
 					// e.g. it does not exist, has visibility set to false or some other db error
-					logger.LogWarn.Printf("%d:%s: %v", connectionNumber, userIp, err)
+					logger.LogWarn.Printf("%s%v", logPreAmble, err)
 
 					// clear the buffer
 					routingResponse.RoutingBuffer = ""
@@ -521,7 +507,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 				} else {
 					// page id is valid, meaning that the frame was retrieved
-					logger.LogInfo.Printf("%d:%s: Frame retrieved: %d%s.", connectionNumber, userIp, frame.PID.PageNumber, frame.PID.FrameId)
+					logger.LogInfo.Printf("%sFrame retrieved: %d%s.", logPreAmble, frame.PID.PageNumber, frame.PID.FrameId)
 
 					// We need to determine if we have a Follow on frame
 					if hasFollowOnFrame, err = existsFollowOnFrame(sessionId, frame.GetPageId(), settings); err != nil {
@@ -529,23 +515,23 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					}
 
 					if hasFollowOnFrame {
-						logger.LogInfo.Printf("%d:%s: A follow-on frame for frame %s, exists.", connectionNumber, userIp, frame.GetPageId())
+						logger.LogInfo.Printf("%sA follow-on frame for frame %s, exists.", logPreAmble, frame.GetPageId())
 					} else {
-						logger.LogInfo.Printf("%d:%s: The follow-on frame for frame %s, does not exist.", connectionNumber, userIp, frame.GetPageId())
+						logger.LogInfo.Printf("%sThe follow-on frame for frame %s, does not exist.", logPreAmble, frame.GetPageId())
 					}
 
 					if currentFrame.Carousel {
-						logger.LogInfo.Printf("%d:%s: Frame %s is a Carousel frame.", connectionNumber, userIp, frame.GetPageId())
+						logger.LogInfo.Printf("%sFrame %s is a Carousel frame.", logPreAmble, frame.GetPageId())
 					}
 
 					if !routingResponse.HistoryPage {
-						logger.LogInfo.Printf("%d:%s: Adding frame %s to history.", connectionNumber, userIp, frame.GetPageId())
+						logger.LogInfo.Printf("%sAdding frame %s to history.", logPreAmble, frame.GetPageId())
 						session.PushHistory(sessionId, frame.GetPageId())
 					}
 
 					routingResponse.Clear()
 
-					logger.LogInfo.Printf("%d:%s: Rendering frame %s.", connectionNumber, userIp, frame.GetPageId())
+					logger.LogInfo.Printf("%sRendering frame %s.", logPreAmble, frame.GetPageId())
 
 					// Render the frame
 					var renderOptions = renderer.RenderOptions{
@@ -568,7 +554,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					go renderer.Render(ctx, conn, &wg, &frame, currentSession, settings, renderOptions, chResult)
 
 					if frame.FrameType == "exit" {
-						//cancel() // TODO is this needed as it is called in the defer function
+						cancel()
 						return
 					}
 					currentFrame = frame
@@ -590,18 +576,10 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 			case routing.InvalidCharacter:
 				// 4 - log warning and wait for the next char
-				logger.LogWarn.Printf("%d:%s: An invalid character was received from the connected client [%0x] %s (%d).", connectionNumber, userIp, inputByte, BtoA(inputByte), inputByte)
+				logger.LogWarn.Printf("%sAn invalid character was received from the connected client [%0x] %s (%d).", logPreAmble, inputByte, BtoA(inputByte), inputByte)
 			}
 		}
 	}
-}
-
-func closeConn(conn net.Conn, connectionNumber int, ipAddress string) {
-
-	if err := conn.Close(); err != nil {
-		logger.LogError.Print(err)
-	}
-	logger.LogInfo.Printf("%d:%s: Closing connection!", connectionNumber, ipAddress)
 }
 
 /*

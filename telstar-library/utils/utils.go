@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/wagslane/go-password-validator"
+	"net"
 	"regexp"
 	"strconv"
 	"strings"
@@ -406,4 +407,24 @@ func SetEvenParity(b byte) byte {
 		b = b | 0x80
 	}
 	return b
+}
+
+func FormatLogPreAmble(sessionCount int, connectionNumber int, ipAddress string) string {
+
+	if len(ipAddress) == 0 {
+		ipAddress = "0.0.0.0"
+	}
+
+	return fmt.Sprintf("%d:%d:%s: ", sessionCount, connectionNumber, ipAddress)
+}
+
+func GetIpAddress(conn net.Conn) string {
+
+	var ipAddress string
+
+	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
+		ipAddress = addr.IP.String()
+	}
+
+	return ipAddress
 }

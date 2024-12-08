@@ -178,16 +178,19 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 	}
 }
 
-func renderSystemMessage(ctx context.Context, conn net.Conn, message string, session session.Session, settings config.Config, options RenderOptions) (bool, error) {
+func renderSystemMessage(ctx context.Context, conn net.Conn, message string, currentSession session.Session, settings config.Config, options RenderOptions) (bool, error) {
 	// FIXME With merged pages that are 960 char long, rendering this causes a scroll, this shouldn't happen if HOME/VTAB is used, should it?
 	var (
 		err         error
 		cursorChars strings.Builder
 		lastChar    string
 		cancelled   bool
+		logPreAmble string
 	)
 
-	logger.LogInfo.Printf("%d:%s: System Message: %s\r\n", session.ConnectionNumber, session.IPAddress, message)
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), currentSession.ConnectionNumber, currentSession.IPAddress)
+
+	logger.LogInfo.Printf("%sSystem Message: %s\r\n", logPreAmble, message)
 
 	// position the cursor to the bottom row, column 0
 	if err = PositionCursor(conn, 0, globals.ROWS-1, !settings.Server.DisableVerticalRollOver); err != nil {
@@ -227,7 +230,7 @@ func renderSystemMessage(ctx context.Context, conn net.Conn, message string, ses
 
 	// put back the cursor on if it was set.
 	cursorChars.WriteString(lastChar)
-	if cancelled, err = renderBuffer(ctx, conn, []byte(cursorChars.String()), settings, session, options); err != nil {
+	if cancelled, err = renderBuffer(ctx, conn, []byte(cursorChars.String()), settings, currentSession, options); err != nil {
 		return cancelled, err
 	}
 	return cancelled, nil
@@ -536,11 +539,14 @@ func renderFooter(ctx context.Context, conn net.Conn, frame *types.Frame, sessio
 	return cancelled, nil
 }
 
-func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings config.Config, session session.Session, options RenderOptions) (bool, error) {
+func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings config.Config, currentSession session.Session, options RenderOptions) (bool, error) {
 
 	var (
-		err error
+		err         error
+		logPreAmble string
 	)
+
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), currentSession.ConnectionNumber, currentSession.IPAddress)
 
 	if settings.Server.Antiope {
 		if buffer, err = convert.RawVToAntiope(buffer); err != nil {
@@ -554,7 +560,7 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 		select {
 		case <-ctx.Done():
 			// channel has a true, so cancel
-			logger.LogInfo.Printf("%d:%s: Rendering cancelled.", session.ConnectionNumber, session.IPAddress)
+			logger.LogInfo.Printf("%sRendering cancelled.", logPreAmble)
 			return true, nil // channel closed so cancel
 		default:
 		}
@@ -565,7 +571,7 @@ func renderBuffer(ctx context.Context, conn net.Conn, buffer []byte, settings co
 		}
 
 		if _, err = conn.Write([]byte{b}); err != nil {
-			logger.LogError.Printf("%d:%s: %v", session.ConnectionNumber, session.IPAddress, err)
+			logger.LogError.Printf("%s%v", logPreAmble, err)
 			return false, &NetworkError{}
 		}
 
@@ -660,16 +666,19 @@ func getMetaData(t time.Time) string {
 	return t.Format("20060102T1504Z")
 }
 
-func getSysInfo(settings config.Config, sessionData session.Session, options RenderOptions) string {
+func getSysInfo(settings config.Config, currentSession session.Session, options RenderOptions) string {
 
 	var (
-		sb   strings.Builder
-		baud string
+		sb          strings.Builder
+		baud        string
+		logPreAmble string
 	)
+
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), currentSession.ConnectionNumber, currentSession.IPAddress)
 
 	ver, err := globals.GetVersion()
 	if err != nil {
-		logger.LogError.Printf("%d:%s: error loading version file %v", sessionData.ConnectionNumber, sessionData.IPAddress, err)
+		logger.LogError.Printf("%serror loading version file %v", logPreAmble, err)
 		ver = ""
 	}
 
@@ -687,9 +696,9 @@ func getSysInfo(settings config.Config, sessionData session.Session, options Ren
 	sb.WriteString(fmt.Sprintf("         Server : %s\r\n", settings.Server.DisplayName))
 	sb.WriteString(fmt.Sprintf("       Sessions : %d\r\n", session.GetSessionCount()))
 	sb.WriteString(fmt.Sprintf("      Baud Rate : %s\r\n", baud))
-	sb.WriteString(fmt.Sprintf("        User ID : %s\r\n", sessionData.User.UserId))
-	sb.WriteString(fmt.Sprintf("      User Name : %s\r\n", sessionData.User.Name))
-	sb.WriteString(fmt.Sprintf("      Base Page : %d\r\n", sessionData.User.BasePage))
+	sb.WriteString(fmt.Sprintf("        User ID : %s\r\n", currentSession.User.UserId))
+	sb.WriteString(fmt.Sprintf("      User Name : %s\r\n", currentSession.User.Name))
+	sb.WriteString(fmt.Sprintf("      Base Page : %d\r\n", currentSession.User.BasePage))
 	sb.WriteString(fmt.Sprintf("       Database : %s\r\n", strings.ToUpper(settings.Database.Collection)))
 
 	//return fmt.Sprintf("CPU Usage: %f%%\r\n   Busy: %f\r\n   Total: %f\n", cpuUsage, totalTicks-idleTicks, totalTicks)
