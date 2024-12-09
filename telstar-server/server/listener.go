@@ -3,7 +3,6 @@ package server
 import (
 	"bufio"
 	"context"
-	"errors"
 	"fmt"
 	"github.com/johnnewcombe/telstar-library/convert"
 	"github.com/johnnewcombe/telstar-library/globals"
@@ -31,6 +30,7 @@ func Start(port int, settings config.Config) error {
 	var (
 		connectionNumber int
 		conn             net.Conn
+		logPreAmble      string
 	)
 
 	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", settings.Server.Host, port))
@@ -47,13 +47,13 @@ func Start(port int, settings config.Config) error {
 			continue
 		}
 		connectionNumber++
-		logger.LogInfo.Printf("Incoming connection [%d]!", connectionNumber)
+		logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), connectionNumber, utils.GetIpAddress(conn))
+		logger.LogInfo.Printf("%sIncoming connection number: %d.", logPreAmble, connectionNumber)
 
 		// handles one connection at a time
 		listenerWg.Add(1)
 		go handleConn(conn, connectionNumber, settings)
-		logger.LogInfo.Printf("Current Session count: %3d.", listenerWg.GetCount())
-
+		logger.LogInfo.Printf("%sCurrent Session count: %d.", logPreAmble, listenerWg.GetCount())
 	}
 
 }
@@ -86,7 +86,6 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		carouselDelay     int
 		autoRefreshDelay  int
 		autoRefreshFrame  bool
-		networkError      *renderer.NetworkError
 		logPreAmble       string
 	)
 
@@ -94,11 +93,13 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 	// this is used to enable the rendering goroutine to be cancelled.
 	ctx, cancel := context.WithCancel(context.Background())
-	chResult := make(chan renderer.RenderResults)
+	//chResult := make(chan renderer.RenderResults)
 
 	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), connectionNumber, utils.GetIpAddress(conn))
 
-	// anonymous function used to ensure order is correct
+	// Deferred function calls are pushed onto a stack. When a function returns, its deferred calls
+	// are executed in last-in-first-out order.
+	// anonymous function used as a single defer
 	defer func() {
 
 		// remove any data in the rendering result channel otherwise the renderer
@@ -106,20 +107,20 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		// would mean that the following wg.Wait() call would never complete, the
 		// client connection would not get closed and a session would stay alive.
 		// TODO: could we use a buffered channel for results to avoid the need for this?
-		select {
-		case results := <-chResult:
-			// channel has some data
-			for _, err = range results {
-				logger.LogError.Printf("%s %v", logPreAmble, err)
-			}
-		default:
-		}
+		//select {
+		//case results := <-chResult:
+		// channel has some data
+		//	for _, err = range results {
+		//		logger.LogError.Printf("%s %v", logPreAmble, err)
+		//	}
+		//default:
+		//}
 
 		// wait for go routines to complete
 		wg.Wait() //
 
 		// close channels
-		close(chResult)
+		//close(chResult)
 
 		// close the connection
 		logger.LogInfo.Printf("%sClosing connection.", logPreAmble)
@@ -178,23 +179,26 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		ok, inputByte = readByte(reader)
 
 		// process any errors from the renderer
-		select {
-		case results := <-chResult:
-			// channel has some data
-			for _, err = range results {
+		/*
+			select {
 
-				logger.LogError.Printf("%s%v", logPreAmble, err)
+				case results := <-chResult:
+				// channel has some data
+				for _, err = range results {
 
-				// cancel for network error
-				if errors.As(err, &networkError) {
-					// need to wait a moment as gateway connections will be shutting down.
-					//time.Sleep(time.Millisecond * 500)
-					cancel()
-					return // via defer() function
+					logger.LogError.Printf("%s%v", logPreAmble, err)
+
+					// cancel for network error
+					if errors.As(err, &networkError) {
+						// need to wait a moment as gateway connections will be shutting down.
+						//time.Sleep(time.Millisecond * 500)
+						cancel()
+						return // via defer() function
+					}
 				}
+			default:
 			}
-		default:
-		}
+		*/
 
 		if !ok {
 
@@ -503,7 +507,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 						ctx, cancel = context.WithCancel(context.Background())
 						wg.Add(1)
-						go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, currentSession, settings, renderOptions, chResult)
+						go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, currentSession, connectionNumber, settings, renderOptions)
 					}
 
 				} else {
@@ -552,7 +556,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 					// create a new context that can be used to allow rendering to be cancelled
 					ctx, cancel = context.WithCancel(context.Background())
 					wg.Add(1)
-					go renderer.Render(ctx, conn, &wg, &frame, currentSession, settings, renderOptions, chResult)
+					go renderer.Render(ctx, conn, &wg, &frame, currentSession, connectionNumber, settings, renderOptions)
 
 					if frame.FrameType == "exit" {
 						cancel()
@@ -572,7 +576,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 					ctx, cancel = context.WithCancel(context.Background())
 					wg.Add(1)
-					go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, currentSession, settings, renderOptions, chResult)
+					go renderer.RenderTransientSystemMessage(ctx, conn, &wg, currentFrame.NavMessageNotFound, currentFrame.NavMessage, currentSession, connectionNumber, settings, renderOptions)
 				}
 
 			case routing.InvalidCharacter:

@@ -27,13 +27,14 @@ type RenderOptions struct {
 
 type RenderResults []error
 
-func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, frame *types.Frame, session session.Session, settings config.Config, options RenderOptions, chResult chan<- RenderResults) {
+func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, frame *types.Frame, currentSession session.Session, connectionNumber int, settings config.Config, options RenderOptions) {
 
 	var (
-		err           error
-		renderResults []error
-		cancelled     bool
-		networkError  *NetworkError
+		err error
+		//renderResults []error
+		cancelled bool
+		//networkError *NetworkError
+		logPreAmble string
 	)
 
 	defer func() {
@@ -45,94 +46,89 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 		}
 	}()
 
-	renderResults = make([]error, 0)
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), connectionNumber, utils.GetIpAddress(conn))
+
+	//renderResults = make([]error, 0)
 
 	if utils.IsValidPageId(frame.GetPageId()) {
 
-		if cancelled, err = renderHeader(ctx, conn, frame, session, settings, options); cancelled {
+		if cancelled, err = renderHeader(ctx, conn, frame, currentSession, settings, options); cancelled {
 			return
 		}
 		if err != nil {
-			if errors.As(err, &networkError) {
-				return // via defer() function
-			}
-			renderResults = append(renderResults, err)
+			logger.LogError.Printf("%s%v", logPreAmble, err)
+			return
+			//if errors.As(err, &networkError) {
+			//	return // via defer() function
+			//}
 		}
 
-		if cancelled, err = renderTitle(ctx, conn, frame, session, settings, options); cancelled {
-			if errors.As(err, &networkError) {
-				return // via defer() function
-			}
+		if cancelled, err = renderTitle(ctx, conn, frame, currentSession, settings, options); cancelled {
+			logger.LogError.Printf("%s%v", logPreAmble, err)
 			return
 		}
 		if err != nil {
-			if errors.As(err, &networkError) {
-				return // via defer() function
-			}
-			renderResults = append(renderResults, err)
+			logger.LogError.Printf("%s%v", logPreAmble, err)
+			return
 		}
 
-		if cancelled, err = renderContent(ctx, conn, frame, session, settings, options); cancelled {
+		if cancelled, err = renderContent(ctx, conn, frame, currentSession, settings, options); cancelled {
 			return
 		}
 		if err != nil {
-			if errors.As(err, &networkError) {
-				return // via defer() function
-			}
-			renderResults = append(renderResults, err)
+			logger.LogError.Printf("%s%v", logPreAmble, err)
+			return
 		}
 
-		if cancelled, err = renderFooter(ctx, conn, frame, session, settings, options); cancelled {
+		if cancelled, err = renderFooter(ctx, conn, frame, currentSession, settings, options); cancelled {
 			return
 		}
 		if err != nil {
-			if errors.As(err, &networkError) {
-				return // via defer() function
-			}
-			renderResults = append(renderResults, err)
+			logger.LogError.Printf("%s%v", logPreAmble, err)
+			return
 		}
 
 		if frame.FrameType != globals.FRAME_TYPE_TEST && frame.FrameType != globals.FRAME_TYPE_RESPONSE {
-			if cancelled, err = renderSystemMessage(ctx, conn, frame.NavMessage, session, settings, options); cancelled {
+			if cancelled, err = renderSystemMessage(ctx, conn, frame.NavMessage, currentSession, settings, options); cancelled {
 				return
 			}
 			if err != nil {
-				if errors.As(err, &networkError) {
-					return // via defer() function
-				}
-				renderResults = append(renderResults, err)
+				logger.LogError.Printf("%s%v", logPreAmble, err)
+				return
 			}
 		}
 
 		if frame.FrameType == "response" && len(frame.ResponseData.Fields) > 0 {
-			if err = PositionCursor(conn, frame.ResponseData.Fields[0].HPos, frame.ResponseData.Fields[0].VPos, !settings.Server.DisableVerticalRollOver); err != nil {
-				renderResults = append(renderResults, err)
-				if errors.As(err, &networkError) {
-					return // via defer() function
-				}
+			if err = PositionCursor(conn, frame.ResponseData.Fields[0].HPos, frame.ResponseData.Fields[0].VPos,
+				!settings.Server.DisableVerticalRollOver); err != nil {
+				logger.LogError.Printf("%s%v", logPreAmble, err)
+				return
 			}
 		}
 
 	} else {
-		renderResults = append(renderResults, errors.New("render requested for an invalid frame"))
+		logger.LogError.Printf("%s%v", logPreAmble, errors.New("render requested for an invalid frame"))
+		return
 	}
 
 	// have some errors so send them back to listener.go
-	if len(renderResults) > 0 {
-		chResult <- renderResults
-	}
+	//	if len(renderResults) > 0 {
+	//		chResult <- renderResults
+	//	}
 
 	return
 }
 
 // RenderTransientSystemMessage displays the specified message that is then replaced
 // a second later with the specified follow-on message
-func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, message string, followOnMessage string, session session.Session, settings config.Config, options RenderOptions, chResult chan<- RenderResults) {
+func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWithCount, message string, followOnMessage string, currentSession session.Session, connectionNumber int, settings config.Config, options RenderOptions) {
 
 	var (
-		err           error
-		renderResults []error
-		cancelled     bool
+		err error
+		//renderResults []error
+		cancelled    bool
+		networkError *NetworkError
+		logPreAmble  string
 	)
 
 	defer wg.Done()
@@ -141,21 +137,26 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 		defer logger.TimeTrack(time.Now(), "RenderTransientSystemMessage")
 	}
 
-	renderResults = make([]error, 0)
+	logPreAmble = utils.FormatLogPreAmble(session.GetSessionCount(), connectionNumber, utils.GetIpAddress(conn))
+
+	//renderResults = make([]error, 0)
 
 	if len(message) > 0 {
-		cancelled, err = renderSystemMessage(ctx, conn, message, session, settings, options)
-		if cancelled {
+		if cancelled, err = renderSystemMessage(ctx, conn, message, currentSession, settings, options); cancelled {
 			return
 		}
 		if err != nil {
-			renderResults = append(renderResults, err)
+			logger.LogError.Printf("%s%v", logPreAmble, err)
+			if errors.As(err, &networkError) {
+				return
+			}
 		}
 	}
 
 	if len(followOnMessage) > 0 {
 		// if the renderSystemMessage call (above) was cancelled we will
 		// have a ctx.Err so make make a tidy exit
+		logger.LogError.Printf("%s%v", logPreAmble, ctx.Err())
 		if ctx.Err() != nil {
 			return
 		}
@@ -163,19 +164,21 @@ func RenderTransientSystemMessage(ctx context.Context, conn net.Conn, wg *synchr
 		// all good so complete the system message
 		time.Sleep(1000 * time.Millisecond)
 		wg.Add(1)
-		cancelled, err = renderSystemMessage(ctx, conn, followOnMessage, session, settings, options)
-		if cancelled {
+		if cancelled, err = renderSystemMessage(ctx, conn, followOnMessage, currentSession, settings, options); cancelled {
 			return
 		}
 		if err != nil {
-			renderResults = append(renderResults, err)
+			logger.LogError.Printf("%s%v", logPreAmble, err)
+			return
 		}
 	}
 
 	// have some errors so send them back to listener.go
-	if len(renderResults) > 0 {
-		chResult <- renderResults
-	}
+	//if len(renderResults) > 0 {
+	//	logger.LogInfo.Print("Errors detected during rendering.")
+	//	chResult <- renderResults
+	//	logger.LogInfo.Print("Errors returned via results channel.")
+	//}
 }
 
 func renderSystemMessage(ctx context.Context, conn net.Conn, message string, currentSession session.Session, settings config.Config, options RenderOptions) (bool, error) {
