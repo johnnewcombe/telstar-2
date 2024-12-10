@@ -89,6 +89,10 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		logPreAmble       string
 	)
 
+	// FIXME FIXME FIXME FIXME the following error occured and the session did not get closed, NOTE that
+	//  this is simply a warning and may be a Red Herring
+	//  WARNING: 2024/12/09 16:22:00 SC:1,CN:9,IP:2.100.48.122 - An invalid character was received from the connected client [44] D (68).
+
 	wg := synchronisation.WaitGroupWithCount{}
 
 	// this is used to enable the rendering goroutine to be cancelled.

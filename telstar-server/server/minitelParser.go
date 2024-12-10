@@ -51,6 +51,7 @@ func (parser *MinitelParser) ParseMinitelEnqRom(char byte, currentSession sessio
 	// TODO: Another method needed, perhaps *MINITEL
 	// Note that very early Minitels (ABCDEF keyboards) did respond to this
 	// ENQ_ROM sequence only if it came from the modem.
+	ascChar := char & 0x7F
 
 	// FIXME: Complete this parser
 
@@ -60,32 +61,36 @@ func (parser *MinitelParser) ParseMinitelEnqRom(char byte, currentSession sessio
 		return char, response
 	}
 
-	if parser.MinitelState == MINITEL_undefined && char&0x7f == 0x01 { // SOH
+	if parser.MinitelState == MINITEL_undefined && ascChar == 0x01 { // SOH
 		logger.LogInfo.Printf("%sMinitel ENQ_ROM start received", logPreAmble)
 		parser.MinitelState = MINITEL_ENQ_ROM_start_found
 		parser.Buffer = append(parser.Buffer, char)
 
 	} else if parser.MinitelState == MINITEL_ENQ_ROM_start_found &&
-		char&0x7f >= 0x0 && char <= 0x7f {
-		logger.LogInfo.Printf("%sMinitel ENQ_ROM vendor %d received", logPreAmble, char)
+		ascChar >= 0x0 && ascChar <= 0x7f {
+		logger.LogInfo.Printf("%sMinitel ENQ_ROM vendor %d received", logPreAmble, ascChar)
 		parser.MinitelState = MINITEL_vendor_found
-		parser.Vendor = char & 0x7f
+		parser.Vendor = ascChar
+		parser.Buffer = append(parser.Buffer, char)
 
 	} else if parser.MinitelState == MINITEL_vendor_found &&
-		char&0x7f >= 0x0 && char <= 0x7f {
-		logger.LogInfo.Printf("%sMinitel ENQ_ROM model %d received", logPreAmble, char)
+		ascChar >= 0x0 && ascChar <= 0x7f {
+		logger.LogInfo.Printf("%sMinitel ENQ_ROM model %d received", logPreAmble, ascChar)
 		parser.MinitelState = MINITEL_model_found
-		parser.Model = char & 0x7f
+		parser.Model = ascChar
+		parser.Buffer = append(parser.Buffer, char)
 
 	} else if parser.MinitelState == MINITEL_model_found &&
-		char&0x7f >= 0x20 && char <= 0x7f {
-		logger.LogInfo.Printf("%sMinitel ENQ_ROM revision %s received", logPreAmble, string(char))
+		ascChar >= 0x20 && ascChar <= 0x7f {
+		logger.LogInfo.Printf("%sMinitel ENQ_ROM revision %d received", logPreAmble, ascChar)
 		parser.MinitelState = MINITEL_revision_found
 		parser.Revision = char & 0x7f
+		parser.Buffer = append(parser.Buffer, char)
 
 	} else if parser.MinitelState == MINITEL_revision_found && char&0x7f == 0x04 { //EOT
 		logger.LogInfo.Printf("%sMinitel ENQ_ROM end received", logPreAmble)
 		parser.MinitelState = MINITEL_connected
+		parser.Buffer = append(parser.Buffer, char)
 
 	} else {
 		parser.MinitelState = MINITEL_not_connected

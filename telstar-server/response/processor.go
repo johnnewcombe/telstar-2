@@ -85,14 +85,14 @@ func Process(sessionId string, conn net.Conn, inputByte byte, frame *types.Frame
 
 	fieldCount = len(frame.ResponseData.Fields)
 	if fieldCount == 0 {
-		return errors.New("No fields defined for this response page.")
+		return errors.New("no fields defined for this response page")
 	}
 
 	if len(responseData.FieldValues) == 0 {
 		// clear the response data for the next response frame
-		// first time here for this page so initialsise the field value
+		// first time here for this page so initialise the field value
 		responseData.Clear()
-		responseData.FieldValues = make([]Field, fieldCount, fieldCount)
+		responseData.FieldValues = make([]Field, fieldCount)
 	}
 
 	currentResponseField = frame.ResponseData.Fields[responseData.currentFieldIndex]
@@ -100,7 +100,7 @@ func Process(sessionId string, conn net.Conn, inputByte byte, frame *types.Frame
 
 	// this should never be the case but belt and braces
 	if responseData.currentFieldIndex >= fieldCount {
-		return errors.New("The 'current field index' is invalid.")
+		return errors.New("the 'current field index' is invalid")
 	}
 
 	if inputByte != globals.HASH {
@@ -109,7 +109,9 @@ func Process(sessionId string, conn net.Conn, inputByte byte, frame *types.Frame
 			if currentValueLength > 0 { // backspace
 				responseData.FieldValues[responseData.currentFieldIndex].Value =
 					responseData.FieldValues[responseData.currentFieldIndex].Value[:currentValueLength-1]
-				renderBuffer(conn, []byte{0x08, 0x20, 0x08}, baudRate)
+				if err = renderBuffer(conn, []byte{0x08, 0x20, 0x08}, baudRate); err != nil {
+					return err
+				}
 			}
 			return nil
 		}
@@ -124,9 +126,13 @@ func Process(sessionId string, conn net.Conn, inputByte byte, frame *types.Frame
 			if len(responseData.FieldValues[responseData.currentFieldIndex].Value) < currentResponseField.Length {
 				responseData.FieldValues[responseData.currentFieldIndex].Value += string(inputByte)
 				if currentResponseField.Password {
-					renderBuffer(conn, []byte{globals.ASTERISK}, baudRate)
+					if err = renderBuffer(conn, []byte{globals.ASTERISK}, baudRate); err != nil {
+						return err
+					}
 				} else {
-					renderBuffer(conn, []byte{inputByte}, baudRate)
+					if err = renderBuffer(conn, []byte{inputByte}, baudRate); err != nil {
+						return err
+					}
 				}
 			}
 			if len(responseData.FieldValues[responseData.currentFieldIndex].Value) == currentResponseField.Length {
@@ -136,7 +142,7 @@ func Process(sessionId string, conn net.Conn, inputByte byte, frame *types.Frame
 	}
 
 	// check if field is complete, move to next field if 0x5f or if length
-	// of field reached AND autosubmit is true
+	// of field reached AND auto-submit is true
 	if inputByte == globals.HASH || (fieldFull && currentResponseField.AutoSubmit) {
 
 		// if cancel sequence is detected by checking the asterisk flag, this will only be set
@@ -145,7 +151,7 @@ func Process(sessionId string, conn net.Conn, inputByte byte, frame *types.Frame
 		if responseData.asterisk {
 
 			// by copying the cancel pid to the action pid, the cancel pid will get
-			// rendered whem we exit this function
+			// rendered when we exit this function
 			frame.ResponseData.Action.PostActionFrame = frame.ResponseData.Action.PostCancelFrame
 
 			// nothing more to do so mark as such
@@ -181,7 +187,7 @@ func Process(sessionId string, conn net.Conn, inputByte byte, frame *types.Frame
 					var resultFrame types.Frame
 					if err = json.Unmarshal([]byte(actionOut), &resultFrame); err != nil {
 
-						logger.LogInfo.Println("the response frame action did not return frame(s)")
+						logger.LogInfo.Println("The response frame action did not return any frames.")
 
 						// some commands such as internal commands (login, mail etc)
 						// may not return page data so just continue
@@ -209,8 +215,11 @@ func Process(sessionId string, conn net.Conn, inputByte byte, frame *types.Frame
 			} else {
 
 				// move cursor to next field
-				renderer.PositionCursor(conn, frame.ResponseData.Fields[responseData.currentFieldIndex].HPos,
-					frame.ResponseData.Fields[responseData.currentFieldIndex].VPos, !settings.Server.DisableVerticalRollOver)
+				if err = renderer.PositionCursor(conn, frame.ResponseData.Fields[responseData.currentFieldIndex].HPos,
+					frame.ResponseData.Fields[responseData.currentFieldIndex].VPos,
+					!settings.Server.DisableVerticalRollOver); err != nil {
+					return err
+				}
 			}
 		}
 	}

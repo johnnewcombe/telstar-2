@@ -64,7 +64,6 @@ func Render(ctx context.Context, conn net.Conn, wg *synchronisation.WaitGroupWit
 		}
 
 		if cancelled, err = renderTitle(ctx, conn, frame, currentSession, settings, options); cancelled {
-			logger.LogError.Printf("%s%v", logPreAmble, err)
 			return
 		}
 		if err != nil {
