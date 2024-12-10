@@ -28,7 +28,7 @@ docker-push: docker
 	docker push johnnewcombe/telstar:amd64-$(version)
 	docker push johnnewcombe/telstar:arm64v8-$(version)
 
-docker-push-latest: #docker-push
+docker-push-latest: docker-push
 	# Update latest (see build) DONT run this if version is set to n.nn-RCn (see (version) above
 	# TODO Look at creating a manifest list so that the correct architecture version is pulled from docker hub automatically.
 	# docker manifest create johnnewcombe/telstar:latest johnnewcombe/telstar:amd64-2.0.0 johnnewcombe/telstar:arm64v8-2.0.0
