@@ -126,7 +126,7 @@ func (c *Connection) SetRemoteConnection(value net.Conn) {
 	c.remoteConnection = value
 }
 
-// Creates a redirect from the fromPageId to this frame.
+// CreateRedirect Creates a redirect from the fromPageId to this frame.
 func (f *Frame) CreateRedirect(fromPageNumber int, fromFrameId string) Frame {
 
 	// e.g.   {"pid": {"page-no": 0, "frame-id": "a"}, "redirect": {"page-no": 9, "frame-id": "a"},  "visible": True,}
