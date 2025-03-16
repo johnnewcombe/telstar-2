@@ -1,10 +1,10 @@
 package display
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-client/customFyne"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"github.com/johnnewcombe/telstar-client/constants"
+	"github.com/johnnewcombe/telstar-client/customFyne"
 )
 
 func (s *Screen) isLastRow(row int) bool {

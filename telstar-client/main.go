@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-client/constants"
-	"bitbucket.org/johnnewcombe/telstar-client/keyboard"
 	"context"
 	_ "embed"
 	"encoding/hex"
@@ -17,7 +15,9 @@ import (
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 	"github.com/johnnewcombe/telstar-client/comms"
+	"github.com/johnnewcombe/telstar-client/constants"
 	"github.com/johnnewcombe/telstar-client/display"
+	"github.com/johnnewcombe/telstar-client/keyboard"
 	"gopkg.in/yaml.v3"
 	"image/color"
 	"io/fs"

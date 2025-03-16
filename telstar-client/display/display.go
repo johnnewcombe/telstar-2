@@ -1,13 +1,13 @@
 package display
 
 import (
-	"bitbucket.org/johnnewcombe/telstar-client/customFyne"
 	"context"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"github.com/johnnewcombe/telstar-client/constants"
+	"github.com/johnnewcombe/telstar-client/customFyne"
 	"image/color"
 	"sync"
 	"time"
@@ -57,6 +57,17 @@ func (s *Screen) write(char byte) {
 	// if escape has already been set then we are dealing with a control character
 	if s.escape {
 
+		// set any global display settings
+		switch char {
+		case constants.HOLD_GRAPHICS:
+			s.holdGraphicsMode = true
+
+		case constants.RELEASE_GRAPHICS:
+			// we need to delay setting the s.holdGraphicsMode=false as we may
+			// still have to process the releaseGraphic character itself(see below)
+			s.holdGraphicsMode = false
+		}
+
 		// add the control controlValue to the attributes
 		s.attributes[s.getIndex(s.cursorCol, s.cursorRow)].controlValue = char
 		// recalculate the attributes from the previous (or default) to this cell and to the end of the row
@@ -64,10 +75,6 @@ func (s *Screen) write(char byte) {
 
 		// get the current attribute after all of the changes
 		attrib := s.attributes[s.getIndex(s.cursorCol, s.cursorRow)]
-
-		if char == constants.RELEASE_GRAPHICS {
-			print("stop")
-		}
 
 		if s.holdGraphicsMode && attrib.graphics {
 
@@ -100,15 +107,6 @@ func (s *Screen) write(char byte) {
 			}
 		}
 
-		// set any global display settings
-		switch char {
-		case constants.HOLD_GRAPHICS:
-			s.holdGraphicsMode = true
-		case constants.RELEASE_GRAPHICS:
-			// we need to delay setting the s.holdGraphicsMode=false as we may
-			// still have to process the releaseGraphic character itself(see below)
-			s.holdGraphicsMode = false
-		}
 		s.escape = false
 
 	} else {
@@ -133,10 +131,8 @@ func (s *Screen) write(char byte) {
 		} else {
 
 			// save to use as held graphic
-			if s.holdGraphicsMode {
-				s.heldGraphic.character = ichar
-				s.heldGraphic.attributes = attrib
-			}
+			s.heldGraphic.character = ichar
+			s.heldGraphic.attributes = attrib
 		}
 
 		// double height
