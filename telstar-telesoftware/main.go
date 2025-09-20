@@ -3,14 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"os"
+	"path"
+
 	"github.com/johnnewcombe/telstar-library/file"
 	"github.com/johnnewcombe/telstar-library/logger"
 	"github.com/johnnewcombe/telstar-library/telesoftware"
 	"github.com/johnnewcombe/telstar-library/types"
 	"github.com/johnnewcombe/telstar-library/utils"
-	"log"
-	"os"
-	"path"
 )
 
 const (
@@ -38,7 +39,7 @@ func main() {
 		jsonFrame       []byte
 	)
 
-	flags = flag.NewFlagSet("telstar-rss", flag.ExitOnError)
+	flags = flag.NewFlagSet("telstar-telesoftware", flag.ExitOnError)
 	flags.StringVar(&name, "name", "", "Display name of the program or file.")
 	flags.StringVar(&pageId, "pid", "", "Page ID of the start of the encoded frames. This would typically be a 'c' frame.")
 	flags.StringVar(&inputFile, "i", "", "Path to the file to be encoded.")
