@@ -2,11 +2,10 @@ package file
 
 import (
 	"errors"
-	"github.com/johnnewcombe/telstar-library/logger"
-	"io/fs"
-	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/johnnewcombe/telstar-library/logger"
 )
 
 // Exists checks for the existance of a file at the specified path.
@@ -37,7 +36,7 @@ func DeleteFiles(fileSpec string) {
 }
 
 func WriteFile(filename string, data []byte) error {
-	return ioutil.WriteFile(filename, data, 0644)
+	return os.WriteFile(filename, data, 0644)
 }
 
 func ReadFile(path string) ([]byte, error) {
@@ -46,23 +45,8 @@ func ReadFile(path string) ([]byte, error) {
 		bytes []byte
 		err   error
 	)
-	if bytes, err = ioutil.ReadFile(path); err != nil {
+	if bytes, err = os.ReadFile(path); err != nil {
 		return bytes, err
 	}
 	return bytes, nil
-}
-
-func ReadFiles(directory string) ([]fs.FileInfo, error) {
-
-	var (
-		err   error
-		files []fs.FileInfo
-	)
-
-	files, err = ioutil.ReadDir(directory)
-	if err != nil {
-		return nil, err
-	}
-
-	return files, nil
 }
