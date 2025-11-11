@@ -1,5 +1,4 @@
 build:
-	env GOOS=darwin GOARCH=amd64  go build -o /usr/local/bin/telstar-rss .
 	env GOOS=darwin GOARCH=amd64  go build -o ./bin/telstar-rss-macos-amd64 .
 	env GOOS=darwin GOARCH=arm64  go build -o ./bin/telstar-rss-macos-arm64 .
 	env GOOS=windows GOARCH=386 go build -o ./bin/telstar-rss-windows-386.exe .

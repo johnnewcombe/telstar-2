@@ -7,10 +7,10 @@ build:
 	# Update fyne-cross to use the latest docker images e.g.
 
     # Deprecated: go get -u github.com/fyne-io/fyne-cross
-    # go get fyne.io/fyne/v2/app@v2.2.1
+	go get fyne.io/fyne/v2/app@v2.2.1
 	./gen.sh bundle.go
 
-	#go build
+	go build
 
 	# MacOS AMD & ARM
 	fyne-cross darwin -app-id=com.glasstty.telstar-client -arch=amd64,arm64

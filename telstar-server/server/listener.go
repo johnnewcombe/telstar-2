@@ -4,6 +4,10 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"net"
+	"strings"
+	"time"
+
 	"github.com/johnnewcombe/telstar-library/convert"
 	"github.com/johnnewcombe/telstar-library/globals"
 	"github.com/johnnewcombe/telstar-library/logger"
@@ -17,9 +21,6 @@ import (
 	"github.com/johnnewcombe/telstar/routing"
 	"github.com/johnnewcombe/telstar/session"
 	"github.com/johnnewcombe/telstar/synchronisation"
-	"net"
-	"strings"
-	"time"
 	//"sync"
 )
 
@@ -89,7 +90,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		logPreAmble       string
 	)
 
-	// FIXME FIXME FIXME FIXME the following error occured and the session did not get closed, NOTE that
+	// TODO: FIXME the following error occurred and the session did not get closed, NOTE that
 	//  this is simply a warning and may be a Red Herring
 	//  WARNING: 2024/12/09 16:22:00 SC:1,CN:9,IP:2.100.48.122 - An invalid character was received from the connected client [44] D (68).
 
@@ -106,25 +107,8 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	// anonymous function used as a single defer
 	defer func() {
 
-		// remove any data in the rendering result channel otherwise the renderer
-		// could get blocked meaning it would never see the cancel message this
-		// would mean that the following wg.Wait() call would never complete, the
-		// client connection would not get closed and a session would stay alive.
-		// TODO: could we use a buffered channel for results to avoid the need for this?
-		//select {
-		//case results := <-chResult:
-		// channel has some data
-		//	for _, err = range results {
-		//		logger.LogError.Printf("%s %v", logPreAmble, err)
-		//	}
-		//default:
-		//}
-
 		// wait for go routines to complete
 		wg.Wait() //
-
-		// close channels
-		//close(chResult)
 
 		// close the connection
 		logger.LogInfo.Printf("%sClosing connection.", logPreAmble)
@@ -163,14 +147,6 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 	// this also gives manual dial connections time to switch the modem online.
 	time.Sleep(time.Second * globals.CONNECT_DELAY_SECS)
 
-	// Removed in favour of DC parsing...
-	//   see inputByte, minitelResponse = minitelParser.ParseMinitelDc(inputByte) below
-	// send the <PRO1>/7B (where <PRO1> is 1B/39) to the client
-	//if _, err = conn.Write([]byte(globals.MINITEL_ENQ_ROM)); err != nil {
-	// logger.LogError.Printf(%d:%s: err)
-	//	return
-	//}
-
 	// loop as each character is received
 	for {
 		//conn.SetReadDeadline(time.Now().Add(time.Millisecond * 500))
@@ -182,28 +158,6 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 		start := time.Now()
 		ok, inputByte = readByte(reader)
 
-		// process any errors from the renderer
-		/*
-			select {
-
-				case results := <-chResult:
-				// channel has some data
-				for _, err = range results {
-
-					logger.LogError.Printf("%s%v", logPreAmble, err)
-
-					// cancel for network error
-					if errors.As(err, &networkError) {
-						// need to wait a moment as gateway connections will be shutting down.
-						//time.Sleep(time.Millisecond * 500)
-						cancel()
-						return // via defer() function
-					}
-				}
-			default:
-			}
-		*/
-
 		if !ok {
 
 			// each !ok read should be 500ms since the last, anything shorter means that
@@ -213,7 +167,7 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 				//error, the connection has clearly been broken
 				logger.LogInfo.Printf("%sClient has disconnected.", logPreAmble)
 				cancel()
-				return // TODO: should we go around again to read any results that there might have been see defer()
+				return
 
 			}
 
@@ -303,20 +257,36 @@ func handleConn(conn net.Conn, connectionNumber int, settings config.Config) {
 
 		now = time.Now().UnixMilli() // nano seconds
 
-		// TODO What does this actually do, are we talking about the user using a Viewdata client
-		//  with a TNC? how would that work with CR being needed and the TNC in Line mode
-		// if a hash is received within 100ms of the previous character and we are in immediate mode
-		// ignore it. This should help packet radio operation where someone presses a menu choice e.g. 2
-		// and hits Return (hash) as the TNC will send 2# in this scenario the hash needs to be ignored.
-		if inputByte == globals.HASH && routingResponse.ImmediateMode {
+		// If a CR is received within CR_GUARD_TIME of the previous character, and we are in immediate
+		// mode, ignore it. This has been added for TNC's accessing Telstar e.g. via BPQ32 packet radio
+		//nodes.
 
-			if lastCharReceived >= now-globals.HASH_GUARD_TIME {
-				logger.LogInfo.Printf("%sCharacter received: [%0x] %s (%d) was received within %dms of previous character whilst in immediate mode.", logPreAmble, inputByte, BtoA(inputByte), inputByte, globals.HASH_GUARD_TIME)
+		// TNCs operate in Line mode, and therefore for a TNC to send an immediate command e.g. to select
+		// an option on a Telstar menu, the user needs to press return, the selection and the CR are boyh
+		// sent to Telstar one immediately after the other. From Telstar's point of view, the user appears
+		// to have selected an option and immediately pressed return. Without the 'CR guard' implemented
+		// below, this would immediately routes the user away from the frame selected by invoking the route
+		// for the hash key (as configured for the selected frame).
+
+		// To differentiate between a user deliberately navigating via the hash route and something operating
+		//in line mode, a guard time is implemented to remove any CR sent when in line mode. If a user
+		// deliberately presses hash after selecing a menu option it will after the guard time and will be
+		// processed as expected.
+		if inputByte == globals.CR && routingResponse.ImmediateMode {
+
+			guardTime := now - lastCharReceived
+			if guardTime < globals.CR_GUARD_TIME {
+				logger.LogInfo.Printf("%sCharacter received: [%0x] %s (%d) was received %dms after the previous character whilst in immediate mode, ignored.", logPreAmble, inputByte, BtoA(inputByte), inputByte, guardTime)
 				continue
 			}
 		}
-
+		// record the time in milliseconds that the inputByte character was received
 		lastCharReceived = time.Now().UnixMilli()
+
+		// translate CR to hash
+		if inputByte == globals.CR {
+			inputByte = globals.HASH
+		}
 
 		// pass through the telnet parser, this will absorb any negotiation and
 		// set telnetParser.TelnetConnection to true if a telnet negotiation was detected

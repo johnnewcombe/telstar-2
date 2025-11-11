@@ -1,5 +1,4 @@
 build:
-	env GOOS=darwin GOARCH=amd64  go build -o /usr/local/bin/telstar-util .
 
 	env GOOS=darwin GOARCH=amd64  go build -o ./bin/telstar-util-macos-amd64 .
 	env GOOS=darwin GOARCH=arm64  go build -o ./bin/telstar-util-macos-arm64 .
