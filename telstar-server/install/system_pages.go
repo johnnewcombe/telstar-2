@@ -1,14 +1,15 @@
 package install
 
 import (
+	"strings"
+	"time"
+
 	"github.com/johnnewcombe/telstar-library/convert"
 	"github.com/johnnewcombe/telstar-library/globals"
 	"github.com/johnnewcombe/telstar-library/logger"
 	"github.com/johnnewcombe/telstar-library/types"
 	"github.com/johnnewcombe/telstar/config"
 	"github.com/johnnewcombe/telstar/dal"
-	"strings"
-	"time"
 )
 
 const (
@@ -50,6 +51,9 @@ func CreateSystemPages(settings config.Config) error {
 		return err
 	}
 	if err = create91f(settings); err != nil {
+		return err
+	}
+	if err = create91g(settings); err != nil {
 		return err
 	}
 	if err = create94a(settings); err != nil {
@@ -199,56 +203,30 @@ func create91b(settings config.Config) error {
 	return dal.InsertOrReplaceFrame(settings.Database.Connection, frame, primary)
 
 }
-
 func create91c(settings config.Config) error {
 
 	var (
 		frame   types.Frame
 		primary bool
-		sb      = strings.Builder{}
 	)
+
+	if globals.Debug {
+		defer logger.TimeTrack(time.Now(), "create91f")
+	}
 
 	frame.PID.PageNumber = 91
 	frame.PID.FrameId = "c"
 	frame.Visible = true
 	frame.Carousel = true
 	frame.FrameType = globals.FRAME_TYPE_TEST
-	//                "0123456789012345678901234567890123456789"
-	sb.WriteString("0---------1---------2---------3-------00")
-	sb.WriteString("0---------1---------2---------3-------01")
-	sb.WriteString("\b\t0---------1---------2---------3-------02")
-	sb.WriteString("0---------1---------2---------3-------03\r")
-	sb.WriteString("0---------1---------2---------3-------04\n")
-	sb.WriteString("\v0---------1---------2---------3-------05\r\n\v")
-	sb.WriteString("0---------1---------2---------3-------06\n\r\v")
-	sb.WriteString("0---------1---------2---------3-------07\b\t") // Note: '\t' is a cursor movement not a character
-	sb.WriteString("0---------1---------2---------3-------08\t\b")
-	sb.WriteString("\x1e\v\v\v\v\v\v\v\v\v\v\v\v\v\v\v0---------1---------2---------3-------09")
-	sb.WriteString("0---------1---------2---------3-------10")
-	sb.WriteString("\x1E\n\n\n\n\n\n\n\n\n\n\n0---------1---------2---------3-------11")
-	sb.WriteString("0---------1---------2---------3-------12\r\t\b")
-	sb.WriteString("0---------1---------2---------3-------13\r\b3")
-	sb.WriteString("\t\b0---------1---------2---------3-------14")
-	sb.WriteString("0---------1---------2---------3-------15\n\n\r\v\v")
-	sb.WriteString("0---------1---------2---------3-------16\r\n\n\v\v")
-	sb.WriteString("0---------1---------2---------3-------17\r\n\r\v\r\n\v")
-	sb.WriteString("0---------1---------2---------3-------18\r\r\r\n\r\r\r\n\v\v")
-	sb.WriteString("0---------1---------2---------3-------19")
-	sb.WriteString("0---------1---------2---------3-------20")
-	sb.WriteString("0---------1---------2---------3-------21")
-	sb.WriteString("0---------1---------2---------3-------22")
-	sb.WriteString("0---------1---------2---------3-------23")
-
-	frame.Content.Data = sb.String()
-	frame.Content.Type = globals.CONTENT_TYPE_RAW
+	frame.Content.Data = "https://edit.tf/#0:BUANINFCUw9QLFBzECBAgQIECBAgDsXLBwxcOcKBADQIGHAIdQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQICh0mgQIECBAgQIECBAgQIEHBggQIECBAgQIECBAgQIECBAgKHSeD5__9OCBAgQIECDB-____3ogQIECBAgQIECBAgQIECAodJq_______-nBB4-fv6v-r____VAgQIECBAgQIECBAgQICh0mgRI150igQIECBAgwfPnRggQFBCv_____________86gCHSeD4dIoECBAgQIEGD__fu0CBAgQFBCv_________OoECAodJql69edIoECBAgQIl6dYhQIECBAgQFBCv____zqBAgQICh0meQIPX__________________________xHRAgQIECBAgKHSZ5AgVp0a_____________________8R_____RggQIECAodJnkCBAgQIECNHr_______________iP_______qBAgQICh0ie4MEBNAgQIEH7_____________8Qv3_______9ECBAgKHSKD-1JoECBAgQIv____________pRCBX________QIECAodI8OfFgTQIECBAgV6__________-0EIECBAiV7_7dAgQICh0ivXr0pNAgQIECBAg1_________6BAgQIECBAgQIECBAgKHSP___ak0CBAgQIECBAq____9KgQIECBAgQIECBAgQIECAIdI_PnxogJIECBAgQIECDUg1IECBAgQIECBAgQIECBAgQICh0jz582JJAgQIECBAgQINSDUgQIECANJQc9G_rsyIMWVAgKHSK9evSkkCBAgQIECDA43Jc6zhgYIECBAgQBu-Htp3Z0KAodI___86SQIECBAgRJlKBAgQI1jPIgQIECBAUO_0CBAgQICh0j__nQNPfy5eVhJCoQIECBAgQIECBAgQIECAod_oECBAgKHSP86B6aNPNBww58qDrzy80ELDj15-W_ruyIEBQ7_QIECAIdAnYe_Zv68liDvo049CDzv6oMeHdu39EHPLlXICh0Z_QIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECBAgQIECA:PN=189:SC=000a"
+	frame.Content.Type = globals.CONTENT_TYPE_EDITTF
 	frame.RoutingTable = []int{910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 91}
 
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 
 	return dal.InsertOrReplaceFrame(settings.Database.Connection, frame, primary)
-
 }
-
 func create91d(settings config.Config) error {
 
 	var (
@@ -334,6 +312,55 @@ func create91f(settings config.Config) error {
 	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
 
 	return dal.InsertOrReplaceFrame(settings.Database.Connection, frame, primary)
+}
+
+func create91g(settings config.Config) error {
+
+	var (
+		frame   types.Frame
+		primary bool
+		sb      = strings.Builder{}
+	)
+
+	frame.PID.PageNumber = 91
+	frame.PID.FrameId = "g"
+	frame.Visible = true
+	frame.Carousel = true
+	frame.FrameType = globals.FRAME_TYPE_TEST
+	//                "0123456789012345678901234567890123456789"
+	sb.WriteString("0---------1---------2---------3-------00")
+	sb.WriteString("0---------1---------2---------3-------01")
+	sb.WriteString("\b\t0---------1---------2---------3-------02")
+	sb.WriteString("0---------1---------2---------3-------03\r")
+	sb.WriteString("0---------1---------2---------3-------04\n")
+	sb.WriteString("\v0---------1---------2---------3-------05\r\n\v")
+	sb.WriteString("0---------1---------2---------3-------06\n\r\v")
+	sb.WriteString("0---------1---------2---------3-------07\b\t") // Note: '\t' is a cursor movement not a character
+	sb.WriteString("0---------1---------2---------3-------08\t\b")
+	sb.WriteString("\x1e\v\v\v\v\v\v\v\v\v\v\v\v\v\v\v0---------1---------2---------3-------09")
+	sb.WriteString("0---------1---------2---------3-------10")
+	sb.WriteString("\x1E\n\n\n\n\n\n\n\n\n\n\n0---------1---------2---------3-------11")
+	sb.WriteString("0---------1---------2---------3-------12\r\t\b")
+	sb.WriteString("0---------1---------2---------3-------13\r\b3")
+	sb.WriteString("\t\b0---------1---------2---------3-------14")
+	sb.WriteString("0---------1---------2---------3-------15\n\n\r\v\v")
+	sb.WriteString("0---------1---------2---------3-------16\r\n\n\v\v")
+	sb.WriteString("0---------1---------2---------3-------17\r\n\r\v\r\n\v")
+	sb.WriteString("0---------1---------2---------3-------18\r\r\r\n\r\r\r\n\v\v")
+	sb.WriteString("0---------1---------2---------3-------19")
+	sb.WriteString("0---------1---------2---------3-------20")
+	sb.WriteString("0---------1---------2---------3-------21")
+	sb.WriteString("0---------1---------2---------3-------22")
+	sb.WriteString("0---------1---------2---------3-------23")
+
+	frame.Content.Data = sb.String()
+	frame.Content.Type = globals.CONTENT_TYPE_RAW
+	frame.RoutingTable = []int{910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 91}
+
+	primary = strings.ToLower(settings.Database.Collection) == globals.DBPRIMARY
+
+	return dal.InsertOrReplaceFrame(settings.Database.Connection, frame, primary)
+
 }
 
 func create94a(settings config.Config) error {

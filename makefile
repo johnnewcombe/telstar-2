@@ -1,5 +1,5 @@
 # Set this to the build version (must be lower case), no other version files need to be updated (see echo command below)
-version := 2.0.29-rc1
+version := 2.0.29
 
 # Remember to set the ENV REFRESHED_AT variable in the associated docker files.
 
@@ -21,7 +21,7 @@ docker: build
 	docker build -f Dockerfile.amd64 --platform linux/amd64 --rm --no-cache --tag johnnewcombe/telstar:latest --tag johnnewcombe/telstar:amd64-$(version) .
 	docker build -f Dockerfile.arm64v8 --platform linux/arm64/v8 --rm --no-cache --tag johnnewcombe/telstar:arm64v8-$(version) .
 
-docker-push: docker
+docker-push: #docker
 	# push the versions without updating latest
 	docker push johnnewcombe/telstar:amd64-$(version)
 	docker push johnnewcombe/telstar:arm64v8-$(version)
